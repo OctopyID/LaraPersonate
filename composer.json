@@ -1,0 +1,42 @@
+{
+    "name": "octopyid/laravel-sudo",
+    "description": "Sign in as another user directly",
+    "keywords": [
+        "sudo",
+        "sudo-su",
+        "sign in",
+        "laravel"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "SupianIDz",
+            "email": "supianidz@gmail.com"
+        },
+        {
+            "name": "Octopy ID",
+            "email": "me@octopy.id"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "Octopy\\Sudo\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Octopy\\Sudo\\SudoServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

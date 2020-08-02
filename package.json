@@ -1,0 +1,18 @@
+{
+    "private": true,
+    "scripts": {
+        "dev": "npm run development",
+        "watch": "npm run development -- --watch",
+        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+    },
+    "devDependencies": {
+        "bootstrap-scss": "^4.5",
+        "cross-env": "^7.0",
+        "laravel-mix": "^5.0.1",
+        "minifier": "^0.8.1"
+    },
+    "dependencies": {
+        "tail.select": "^0.5.15"
+    }
+}
