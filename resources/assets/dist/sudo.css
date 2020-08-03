@@ -50,29 +50,8 @@
   padding: 5px;
 }
 
-.octopyid-sudo-interface form {
-  margin-top: 5px;
-}
-
 .octopyid-sudo-info-line {
   margin-bottom: 5px;
-}
-
-.octopyid-sudo-btn-reset {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  cursor: pointer;
-  border: 0;
-  margin: 5px 0 15px 0;
-  padding: 6px 10px;
-  background: rgba(50, 159, 185, 0.8);
-  color: #FFFFFF;
-  border-radius: 34px;
-  border-bottom: 1px solid;
-}
-
-.octopyid-sudo-btn-reset:hover {
-  background: #329FB9;
 }
 
 .octopyid-sudo-font-bold {
