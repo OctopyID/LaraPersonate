@@ -19,7 +19,9 @@
             "email": "me@octopy.id"
         }
     ],
-    "require": {},
+    "require": {
+        "php": "^7.0"
+    },
     "autoload": {
         "psr-4": {
             "Octopy\\Sudo\\": "src/"
