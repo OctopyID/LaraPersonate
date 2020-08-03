@@ -1,6 +1,7 @@
+![Demonstration](demo.gif)
+
 # Octopy Sudo
 Allow a developer direct login as another user during development inspired by [sudo-su](https://github.com/viacreative/sudo-su).
-
 ## Installation
 To install the package, simply follow the steps below.
 
