@@ -44,6 +44,10 @@ class SudoMiddleware
      */
     public function handle($request, Closure $next)
     {
+        if ($request->ajax() || ! $request->isMethod('GET')) {
+            return $next($request);
+        }
+
         if (! $this->sudo->isEnabled() || $this->isExcepted($request)) {
             return $next($request);
         }
