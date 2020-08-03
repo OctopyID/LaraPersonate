@@ -52,31 +52,7 @@ class Sudo
 
         return $this->auth->loginUsingId($userId);
     }
-
-    /**
-     * @return bool
-     */
-    public function logout() : bool
-    {
-        if (! $this->hasSudoed()) {
-            return false;
-        }
-
-        $this->auth->logout();
-
-        $originalUserId = $this->app->session->get('octopyid.sudo.original_id');
-
-        if ($originalUserId) {
-            $this->auth->loginUsingId($originalUserId);
-        }
-
-        $this->app->session->forget([
-            'octopyid.sudo.has_sudoed', 'octopyid.sudo.original_id',
-        ]);
-
-        return true;
-    }
-
+    
     /**
      * @param  Request   $request
      * @param  Response  $response
@@ -85,6 +61,10 @@ class Sudo
      */
     public function modifyResponse(Request $request, Response $response) : Response
     {
+        if (! $this->auth->check()) {
+            return $response;
+        }
+
         $sudo = view('sudo::selector', [
             'users'        => $this->getUsers(),
             'hasSudoed'    => $this->hasSudoed(),

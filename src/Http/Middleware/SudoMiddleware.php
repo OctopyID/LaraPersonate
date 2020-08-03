@@ -23,7 +23,7 @@ class SudoMiddleware
      * @var string[]
      */
     protected $except = [
-        'octopyid/sudo/signin', 'octopyid/sudo/logout',
+        'octopyid/sudo/signin',
     ];
 
     /**
