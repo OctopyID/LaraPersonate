@@ -18,7 +18,7 @@ To install the package, simply follow the steps below.
 Install the package using Composer:
 
 ```
-$ composer require octopyid/laravel-sudo --dev
+$ composer require supianidz/laravel-impersonate --dev
 
 $ php artisan vendor:publish
 ```

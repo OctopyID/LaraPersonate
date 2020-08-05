@@ -1,11 +1,10 @@
 {
-    "name": "octopyid/laravel-sudo",
+    "name": "supianidz/laravel-impersonate",
     "description": "Sign in as another user directly",
     "keywords": [
-        "sudo",
-        "sudo-su",
         "sign in",
-        "laravel"
+        "laravel",
+        "impersonate"
     ],
     "type": "library",
     "license": "MIT",
