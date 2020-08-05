@@ -41,12 +41,47 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | User Model
+    |--------------------------------------------------------------------------
+    |
+    | Path to the application User model. This will be used to retrieve the users
+    | displayed in the select dropdown. This must be an Eloquent Model instance.
+    |
+    */
+    'fields'      => [
+
+        /*
+        |--------------------------------------------------------------------------
+        | Field Primary ID
+        |--------------------------------------------------------------------------
+        |
+        | Primary field from the user table, for example like `id`, `user_id`, etc.
+        |
+        */
+        'id'   => 'id',
+
+        /*
+        |--------------------------------------------------------------------------
+        | Field Name
+        |--------------------------------------------------------------------------
+        |
+        | Data fields for user names from table to display in the list,
+        | for example such as `name`, `user_name`, `full_name`, etc.
+        |
+        */
+        'name' => 'name',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Maximum User Shown
     |--------------------------------------------------------------------------
     |
     | The maximum number of users is displayed
     |
-    | Fill in "-1" to display all users
+    | Fill with "-1" to display all users
+    |
+    | Be careful, this might make your application crash if there is a lot of user data.
     |
     */
     'max_shown'   => 5,

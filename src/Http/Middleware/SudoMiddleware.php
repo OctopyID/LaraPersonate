@@ -52,7 +52,7 @@ class SudoMiddleware
             return $next($request);
         }
 
-        return $this->sudo->modifyResponse($request, $next($request));
+        return $this->sudo->modifyResponse($next($request));
     }
 
     /**

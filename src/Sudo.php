@@ -2,7 +2,6 @@
 
 namespace Octopy\Sudo;
 
-use Illuminate\Http\Request;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Symfony\Component\HttpFoundation\Response;
@@ -52,14 +51,13 @@ class Sudo
 
         return $this->auth->loginUsingId($userId);
     }
-    
+
     /**
-     * @param  Request   $request
      * @param  Response  $response
      * @return Response
      * @throws BindingResolutionException
      */
-    public function modifyResponse(Request $request, Response $response) : Response
+    public function modifyResponse(Response $response) : Response
     {
         if (! $this->auth->check()) {
             return $response;
@@ -107,10 +105,16 @@ class Sudo
         $model = $this->app->make(config('sudo.user_model'));
 
         if (config('sudo.max_shown') === -1) {
-            return $model->get();
+            return $model->get([
+                config('sudo.fields.id', 'id'),
+                config('sudo.fields.name', 'name'),
+            ]);
         }
 
-        return $model->limit(config('sudo.max_shown'))->get();
+        return $model->limit(config('sudo.max_shown'))->get([
+            config('sudo.fields.id', 'id'),
+            config('sudo.fields.name', 'name'),
+        ]);
     }
 
     /**
