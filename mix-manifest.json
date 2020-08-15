@@ -1,5 +1,4 @@
 {
-    "/resources/assets/dist/sudo.css": "/resources/assets/dist/sudo.css",
-    "/resources/assets/dist/tail.min.js": "/resources/assets/dist/tail.min.js",
-    "/resources/assets/dist/tail.min.css": "/resources/assets/dist/tail.min.css"
+    "/resources/assets/dist/impersonate.css": "/resources/assets/dist/impersonate.css",
+    "/resources/assets/dist/impersonate.js": "/resources/assets/dist/impersonate.js"
 }

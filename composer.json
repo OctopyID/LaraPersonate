@@ -1,35 +1,26 @@
 {
     "name": "supianidz/laravel-impersonate",
-    "description": "Sign in as another user directly",
-    "keywords": [
-        "sign in",
-        "laravel",
-        "impersonate"
-    ],
+    "description": "Login As A Different User Quickly",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
             "name": "SupianIDz",
             "email": "supianidz@gmail.com"
-        },
-        {
-            "name": "Octopy ID",
-            "email": "me@octopy.id"
         }
     ],
     "require": {
-        "php": "^7.0"
+        "php": "^7.1"
     },
     "autoload": {
         "psr-4": {
-            "Octopy\\Sudo\\": "src/"
+            "Octopy\\LaraPersonate\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Octopy\\Sudo\\SudoServiceProvider"
+                "Octopy\\LaraPersonate\\LaraPersonateServiceProvider"
             ]
         }
     },

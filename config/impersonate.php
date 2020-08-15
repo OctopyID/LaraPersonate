@@ -4,9 +4,9 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Sudo
+    | LaraPersonate
     |--------------------------------------------------------------------------
-    | Sudo is enabled by default, when debug is set to true in app.php.
+    | LaraPersonate is enabled by default, when debug is set to true in app.php.
     | You can override the value by setting enable to true or false instead of null.
     |
     */
@@ -21,12 +21,12 @@ return [
     | unintentionally left active. The package will detect the site
     | URL and if the TLD isn't present in this array, it will not
     | activate. If your development TLD is different to .dev or
-    | .local, simply add it to the arrow below.
+    | .local, simply add it to the array below.
     |
-    | Fill "*" for wildcard tlds.
+    | Empty the array if you don't want any restrictions on the tlds.
     |
     */
-    'allowed_tld' => ['dev', 'local'],
+    'allowed_tld' => ['dev', 'local', 'io'],
 
     /*
     |--------------------------------------------------------------------------
@@ -39,16 +39,7 @@ return [
     */
     'user_model'  => App\User::class,
 
-    /*
-    |--------------------------------------------------------------------------
-    | User Model
-    |--------------------------------------------------------------------------
-    |
-    | Path to the application User model. This will be used to retrieve the users
-    | displayed in the select dropdown. This must be an Eloquent Model instance.
-    |
-    */
-    'fields'      => [
+    'fields'     => [
 
         /*
         |--------------------------------------------------------------------------
@@ -74,15 +65,36 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | With Roles
+    |--------------------------------------------------------------------------
+    |
+    | If with_roles is enabled, the displayed users will be grouped by role.
+    |
+    | You just need to set it to true, the group will show automatically
+    | if your user_model has used trait from role authorization packages such as Laratrust,
+    | otherwise groups will not be displayed even if with_roles is set to true.
+    |
+    | Currently supported:
+    | - laratrust (https://github.com/santigarcor/laratrust)
+    |
+    | Next Plan:
+    | - laravel bouncer (https://github.com/JosephSilber/bouncer)
+    | - laravel permission (https://github.com/spatie/laravel-permission)
+    |
+    */
+    'with_roles' => true,
+
+    /*
+    |--------------------------------------------------------------------------
     | Maximum User Shown
     |--------------------------------------------------------------------------
     |
-    | The maximum number of users is displayed
-    |
-    | Fill with "-1" to display all users
+    | The maximum number of users displayed
+    | when active_role is set to true, the number of displayed users will be multiplied
+    | by the number of displayed roles.
     |
     | Be careful, this might make your application crash if there is a lot of user data.
     |
     */
-    'max_shown'   => 5,
+    'limit'      => 3,
 ];

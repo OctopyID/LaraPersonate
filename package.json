@@ -9,8 +9,7 @@
     "devDependencies": {
         "bootstrap-scss": "^4.5",
         "cross-env": "^7.0",
-        "laravel-mix": "^5.0.1",
-        "minifier": "^0.8.1"
+        "laravel-mix": "^5.0.1"
     },
     "dependencies": {
         "tail.select": "^0.5.15"
