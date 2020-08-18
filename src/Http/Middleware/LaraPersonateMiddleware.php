@@ -37,7 +37,7 @@ class LaraPersonateMiddleware
      */
     public function handle($request, Closure $next)
     {
-        if (! $this->personate->isEnabled() || ! $this->isAllowed($request) || $this->personate->personateRequest($request)) {
+        if ($request->ajax() || ! $this->personate->isEnabled() || ! $this->isAllowed($request) || $this->personate->personateRequest($request)) {
             return $next($request);
         }
 
