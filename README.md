@@ -3,7 +3,7 @@
 # Lara Personate
 Is a user impersonate for the laravel framework. allow a developer direct login as another user during development inspired by [sudo-su](https://github.com/viacreative/sudo-su).
 
-# New Feature
+## Features
 - Displays users based their role.
 - Limit the number of users displayed.
 - Search form using [tail.select](https://github.pytes.net/tail.select/).
@@ -60,7 +60,10 @@ The MIT License (MIT). Please see [License File](https://github.com/SupianIDz/La
     - [ ] [Bouncer](https://github.com/JosephSilber/bouncer)
     - [ ] [Permission](https://github.com/spatie/laravel-permission)
    
-## Change Log
+## Change Logs
+
+### v1.2.1
+- Exclude Lara Personate from ajax requests.
 
 ### v1.2.0
 - Rewrite code.
