@@ -62,6 +62,9 @@ The MIT License (MIT). Please see [License File](https://github.com/SupianIDz/La
    
 ## Change Logs
 
+### v1.2.2
+- Exclude Lara Personate from json response.
+
 ### v1.2.1
 - Exclude Lara Personate from ajax requests.
 
