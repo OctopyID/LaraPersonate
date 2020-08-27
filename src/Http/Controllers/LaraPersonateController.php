@@ -49,11 +49,8 @@ class LaraPersonateController extends Controller
     public function trySignin(Request $request) : RedirectResponse
     {
         try {
-
             $this->personate->signin($request->userId, $request->originalId);
-
         } catch (Exception $exception) {
-
         }
 
         return redirect()->back();
@@ -65,11 +62,8 @@ class LaraPersonateController extends Controller
     public function trySignout() : RedirectResponse
     {
         try {
-
             $this->personate->signout();
-
         } catch (Exception $exception) {
-
         }
 
         return redirect()->back();

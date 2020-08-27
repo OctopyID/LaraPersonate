@@ -4,6 +4,7 @@ namespace Octopy\LaraPersonate\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Octopy\LaraPersonate\LaraPersonate;
 use Illuminate\Contracts\Container\BindingResolutionException;
 
@@ -41,7 +42,13 @@ class LaraPersonateMiddleware
             return $next($request);
         }
 
-        return $this->personate->modifyResponse($next($request));
+        $response = $next($request);
+
+        if ($response instanceof JsonResponse) {
+            return $response;
+        }
+
+        return $this->personate->modifyResponse($response);
     }
 
     /**
