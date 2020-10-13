@@ -10,7 +10,7 @@ return [
     | You can override the value by setting enable to true or false instead of null.
     |
     */
-    'enabled'     => env('APP_DEBUG', true),
+    'enabled'     => env('IMPERSONATE', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -26,7 +26,7 @@ return [
     | Empty the array if you don't want any restrictions on the tlds.
     |
     */
-    'allowed_tld' => ['dev', 'local', 'io'],
+    'allowed_tld' => ['dev', 'local'],
 
     /*
     |--------------------------------------------------------------------------
@@ -37,7 +37,7 @@ return [
     | displayed in the select dropdown. This must be an Eloquent Model instance.
     |
     */
-    'user_model'  => App\User::class,
+    'user_model'  => App\Models\User::class,
 
     'fields'     => [
 
@@ -90,7 +90,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | The maximum number of users displayed
-    | when active_role is set to true, the number of displayed users will be multiplied
+    | when with_roles is set to true, the number of displayed users will be multiplied
     | by the number of displayed roles.
     |
     | Be careful, this might make your application crash if there is a lot of user data.

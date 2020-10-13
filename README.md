@@ -1,6 +1,11 @@
-![Demonstration](demo.gif)
+<p align="center">
+    <img src="https://poser.pugx.org/supianidz/laravel-impersonate/license">
+    <img src="https://poser.pugx.org/supianidz/laravel-impersonate/v">
+    <img src="https://poser.pugx.org/supianidz/laravel-impersonate/downloads">
+</p>
 
 # Lara Personate
+
 Is a user impersonate for the laravel framework. allow a developer direct login as another user during development inspired by [sudo-su](https://github.com/viacreative/sudo-su).
 
 ## Features
@@ -16,7 +21,7 @@ To install the package, simply follow the steps below.
 Install the package using Composer:
 
 ```
-$ composer require supianidz/laravel-impersonate --dev
+$ composer require supianidz/laravel-impersonate
 
 $ php artisan vendor:publish
 ```
@@ -33,6 +38,11 @@ And that's it!
 ## Configuration
 After running `vendor:publish`, a config file called `impersonate.php` should appear in your project.
 
+## Demo
+<p align="center">
+    <img src="demo.gif">
+</p>
+
 ## Disclaimer - DANGER !
 This package can pose a serious security issue if used incorrectly, as anybody will be able to take control of any user's account. Please ensure that the service provider is only registered when the app is in a debug/local environment.
 
@@ -47,6 +57,7 @@ If you discover any security related issues, please email [supianidz@gmail.com](
 ## Credits
 
 - [Supian M](https://github.com/SupianIDz)
+- [Octopy ID](https://github.com/OctopyID)
 - [sudo-su](https://github.com/viacreative/sudo-su)
 
 ## License
@@ -54,13 +65,17 @@ The MIT License (MIT). Please see [License File](https://github.com/SupianIDz/La
 
 ## To Do
 - [ ] Unit tests
-- [ ] UI improvement
+- [x] UI improvement
 - [ ] Showing users with their role based on 3rd library like Laratrust, Bouncer and others.
     - [x] [Laratrust](https://github.com/santigarcor/laratrust)
     - [ ] [Bouncer](https://github.com/JosephSilber/bouncer)
     - [ ] [Permission](https://github.com/spatie/laravel-permission)
    
 ## Change Logs
+
+### v1.2.3
+- Add Badges.
+- Allows Impersonate to be active in production.
 
 ### v1.2.2
 - Exclude Lara Personate from json response.
