@@ -1,7 +1,7 @@
 <p align="center">
-    <img src="https://img.shields.io/packagist/l/supianidz/laravel-impersonate.svg?style=for-the-badge" alt="License">
-    <img src="https://img.shields.io/packagist/v/supianidz/laravel-impersonate.svg?style=for-the-badge" alt="Version">
-    <img src="https://img.shields.io/packagist/dt/supianidz/laravel-impersonate.svg?style=for-the-badge" alt="Downloads">
+    <img src="https://img.shields.io/packagist/l/octopyid/laravel-impersonate.svg?style=for-the-badge" alt="License">
+    <img src="https://img.shields.io/packagist/v/octopyid/laravel-impersonate.svg?style=for-the-badge" alt="Version">
+    <img src="https://img.shields.io/packagist/dt/octopyid/laravel-impersonate.svg?style=for-the-badge" alt="Downloads">
 </p>
 
 # Lara Personate
@@ -21,7 +21,7 @@ To install the package, simply follow the steps below.
 Install the package using Composer:
 
 ```
-$ composer require supianidz/laravel-impersonate
+$ composer require octopyid/laravel-impersonate --dev
 
 $ php artisan vendor:publish
 ```
@@ -72,6 +72,9 @@ The MIT License (MIT). Please see [License File](https://github.com/SupianIDz/La
     - [ ] [Permission](https://github.com/spatie/laravel-permission)
 
 ## Change Logs
+
+### v1.2.4
+- Update Requirement
 
 ### v1.2.3
 - Add Badges.
