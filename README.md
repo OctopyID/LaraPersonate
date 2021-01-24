@@ -1,7 +1,7 @@
 <p align="center">
-    <img src="https://poser.pugx.org/supianidz/laravel-impersonate/license">
-    <img src="https://poser.pugx.org/supianidz/laravel-impersonate/v">
-    <img src="https://poser.pugx.org/supianidz/laravel-impersonate/downloads">
+    <img src="https://img.shields.io/packagist/l/supianidz/laravel-impersonate.svg?style=for-the-badge" alt="License">
+    <img src="https://img.shields.io/packagist/v/supianidz/laravel-impersonate.svg?style=for-the-badge" alt="Version">
+    <img src="https://img.shields.io/packagist/dt/supianidz/laravel-impersonate.svg?style=for-the-badge" alt="Downloads">
 </p>
 
 # Lara Personate
@@ -70,7 +70,7 @@ The MIT License (MIT). Please see [License File](https://github.com/SupianIDz/La
     - [x] [Laratrust](https://github.com/santigarcor/laratrust)
     - [ ] [Bouncer](https://github.com/JosephSilber/bouncer)
     - [ ] [Permission](https://github.com/spatie/laravel-permission)
-   
+
 ## Change Logs
 
 ### v1.2.3
