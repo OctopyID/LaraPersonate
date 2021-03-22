@@ -42,6 +42,15 @@ class LaraPersonateMiddleware
             return $next($request);
         }
 
+        // Add support to avoid impersonate if request uri is specified in config
+        if (!empty(config('impersonate.not_show'))) {
+            foreach (config('impersonate.not_show') as $requestUriNotShow) {
+                if ($request->is($requestUriNotShow)) {
+                    return $next($request);
+                }
+            }
+        }
+
         $response = $next($request);
 
         if ($response instanceof JsonResponse) {

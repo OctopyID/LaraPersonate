@@ -97,4 +97,17 @@ return [
     |
     */
     'limit'      => 3,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Not show urls
+    |--------------------------------------------------------------------------
+    |
+    | The impersonate users selection will not be able under any of theses uris.
+    | Wildcards are allowed (account*)
+    |
+    */
+    'not_show' => [
+        'nova*'
+    ]
 ];
