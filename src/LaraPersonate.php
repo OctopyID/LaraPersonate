@@ -41,8 +41,8 @@ class LaraPersonate
     /**
      * LaraPersonate constructor.
      *
-     * @param  Application       $app
-     * @param  AuthManager|null  $auth
+     * @param  Application      $app
+     * @param  AuthManager|null $auth
      */
     public function __construct(Application $app, AuthManager $auth = null)
     {
@@ -51,7 +51,7 @@ class LaraPersonate
     }
 
     /**
-     * @param  Response  $response
+     * @param  Response $response
      * @return Response
      * @throws BindingResolutionException
      */
@@ -84,36 +84,13 @@ class LaraPersonate
     /**
      * @return bool
      */
-    private function hasSigned() : bool
-    {
-        return $this->app->session->has('LaraPersonate.hasSigned');
-    }
-
-    /**
-     * @return mixed
-     * @throws BindingResolutionException
-     */
-    private function getOriginalUser()
-    {
-        if (! $this->hasSigned()) {
-            return $this->auth->user();
-        }
-
-        return $this->app->make(config('impersonate.user_model'))->find(
-            $this->app->session->get('LaraPersonate.myUserID')
-        );
-    }
-
-    /**
-     * @return bool
-     */
     public function isEnabled() : bool
     {
         return config('impersonate.enabled', false);
     }
 
     /**
-     * @param  Request  $request
+     * @param  Request $request
      * @return bool
      */
     public function personateRequest(Request $request) : bool
@@ -122,14 +99,13 @@ class LaraPersonate
     }
 
     /**
-     * @param  int  $userId
-     * @param  int  $myUserId
+     * @param  int $userId
+     * @param  int $myUserId
      * @return void
      */
     public function signin(int $userId, int $myUserId) : void
     {
         if ($userId !== $myUserId) {
-
             $this->app->session->put([
                 'LaraPersonate.hasSigned' => true,
                 'LaraPersonate.myUserID'  => $myUserId,
@@ -172,7 +148,30 @@ class LaraPersonate
     }
 
     /**
-     * @param  Model  $model
+     * @return bool
+     */
+    private function hasSigned() : bool
+    {
+        return $this->app->session->has('LaraPersonate.hasSigned');
+    }
+
+    /**
+     * @return mixed
+     * @throws BindingResolutionException
+     */
+    private function getOriginalUser()
+    {
+        if (! $this->hasSigned()) {
+            return $this->auth->user();
+        }
+
+        return $this->app->make(config('impersonate.user_model'))->find(
+            $this->app->session->get('LaraPersonate.myUserID')
+        );
+    }
+
+    /**
+     * @param  Model $model
      * @return string
      */
     private function getAuthorizationDriver(Model $model) : ?string

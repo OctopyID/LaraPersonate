@@ -23,7 +23,7 @@ class LaraPersonateMiddleware
     /**
      * LaraPersonateMiddleware constructor.
      *
-     * @param  LaraPersonate  $personate
+     * @param  LaraPersonate $personate
      */
     public function __construct(LaraPersonate $personate)
     {
@@ -31,8 +31,8 @@ class LaraPersonateMiddleware
     }
 
     /**
-     * @param  Request  $request
-     * @param  Closure  $next
+     * @param  Request $request
+     * @param  Closure $next
      * @return mixed
      * @throws BindingResolutionException
      */
@@ -43,7 +43,7 @@ class LaraPersonateMiddleware
         }
 
         // Add support to avoid impersonate if request uri is specified in config
-        if (!empty(config('impersonate.not_show'))) {
+        if (! empty(config('impersonate.not_show'))) {
             foreach (config('impersonate.not_show') as $requestUriNotShow) {
                 if ($request->is($requestUriNotShow)) {
                     return $next($request);
@@ -61,7 +61,7 @@ class LaraPersonateMiddleware
     }
 
     /**
-     * @param  Request  $request
+     * @param  Request $request
      * @return bool
      */
     private function isAllowed(Request $request) : bool

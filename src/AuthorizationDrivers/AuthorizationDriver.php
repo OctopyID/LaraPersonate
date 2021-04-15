@@ -20,7 +20,7 @@ abstract class AuthorizationDriver
     /**
      * AuthorizationDriver constructor.
      *
-     * @param  Model  $model
+     * @param  Model $model
      */
     public function __construct(Model $model)
     {
@@ -33,7 +33,7 @@ abstract class AuthorizationDriver
     abstract public function handle();
 
     /**
-     * @param  Collection  $collection
+     * @param  Collection $collection
      * @return Collection
      */
     protected function reMap(Collection $collection) : Collection

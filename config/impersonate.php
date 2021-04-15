@@ -107,7 +107,7 @@ return [
     | Wildcards are allowed (account*)
     |
     */
-    'not_show' => [
-        'nova*'
-    ]
+    'not_show'   => [
+        'nova*',
+    ],
 ];

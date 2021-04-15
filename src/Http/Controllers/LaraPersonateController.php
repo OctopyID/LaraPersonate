@@ -4,7 +4,7 @@ namespace Octopy\LaraPersonate\Http\Controllers;
 
 use Exception;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use Illuminate\Routing\Controller;
 use Illuminate\Http\RedirectResponse;
 use Octopy\LaraPersonate\LaraPersonate;
 
@@ -23,7 +23,7 @@ class LaraPersonateController extends Controller
     /**
      * LaraPersonateController constructor.
      *
-     * @param  LaraPersonate  $personate
+     * @param  LaraPersonate $personate
      */
     public function __construct(LaraPersonate $personate)
     {
@@ -43,7 +43,7 @@ class LaraPersonateController extends Controller
     }
 
     /**
-     * @param  Request  $request
+     * @param  Request $request
      * @return RedirectResponse
      */
     public function trySignin(Request $request) : RedirectResponse

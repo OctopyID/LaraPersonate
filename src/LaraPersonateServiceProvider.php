@@ -27,7 +27,6 @@ class LaraPersonateServiceProvider extends ServiceProvider
                 Route::post('try-signin', 'LaraPersonateController@trySignin')->name('impersonate.signin');
                 Route::get('try-signout', 'LaraPersonateController@trySignout')->name('impersonate.signout');
             });
-
         }
     }
 
