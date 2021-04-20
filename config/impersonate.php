@@ -1,5 +1,7 @@
 <?php
 
+use Octopy\LaraPersonate\Impersonate;
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -9,7 +11,7 @@ return [
     | You can override the value by setting enable to true or false instead of null.
     |
     */
-    'enabled'    => env('IMPERSONATE_ENABLED', true),
+    'enabled' => env('IMPERSONATE_ENABLED', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -20,20 +22,9 @@ return [
     | displayed in the select dropdown. This must be an Eloquent Model instance.
     |
     */
-    'user_model' => App\Models\User::class,
+    'model'   => App\Models\User::class,
 
     'fields' => [
-
-        /*
-        |--------------------------------------------------------------------------
-        | Field Primary ID
-        |--------------------------------------------------------------------------
-        |
-        | Primary field from the user table, for example like `id`, `user_id`, etc.
-        |
-        */
-        'id'   => 'id',
-
         /*
         |--------------------------------------------------------------------------
         | Field Name
@@ -43,6 +34,6 @@ return [
         | for example such as `name`, `user_name`, `full_name`, etc.
         |
         */
-        'name' => 'name',
+        Impersonate::FIELD_NAME => 'name',
     ],
 ];

@@ -2,6 +2,8 @@
 
 namespace Octopy\LaraPersonate\Storage;
 
+use Octopy\LaraPersonate\Impersonate;
+
 /**
  * Class SessionStorage
  * @package Octopy\LaraPersonate\StorageTest
@@ -14,11 +16,25 @@ class Session implements Contract
     protected array $data = [];
 
     /**
-     * @param  int $prevUser
-     * @param  int $nextUser
-     * @return Session
+     * @var Impersonate
      */
-    public function saveUserId(int $prevUser, int $nextUser) : Session
+    protected Impersonate $impersonate;
+
+    /**
+     * Session constructor.
+     * @param  Impersonate $impersonate
+     */
+    public function __construct(Impersonate $impersonate)
+    {
+        $this->impersonate = $impersonate;
+    }
+
+    /**
+     * @param  int|string $prevUser
+     * @param  int|string $nextUser
+     * @return int|string
+     */
+    public function saveUserId(int $prevUser, int $nextUser)
     {
         session([
             'impersonate' => [
@@ -27,7 +43,7 @@ class Session implements Contract
             ],
         ]);
 
-        return $this;
+        return $nextUser;
     }
 
     /**
