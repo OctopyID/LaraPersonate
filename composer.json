@@ -1,37 +1,42 @@
 {
     "name": "octopyid/laravel-impersonate",
-    "description": "Login As A Different User Quickly",
+    "description": "Login as a different user quickly",
     "type": "library",
     "license": "MIT",
     "authors": [
         {
-            "name": "Supian M",
+            "name": "SupianIDz",
             "email": "supianidz@gmail.com"
-        },
-        {
-            "name": "OctopyID",
-            "email": "contact@octopy.id"
         }
     ],
     "require": {
         "php": "^7.4|^8.0",
-        "laravel/framework": "^7.0|^8.0"
+        "laravel/framework": "^8.0"
+    },
+    "require-dev": {
+        "ext-sqlite": "*",
+        "orchestra/testbench": "6.17."
     },
     "autoload": {
         "psr-4": {
             "Octopy\\LaraPersonate\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Octopy\\LaraPersonate\\Tests\\": "tests/"
+        }
+    },
+    "conflict": {
+    },
     "extra": {
         "laravel": {
             "providers": [
-                "Octopy\\LaraPersonate\\LaraPersonateServiceProvider"
+                "Octopy\\LaraPersonate\\ImpersonateServiceProvider"
             ]
         }
     },
     "config": {
-        "optimize-autoloader": true,
-        "preferred-install": "dist",
         "sort-packages": true
     },
     "minimum-stability": "dev",

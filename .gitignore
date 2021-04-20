@@ -1,3 +1,13 @@
+# IDE
+.idea
+
+# Vendor
 vendor
 node_modules
-.idea/
+
+# Locked File
+yarn.lock
+composer.lock
+
+# PHP Unit
+.phpunit.result.cache

@@ -2,14 +2,20 @@
     "private": true,
     "scripts": {
         "dev": "npm run development",
-        "watch": "npm run development -- --watch",
-        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
-        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+        "development": "mix",
+        "watch": "mix watch",
+        "watch-poll": "mix watch -- --watch-options-poll=1000",
+        "hot": "mix watch --hot",
+        "prod": "npm run production",
+        "production": "mix --production"
     },
     "devDependencies": {
-        "bootstrap-scss": "^4.5",
-        "cross-env": "^7.0",
-        "laravel-mix": "^5.0.1"
+        "laravel-mix": "^6.0.16",
+        "postcss": "^8.1",
+        "resolve-url-loader": "^3.1.2",
+        "sass": "^1.32.8",
+        "sass-loader": "^11.0.1",
+        "webpack": "^5.0.0"
     },
     "dependencies": {
         "tail.select": "^0.5.15"
