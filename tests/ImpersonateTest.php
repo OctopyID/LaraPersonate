@@ -1,24 +1,64 @@
 <?php
 
-namespace Octopy\LaraPersonate\Tests\Models;
+namespace Octopy\LaraPersonate\Tests;
 
 use Throwable;
-use Octopy\LaraPersonate\Tests\TestCase;
+use Illuminate\Support\Facades\App;
+use Octopy\LaraPersonate\Impersonate;
 use Octopy\LaraPersonate\Tests\Stubs\Models\User;
 
 /**
- * Class ModelTest
- * @package Octopy\LaraPersonate\Tests\Models
+ * Class ImpersonateTest
+ * @package Octopy\LaraPersonate\Tests
  */
-class ModelTest extends TestCase
+class ImpersonateTest extends TestCase
 {
+    /**
+     * @var Impersonate
+     */
+    protected Impersonate $impersonate;
+
+    /**
+     * @return void
+     */
+    public function testWhoCanImpersonate()
+    {
+        $this->assertTrue(User::admin()->canImpersonate());
+        $this->assertTrue(User::super()->canImpersonate());
+    }
+
+    /**
+     * @return void
+     */
+    public function testWhoCantImpersonate()
+    {
+        $this->assertFalse(User::user()->canImpersonate());
+    }
+
+    /**
+     * @return void
+     */
+    public function testWhoCanBeImpersonated()
+    {
+        $this->assertTrue(User::user()->canBeImpersonated());
+        $this->assertTrue(User::admin()->canBeImpersonated());
+    }
+
+    /**
+     * @return void
+     */
+    public function testWhoCantBeImpersonated()
+    {
+        $this->assertFalse(User::super()->canBeImpersonated());
+    }
+
     /**
      * @throws Throwable
      */
     public function testImpersonateAuthorizationException()
     {
         $this->expectExceptionMessage('User does not have access to impersonate.');
-        User::user()->impersonate(User::admin());
+        $this->impersonate->take(User::user(), User::admin());
     }
 
     /**
@@ -27,11 +67,11 @@ class ModelTest extends TestCase
     public function testUserCantToBeImpersonatedException()
     {
         $this->expectExceptionMessage('User cannot to be impersonated.');
-        User::admin()->impersonate(User::super());
+        $this->impersonate->take(User::admin(), User::super());
     }
 
     /**
-     * @throw UnauthorizedException
+     * @throws Throwable
      */
     public function testImpersonateAuthorizationExceptionById()
     {
@@ -40,7 +80,7 @@ class ModelTest extends TestCase
         ]);
 
         $this->expectExceptionMessage('User does not have access to impersonate.');
-        User::user()->impersonate(2);
+        $this->impersonate->take(3, 2);
     }
 
     /**
@@ -53,20 +93,21 @@ class ModelTest extends TestCase
         ]);
 
         $this->expectExceptionMessage('User cannot to be impersonated.');
-        User::admin()->impersonate(1);
+        $this->impersonate->take(2, 1);
     }
 
     /**
      * @return void
+     * @throws Throwable
      */
     public function testImpersonate()
     {
         $real = User::user();
 
-        $fake = User::admin()->impersonate($real);
+        $fake = $this->impersonate->take(User::admin(), $real);
         $this->assertEquals($real->email, $fake->email);
 
-        $fake = User::super()->impersonate($real);
+        $fake = $this->impersonate->take(User::super(), $real);
         $this->assertEquals($real->email, $fake->email);
     }
 
@@ -86,5 +127,15 @@ class ModelTest extends TestCase
 
         $fake = User::super()->impersonate($real->id);
         $this->assertEquals($real->email, $fake->email);
+    }
+
+    /**
+     * @return void
+     */
+    protected function setUp() : void
+    {
+        parent::setUp();
+
+        $this->impersonate = App::make(Impersonate::class);
     }
 }

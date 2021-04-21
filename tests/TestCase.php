@@ -22,6 +22,9 @@ class TestCase extends \Orchestra\Testbench\TestCase
         parent::setUp();
     }
 
+    /**
+     * @return void
+     */
     protected function defineDatabaseMigrations()
     {
         $this->artisan('migrate', ['--database' => 'testbench'])->run();

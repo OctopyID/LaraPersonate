@@ -13,7 +13,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  * @property bool $impersonated
  * @package Octopy\LaraPersonate\Tests\Stubs\Models
  * @method static create(array $array)
- * @method static superAdmin()
+ * @method static super()
  * @method static user()
  * @method static admin()
  */
@@ -73,7 +73,7 @@ class User extends Authenticatable
      * @param  Builder $query
      * @return Model
      */
-    public function scopeSuperAdmin(Builder $query) : Model
+    public function scopeSuper(Builder $query) : Model
     {
         return $query->where('email', 'super@example.com')->first();
     }
