@@ -23,9 +23,9 @@ To install the package, simply follow the steps below.
 Install the package using Composer:
 
 ```
-$ composer require octopyid/laravel-impersonate --dev
+$ composer require octopyid/laravel-impersonate:^1 --dev
 
-$ php artisan vendor:publish
+$ artisan vendor:publish --provider="Octopy\LaraPersonate\LaraPersonateServiceProvider"
 ```
 
 ## Lara Personate 1.2.x Upgrade Guide
@@ -33,7 +33,7 @@ $ php artisan vendor:publish
 Since there are many changes in the config and assets files in version 1.2.0, make sure to republish the package.
 
 ```
-$ php artisan vendor:publish
+$ artisan vendor:publish --provider="Octopy\LaraPersonate\LaraPersonateServiceProvider"
 ```
 
 And that's it!
