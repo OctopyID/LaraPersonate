@@ -10,8 +10,7 @@
         }
     ],
     "require": {
-        "php": "^7.4|^8.0",
-        "laravel/framework": "^8.0"
+        "php": "^7.4|^8.0"
     },
     "require-dev": {
         "ext-sqlite": "*",
@@ -28,6 +27,7 @@
         }
     },
     "conflict": {
+        "lab404/laravel-impersonate": "*"
     },
     "extra": {
         "laravel": {
