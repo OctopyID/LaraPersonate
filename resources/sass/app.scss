@@ -1,1 +1,108 @@
-@import '~tail.select/css/bootstrap4/tail.select-default.css';
+@import '~select2';
+
+.impersonate {
+    bottom      : 30px;
+    color       : #434C5E;
+    font-family : 'Roboto', sans-serif !important;
+    font-size   : .8em !important;
+    position    : fixed;
+    right       : 30px;
+    z-index     : 99999;
+
+    &-toggle {
+        background    : #3B4252;
+        border-radius : 50%;
+        color         : #FFFFFF;
+        height        : 40px;
+        line-height   : 40px;
+        position      : relative;
+        text-align    : center;
+        width         : 40px;
+
+        &-has-signed {
+            background : #329FB9;
+            border     : 1px solid #101418;
+        }
+
+        img {
+            bottom   : 0;
+            left     : 0;
+            right    : 0;
+            top      : 0;
+            padding  : .5em;
+            margin   : auto;
+            position : absolute;
+            width    : 100%;
+        }
+    }
+
+    &-select {
+        width : 100%;
+    }
+
+    &-interface {
+        bottom   : 8px;
+        position : absolute;
+        right    : 50px;
+
+        &-has-signed {
+            background    : #FFFFFF;
+            border        : 1px solid #CECECE;
+            border-radius : 5px;
+            bottom        : 0;
+            box-shadow    : 0 1px 1px rgba(0, 0, 0, 0.1);
+            padding       : 10px;
+            width         : 320px;
+        }
+
+        td {
+            padding : 2px;
+        }
+    }
+
+    &-info-line {
+        font-weight    : bold;
+        letter-spacing : .5px;
+        margin-bottom  : 5px;
+    }
+
+    &-footer {
+        position   : relative;
+        margin-top : 7px;
+    }
+
+    &-logout {
+        color           : #329FB9;
+        font-weight     : bolder;
+        width           : 50%;
+        text-decoration : none;
+    }
+
+    &-version {
+        width      : 50%;
+        position   : absolute;
+        top        : 0;
+        right      : 0;
+        bottom     : 0;
+        text-align : right;
+        font-size  : 95%;
+    }
+
+    &-logout a, &-version a {
+        color           : #329FB9;
+        font-size       : 95%;
+        text-decoration : none;
+    }
+
+    &-bold {
+        font-weight : bold;
+    }
+
+    &-hidden {
+        display : none;
+    }
+}
+
+.select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+    background-color : #329FB9;
+}

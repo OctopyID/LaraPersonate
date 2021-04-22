@@ -1,15 +1,17 @@
-<?php
+<?php /** @noinspection PhpUndefinedMethodInspection */
 
 namespace Octopy\LaraPersonate;
 
 use Throwable;
 use App\Models\User;
+use Illuminate\Auth\AuthManager;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Contracts\View\View;
+use Illuminate\Contracts\View\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Octopy\LaraPersonate\Storage\Session;
-use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Validation\UnauthorizedException;
+use Illuminate\Contracts\Foundation\Application;
 
 /**
  * Class Impersonate
@@ -20,7 +22,22 @@ class Impersonate
     /**
      * @var string
      */
-    public const FIELD_NAME = 'name';
+    public const VERSION = 'v2.0';
+
+    /**
+     * @var string
+     */
+    public const DISPLAY_NAME = 'name';
+
+    /**
+     * @var string
+     */
+    public const POSITION_LEFT = 'left';
+
+    /**
+     * @var string
+     */
+    public const POSITION_RIGHT = 'right';
 
     /**
      * @var Session
@@ -28,10 +45,26 @@ class Impersonate
     protected Session $session;
 
     /**
+     * @var AuthManager
+     */
+    protected AuthManager $manager;
+
+    /**
+     * @var string|null
+     */
+    protected ?string $prevUserName = null;
+
+    /**
+     * @var string|null
+     */
+    protected ?string $nextUserName = null;
+
+    /**
      * Impersonate constructor.
      */
-    public function __construct()
+    public function __construct(AuthManager $manager)
     {
+        $this->manager = $manager;
         $this->session = new Session($this);
     }
 
@@ -44,50 +77,129 @@ class Impersonate
     }
 
     /**
+     * @return Model
+     */
+    public function getPrevUser() : Model
+    {
+        if (! $this->session->getPrevUserId()) {
+            return $this->manager->user();
+        }
+
+        return $this->getUser($this->session->getPrevUserId());
+    }
+
+    /**
+     * @return int
+     */
+    public function getPrevUserId() : int
+    {
+        return $this->session->getPrevUserId() ?? $this->manager->user()->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDisplayNamePrevUser() : string
+    {
+        if (! $this->prevUserName) {
+            $this->prevUserName = $this->getPrevUser()->{config('impersonate.field.display')};
+        }
+
+        return $this->prevUserName;
+    }
+
+    /**
+     * @return Model
+     */
+    public function getNextUser() : Model
+    {
+        return $this->getUser($this->session->getNextUserId());
+    }
+
+    /**
+     * @return int
+     */
+    public function getNextUserId() : int
+    {
+        return $this->session->getNextUserId();
+    }
+
+    /**
+     * @return string
+     */
+    public function getDisplayNameNextUser() : string
+    {
+        if (! $this->nextUserName) {
+            $this->nextUserName = $this->getNextUser()->{config('impersonate.field.display')};
+        }
+
+        return $this->nextUserName;
+    }
+
+    /**
      * @param  Model|string|int $prevUser
      * @param  Model|string|int $nextUser
-     * @return Authenticatable
+     * @return Model
      * @throws Throwable
      * @noinspection PhpPossiblePolymorphicInvocationInspection
      */
-    public function take($prevUser, $nextUser) : Authenticatable
+    public function take($prevUser, $nextUser) : Model
     {
         $prevUser = $this->getUser($prevUser);
-        $nextUser = $this->getUser($nextUser);
 
-        if (! $nextUser->canBeImpersonated()) {
-            throw new UnauthorizedException('User cannot to be impersonated.');
-        }
+        $nextUser = $this->getUser($nextUser);
 
         if (! $prevUser->canImpersonate()) {
             throw new UnauthorizedException('User does not have access to impersonate.');
         }
 
-        return Auth::loginUsingId(
-            $this->session->saveUserId(
-                $this->getUser($prevUser)->{$this->getKeyName($prevUser)},
-                $this->getUser($nextUser)->{$this->getKeyName($nextUser)},
-            )
+        if (! $nextUser->canBeImpersonated()) {
+            throw new UnauthorizedException('User cannot to be impersonated.');
+        }
+
+        $this->session->saveUserId(
+            $this->getUser($prevUser)->{$this->getKeyName($prevUser)},
+            $this->getUser($nextUser)->{$this->getKeyName($nextUser)},
         );
+
+        $this->manager->login($nextUser);
+
+        return $this->getNextUser();
+    }
+
+    /**
+     * @return bool
+     */
+    public function impersonated() : bool
+    {
+        return $this->session->impersonated();
+    }
+
+    /**
+     * @return bool
+     */
+    public function authenticated() : bool
+    {
+        return $this->manager->check();
     }
 
     /**
      * @return void
      */
-    public function leave() : void
+    public function leave()
     {
-        if ($this->login($this->session->getPrevUserId())) {
-            $this->session->destroy();
-        }
+        $this->manager->login($this->getPrevUser());
+        $this->session->destroy();
     }
 
     /**
-     * @param  int $id
-     * @return Authenticatable
+     * @return Application|Factory|View
      */
-    protected function login(int $id) : Authenticatable
+    public function getView()
     {
-        return Auth::loginUsingId($id);
+        return view('impersonate::impersonate', [
+            'impersonate' => $this,
+        ]);
     }
 
     /**
@@ -95,12 +207,10 @@ class Impersonate
      * @return Model
      * @noinspection PhpUndefinedMethodInspection
      */
-    protected function getUser($user)
+    protected function getUser($user) : Model
     {
-        $model = $this->getModel($user);
-
         if (! $user instanceof Model) {
-            $user = $model->findOrFail($user);
+            return $this->getModel($user)->findOrFail($user);
         }
 
         return $user;

@@ -3,7 +3,10 @@
 use Illuminate\Support\Facades\Route;
 use Octopy\LaraPersonate\Http\Controllers\ImpersonateController;
 
-Route::group(['prefix' => 'impersonate', 'as' => 'impersonate.'], function () {
+Route::group(['prefix' => 'impersonate', 'as' => 'impersonate.', 'middleware' => 'web'], function () {
+    # :/impersonate/list
+    Route::any('list', [ImpersonateController::class, 'list'])->name('list');
+
     # :/impersonate/signin
     Route::post('signin', [ImpersonateController::class, 'signin'])->name('signin');
 

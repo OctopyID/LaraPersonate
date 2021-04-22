@@ -18,6 +18,7 @@
         "webpack": "^5.0.0"
     },
     "dependencies": {
-        "tail.select": "^0.5.15"
+        "jquery": "^3.6.0",
+        "select2": "^4.1.0-rc.0"
     }
 }

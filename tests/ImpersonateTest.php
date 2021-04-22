@@ -136,6 +136,10 @@ class ImpersonateTest extends TestCase
     {
         parent::setUp();
 
+        config([
+            'impersonate.model' => User::class,
+        ]);
+
         $this->impersonate = App::make(Impersonate::class);
     }
 }

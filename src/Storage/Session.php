@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpUndefinedFieldInspection */
 
 namespace Octopy\LaraPersonate\Storage;
 
@@ -8,7 +8,7 @@ use Octopy\LaraPersonate\Impersonate;
  * Class SessionStorage
  * @package Octopy\LaraPersonate\StorageTest
  */
-class Session implements Contract
+class Session
 {
     /**
      * @var array
@@ -38,8 +38,9 @@ class Session implements Contract
     {
         session([
             'impersonate' => [
-                'prev_user' => encrypt($prevUser),
-                'next_user' => encrypt($nextUser),
+                'impersonated' => true,
+                'prev_user'    => $prevUser,
+                'next_user'    => $nextUser,
             ],
         ]);
 
@@ -47,25 +48,26 @@ class Session implements Contract
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getPrevUserId() : int
+    public function getPrevUserId() : ?int
     {
-        return (session('impersonate'));
+        return session('impersonate.prev_user');
     }
 
     /**
-     * @param  bool $status
+     * @return  int|null
+     */
+    public function getNextUserId() : ?int
+    {
+        return session('impersonate.next_user');
+    }
+
+    /**
      * @return bool
      */
-    public function impersonated(bool $status = false) : bool
+    public function impersonated() : bool
     {
-        if ($status) {
-            return session([
-                'impersonate.impersonated' => $status,
-            ]);
-        }
-
         return session('impersonate.impersonated', false);
     }
 

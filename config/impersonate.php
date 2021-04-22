@@ -5,13 +5,36 @@ use Octopy\LaraPersonate\Impersonate;
 return [
     /*
     |--------------------------------------------------------------------------
-    | LaraPersonate
+    | Impersonate
     |--------------------------------------------------------------------------
-    | LaraPersonate is enabled by default, when debug is set to true in app.php.
     | You can override the value by setting enable to true or false instead of null.
     |
     */
-    'enabled' => env('IMPERSONATE_ENABLED', true),
+    'enabled'  => env('IMPERSONATE_ENABLED', true),
+
+    /*
+    |--------------------------------------------------------------------------
+    | Impersonate
+    |--------------------------------------------------------------------------
+    | You can provide an array of URI's that must be ignored (eg. 'api/*')
+    |
+    */
+    'except'   => [
+        'telescope*', 'horizon*',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Toggle Position
+    |--------------------------------------------------------------------------
+    | This section provides options for determining the position of the Impersonate
+    | toggle on the screen.
+    |
+    | - Impersonate::POSITION_LEFT
+    | - Impersonate::POSITION_RIGHT
+    |
+    */
+    'position' => Impersonate::POSITION_LEFT,
 
     /*
     |--------------------------------------------------------------------------
@@ -22,18 +45,42 @@ return [
     | displayed in the select dropdown. This must be an Eloquent Model instance.
     |
     */
-    'model'   => App\Models\User::class,
+    'model'    => App\Models\User::class,
 
-    'fields' => [
+    'field' => [
         /*
         |--------------------------------------------------------------------------
         | Field Name
         |--------------------------------------------------------------------------
         |
-        | Data fields for user names from table to display in the list,
-        | for example such as `name`, `user_name`, `full_name`, etc.
+        | Name column in the table containing the data to be displayed.
+        | for example such as `name`, `user_name`, `full_name`, `email` or etc.
         |
         */
-        Impersonate::FIELD_NAME => 'name',
+        'display'     => 'name',
+
+        /*
+        |--------------------------------------------------------------------------
+        | Search Keys
+        |--------------------------------------------------------------------------
+        |
+        | The name of the column used as the search keys.
+        |
+        */
+        'search_keys' => [
+            'name', 'email',
+        ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Maximum User Shown
+    |--------------------------------------------------------------------------
+    |
+    | The maximum number of users displayed.
+    |
+    | Be careful, this might make your application crash if there is a lot of user data.
+    |
+    */
+    'limit' => env('IMPERSONATE_MAX_DISPLAY', 5),
 ];

@@ -13,15 +13,6 @@ use Octopy\LaraPersonate\Impersonate as ImpersonateManager;
 trait Impersonate
 {
     /**
-     * @param  Model|string|int $user
-     * @return mixed
-     */
-    public function impersonate($user)
-    {
-        return App::make(ImpersonateManager::class)->take($this, $user);
-    }
-
-    /**
      * @return bool
      */
     public function canImpersonate() : bool
@@ -35,5 +26,22 @@ trait Impersonate
     public function canBeImpersonated() : bool
     {
         return true;
+    }
+
+    /**
+     * @param  Model|string|int $user
+     * @return mixed
+     */
+    public function impersonate($user)
+    {
+        return App::make(ImpersonateManager::class)->take($this, $user);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function leave()
+    {
+        return App::make(ImpersonateManager::class)->leave();
     }
 }

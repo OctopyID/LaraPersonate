@@ -13,6 +13,18 @@ use Octopy\LaraPersonate\Tests\Stubs\Models\User;
 class ModelTest extends TestCase
 {
     /**
+     * @return void
+     */
+    public function setUp() : void
+    {
+        parent::setUp();
+
+        config([
+            'impersonate.model' => User::class,
+        ]);
+    }
+
+    /**
      * @throws Throwable
      */
     public function testImpersonateAuthorizationException()

@@ -2,7 +2,10 @@
 
 namespace Octopy\LaraPersonate;
 
+use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Contracts\Container\BindingResolutionException;
+use Octopy\LaraPersonate\Http\Middleware\ImpersonateMiddleware;
 
 /**
  * Class ImpersonateServiceProvider
@@ -12,6 +15,7 @@ class ImpersonateServiceProvider extends ServiceProvider
 {
     /**
      * @return void
+     * @throws BindingResolutionException
      */
     public function register()
     {
@@ -23,9 +27,7 @@ class ImpersonateServiceProvider extends ServiceProvider
             return;
         }
 
-        $this->app->singleton(Impersonate::class, function () {
-            return new Impersonate;
-        });
+        $this->app->make(Kernel::class)->pushMiddleware(ImpersonateMiddleware::class);
     }
 
     /**
@@ -40,12 +42,21 @@ class ImpersonateServiceProvider extends ServiceProvider
             return;
         }
 
+        $this->registerViews();
         $this->registerRoutes();
         $this->registerPublishing();
 
         $this->loadViewsFrom(
             __DIR__ . '/../resources/views', 'impersonate'
         );
+    }
+
+    /**
+     * @return void
+     */
+    private function registerViews()
+    {
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'impersonate');
     }
 
     /**
