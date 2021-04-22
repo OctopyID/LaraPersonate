@@ -19,9 +19,9 @@ To install the package, simply follow the steps below.
 Install the package using Composer:
 
 ```
-$ composer require octopyid/laravel-impersonate
+$ composer require octopyid/laravel-impersonate:^2
 
-$ php artisan vendor:publish
+$ artisan vendor:publish --provider="Octopy\LaraPersonate\ImpersonateServiceProvider"
 ```
 
 Add the trait `Octopy\LaraPersonate\Models\Impersonate` to your **User** model.
@@ -34,7 +34,10 @@ namespace App\Models;
 use Octopy\LaraPersonate\Models\Impersonate;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable
+/**
+ * Class User
+ * @package App\Models
+ */class User extends Authenticatable
 {
     use Impersonate;
 }
@@ -42,11 +45,11 @@ class User extends Authenticatable
 
 ## Usage
 
-By default the user can **impersonate** and who is can be **impersonated**, but this causes security issues.
+By default, the user can **impersonate** and who is can be **impersonated**, but this causes security issues.
 
 ### Defining Authorization
 
-To limit the users who can **impersonate**. Add `canImpersonate ()` to the **User** model.
+To limit the users who can **impersonate**. Add `canImpersonate()` to the **User** model.
 
 ```php
 /**
@@ -59,7 +62,7 @@ public function canImpersonate() : bool
 }
 ```
 
-To limit which users can be **impersonated** by other users, for example super admin permissions cannot be impersonated by others, add `canBeImpersonated ()` to the **User** model.
+To limit which users can be **impersonated** by other users, for example super admin permissions cannot be impersonated by others, add `canBeImpersonated()` to the **User** model.
 
 ```php
 /**
