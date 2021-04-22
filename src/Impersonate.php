@@ -178,9 +178,9 @@ class Impersonate
     /**
      * @return bool
      */
-    public function authenticated() : bool
+    public function authorized() : bool
     {
-        return $this->manager->check();
+        return $this->manager->check() && $this->manager->user()->canImpersonate();
     }
 
     /**

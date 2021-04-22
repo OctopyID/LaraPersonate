@@ -55,7 +55,7 @@ class ImpersonateMiddleware
             return $response;
         }
 
-        if ($this->impersonate->authenticated()) {
+        if ($this->impersonate->authorized()) {
             return $this->modify($response);
         }
 
