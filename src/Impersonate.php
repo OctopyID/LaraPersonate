@@ -177,10 +177,11 @@ class Impersonate
 
     /**
      * @return bool
+     * @noinspection PhpPossiblePolymorphicInvocationInspection
      */
     public function authorized() : bool
     {
-        return $this->manager->check() && $this->manager->user()->canImpersonate();
+        return $this->manager->check() && $this->getPrevUser()->canImpersonate();
     }
 
     /**
