@@ -1,6 +1,11 @@
 {
     "name": "octopyid/laravel-impersonate",
     "description": "Login as a different user quickly",
+    "keywords": [
+        "laravel",
+        "impersonate",
+        "users"
+    ],
     "type": "library",
     "license": "MIT",
     "authors": [
