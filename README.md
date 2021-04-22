@@ -42,35 +42,37 @@ class User extends Authenticatable
 
 ## Usage
 
+By default the user can **impersonate** and who is can be **impersonated**, but this causes security issues.
+
 ### Defining Authorization
 
-By default all users can **impersonate** an user. You need to add the method `canImpersonate()` to your user model:
+To limit the users who can **impersonate**. Add `canImpersonate ()` to the **User** model.
 
 ```php
-    /**
-     * @return bool
-     */
-    public function canImpersonate() : bool
-    {
-        // example
-        return $this->is_admin === 1;
-    }
+/**
+* @return bool
+*/
+public function canImpersonate() : bool
+{
+    // example
+    return $this->is_admin === 1;
+}
 ```
 
-By default all users can **be impersonated**. You need to add the method `canBeImpersonated()` to your user model to extend this behavior:
+To limit which users can be **impersonated** by other users, for example super admin permissions cannot be impersonated by others, add `canBeImpersonated ()` to the **User** model.
 
 ```php
-    /**
-     * @return bool
-     */
-    public function canBeImpersonated() : bool
-    {
-        // example
-        return $this->can_be_impersonated === 1;
-    }
+/**
+* @return bool
+*/
+public function canBeImpersonated() : bool
+{
+    // example
+    return $this->can_be_impersonated === 1;
+}
 ```
 
-## Disclaimer - DANGER !
+## Disclaimer
 
 This package can pose a serious security issue if used incorrectly, as anybody will be able to take control of any user's account.
 
