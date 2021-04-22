@@ -63,7 +63,7 @@ $(document).ready(() => {
                 'X-Requested-With': 'XMLHttpRequest',
             },
             body: JSON.stringify({
-                _token: window.csrf,
+                _token: window.impersonate.csrf,
             })
         }).then(() => {
             window.location = '';
