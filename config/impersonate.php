@@ -74,6 +74,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Rate-limiting Requests
+    |--------------------------------------------------------------------------
+    |
+    | You can tell LaraPersonate to wait until the user has finished typing
+    | their search term before triggering the AJAX request.
+    |
+    | Simply use the delay configuration option to tell how long
+    | to wait after a user has stopped typing before sending the request
+    |
+    */
+    'delay' => 250,
+
+    /*
+    |--------------------------------------------------------------------------
     | Maximum User Shown
     |--------------------------------------------------------------------------
     |

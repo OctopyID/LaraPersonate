@@ -74,6 +74,10 @@ class ImpersonateServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
+                __DIR__ . '/../public' => public_path('vendor/octopyid/impersonate/'),
+            ], 'impersonate-assets');
+
+            $this->publishes([
                 __DIR__ . '/../config/impersonate.php' => config_path('impersonate.php'),
             ], 'impersonate-config');
         }

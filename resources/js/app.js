@@ -16,6 +16,7 @@ $(document).ready(() => {
             ajax: {
                 url: '/impersonate/list',
                 dataType: 'json',
+                delay: window.impersonate.rate,
                 data: (params) => {
                     return {
                         search: params.term,
@@ -43,9 +44,9 @@ $(document).ready(() => {
                 'X-Requested-With': 'XMLHttpRequest',
             },
             body: JSON.stringify({
-                user: window.user,
+                user: window.impersonate.user,
                 take: $(this).val(),
-                _token: window.csrf,
+                _token: window.impersonate.csrf,
             })
         })
             .then(() => {

@@ -63,12 +63,15 @@
                     </a>
                 </div>
             </div>
-        @endif
+            @endif
     </div>
 </div>
 
 <script type="text/javascript">
-    window.csrf = '{{ csrf_token() }}';
-    window.user = '{{ $impersonate->getPrevUserId() }}';
+    window.impersonate = {
+        user: {{ $impersonate->getPrevUserId() }},
+        rate: {{ config('impersonate.delay') }},
+        csrf: '{{ csrf_token() }}',
+    }
 </script>
 <script type="text/javascript" src="{{ asset('vendor/octopyid/impersonate/app.js') }}"></script>
