@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Octopy\LaraPersonate\Impersonate;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 /**
  * Class ImpersonateMiddleware
@@ -45,13 +46,13 @@ class ImpersonateMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if (! $this->impersonate->enabled() || $request->ajax() || $this->excepted($request)) {
-            return $next($request);
-        }
-
         $response = $next($request);
 
-        if ($response instanceof JsonResponse) {
+        if (! $this->impersonate->enabled() || $request->ajax() || $this->excepted($request)) {
+            return $response;
+        }
+
+        if ($response instanceof JsonResponse || $response instanceof BinaryFileResponse) {
             return $response;
         }
 
