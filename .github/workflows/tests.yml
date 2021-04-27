@@ -3,39 +3,33 @@ name: Run Unit Testing
 on:
   push:
     branches: [ main ]
+    paths-ignore: [ 'public/**', '*.md' ]
+
   pull_request:
-    branches: [ main ]
+    paths-ignore: [ 'public/**', '*.md' ]
 
 jobs:
   linux_tests:
     runs-on: ubuntu-20.04
 
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: impersonate
-        ports:
-          - 33306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     strategy:
       fail-fast: true
       matrix:
-        php: ['7.4', '8.0']
-        stability: [prefer-lowest, prefer-stable]
+        php: [ '7.4', '8.0' ]
+        stability: [ prefer-lowest, prefer-stable ]
+        laravel: [ 7.*, 8.*, dev-master ]
 
     name: PHP ${{ matrix.php }} - ${{ matrix.stability }}
 
     steps:
-      - name: Checkout Ccode
+      - name: Checkout Code
         uses: actions/checkout@v2
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, gd, redis, memcached
+          extensions: dom, curl, libxml, mbstring, zip, pdo, sqlite3, pdo_sqlite
           tools: composer:v2
           coverage: none
 
@@ -49,6 +43,3 @@ jobs:
       - name: Execute Tests
         continue-on-error: ${{ matrix.php > 8 }}
         run: vendor/bin/phpunit --verbose
-        env:
-          DB_PORT: ${{ job.services.mysql.ports[3306] }}
-          DB_USERNAME: root
