@@ -29,7 +29,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pdo, sqlite3, pdo_sqlite
+          extensions: dom, curl, libxml, mbstring, zip, pdo, sqlite, sqlite3, pdo_sqlite
           tools: composer:v2
           coverage: none
 
@@ -41,5 +41,4 @@ jobs:
           command: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress ${{ matrix.flags }}
 
       - name: Execute Tests
-        continue-on-error: ${{ matrix.php > 8 }}
-        run: vendor/bin/phpunit --verbose
+        run: vendor/bin/phpunit --verbose --colors=always
