@@ -16,10 +16,9 @@ jobs:
       fail-fast: true
       matrix:
         php: [ '7.4', '8.0' ]
-        stability: [ prefer-lowest, prefer-stable ]
         laravel: [ 7.*, 8.*, dev-master ]
 
-    name: PHP ${{ matrix.php }} - ${{ matrix.stability }}
+    name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
 
     steps:
       - name: Checkout Code
@@ -29,16 +28,16 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pdo, sqlite, sqlite3, pdo_sqlite
+          extensions: dom, libxml, mbstring, zip, pdo, sqlite, pdo_sqlite
           tools: composer:v2
           coverage: none
 
       - name: Install Dependencies
         uses: nick-invision/retry@v1
         with:
-          timeout_minutes: 5
           max_attempts: 5
-          command: composer update --${{ matrix.stability }} --prefer-dist --no-interaction --no-progress ${{ matrix.flags }}
+          timeout_minutes: 5
+          command: composer update --prefer-dist --no-interaction --no-progress
 
       - name: Execute Tests
         run: vendor/bin/phpunit --verbose --colors=always
