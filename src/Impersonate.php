@@ -2,16 +2,18 @@
 
 namespace Octopy\LaraPersonate;
 
-use Throwable;
 use App\Models\User;
+use BadMethodCallException;
 use Illuminate\Auth\AuthManager;
-use Illuminate\Support\Facades\App;
-use Illuminate\Contracts\View\View;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Database\Eloquent\Model;
-use Octopy\LaraPersonate\Storage\Session;
-use Illuminate\Validation\UnauthorizedException;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
+use Illuminate\Validation\UnauthorizedException;
+use Octopy\LaraPersonate\Exceptions\MissingImpersonateTraitException;
+use Octopy\LaraPersonate\Storage\Session;
+use Throwable;
 
 /**
  * Class Impersonate
@@ -22,7 +24,7 @@ class Impersonate
     /**
      * @var string
      */
-    public const VERSION = 'v2.0.0';
+    public const VERSION = 'v2.0.3';
 
     /**
      * @var string
@@ -181,7 +183,13 @@ class Impersonate
      */
     public function authorized() : bool
     {
-        return $this->manager->check() && $this->getPrevUser()->canImpersonate();
+        try {
+            return $this->manager->check() && $this->getPrevUser()->canImpersonate();
+        } catch (BadMethodCallException $exception) {
+            throw new MissingImpersonateTraitException(
+                sprintf('Please add trait "%s" to "%s" model.', Models\Impersonate::class, config('impersonate.model'))
+            );
+        }
     }
 
     /**
@@ -189,7 +197,10 @@ class Impersonate
      */
     public function leave()
     {
-        $this->manager->login($this->getPrevUser());
+        $this->manager->login(
+            $this->getPrevUser()
+        );
+
         $this->session->destroy();
     }
 
