@@ -34,7 +34,7 @@ return [
     | - Impersonate::POSITION_RIGHT
     |
     */
-    'position' => Impersonate::POSITION_LEFT,
+    'position' => Impersonate::POSITION_RIGHT,
 
     /*
     |--------------------------------------------------------------------------
@@ -45,7 +45,7 @@ return [
     | displayed in the select dropdown. This must be an Eloquent Model instance.
     |
     */
-    'model'    => App\Models\User::class,
+    'model'    => config('auth.providers.users.model', App\Models\User::class),
 
     'field' => [
         /*
