@@ -2,13 +2,13 @@
 
 namespace Octopy\LaraPersonate\Http\Controllers;
 
-use Throwable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 use Octopy\LaraPersonate\Impersonate;
-use Illuminate\Database\Eloquent\Model;
+use Throwable;
 
 /**
  * Class ImpersonateController

@@ -2,9 +2,9 @@
 
 namespace Octopy\LaraPersonate;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Contracts\Container\BindingResolutionException;
 use Octopy\LaraPersonate\Http\Middleware\ImpersonateMiddleware;
 
 /**

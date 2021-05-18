@@ -2,8 +2,8 @@
 
 namespace Octopy\LaraPersonate\Models;
 
-use Illuminate\Support\Facades\App;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
 use Octopy\LaraPersonate\Impersonate as ImpersonateManager;
 
 /**
