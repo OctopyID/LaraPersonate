@@ -1,9 +1,17 @@
 # Change Logs
 
+### v2.0.3
+
+- Use Default Model From Auth
+- Add Nice Exception
+- Code Cleanup
+
 ### v2.0.2
+
 - Fix LogicException Caused By StreamedResponse [#38a5920](https://github.com/OctopyID/LaraPersonate/commit/38a592077bb546912d46e17b9a60a84b6d4607ce)
 
 ### v2.0.1
+
 - Fix LogicException Caused By BinaryFileResponse [#773283e](https://github.com/OctopyID/LaraPersonate/commit/773283e40eac247e909bbc0b8fe3f56d461a129f)
 
 ### v2.0.0
