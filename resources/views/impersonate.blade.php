@@ -1,5 +1,3 @@
-<link rel="stylesheet" type="text/css" href="{{ asset('vendor/octopyid/impersonate/app.css') }}">
-
 @if(config('impersonate.position', 'right') === Octopy\LaraPersonate\Impersonate::POSITION_LEFT)
     <style>
         .impersonate {

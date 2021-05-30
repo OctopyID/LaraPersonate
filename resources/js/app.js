@@ -4,6 +4,10 @@ import 'select2';
 $.noConflict();
 
 $(document).ready(() => {
+    $('head link[rel="stylesheet"]').first().before(
+        '<link rel="stylesheet" type="text/css"  href="/vendor/octopyid/impersonate/app.css">'
+    );
+
     const toggle = $('.impersonate-toggle');
     const select = $('.impersonate-select');
     const logout = $('.impersonate-logout');
