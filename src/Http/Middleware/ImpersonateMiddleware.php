@@ -57,6 +57,10 @@ class ImpersonateMiddleware
             return $response;
         }
 
+        if (! preg_match('/<[^<]+>/', $response->getContent())) {
+            return $response;
+        }
+
         if ($this->impersonate->authorized()) {
             return $this->modify($response);
         }
