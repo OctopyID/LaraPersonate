@@ -1,5 +1,13 @@
 # Change Logs
 
+### v2.0.5
+
+- Impersonate Only Show On Valid HTML Response
+
+### v2.0.4
+
+- Fix Inconsistent Select2
+
 ### v2.0.3
 
 - Use Default Model From Auth
