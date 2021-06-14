@@ -24,6 +24,7 @@ $ composer require octopyid/laravel-impersonate:^2
 
 $ artisan vendor:publish --provider="Octopy\LaraPersonate\ImpersonateServiceProvider"
 ```
+> Sometimes some users experience the problem of layout after upgrading the package, this can be solved by deleting the `public/vendor/octopyid/impersonate` folder then republish the assets.
 
 Add the trait `Octopy\LaraPersonate\Models\Impersonate` to your **User** model.
 
