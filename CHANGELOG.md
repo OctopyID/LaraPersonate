@@ -1,5 +1,10 @@
 # Change Logs
 
+### v2.0.6
+
+- Fix User Can't Publish Package When Disabled
+- Code Improvement
+
 ### v2.0.5
 
 - Impersonate Only Show On Valid HTML Response

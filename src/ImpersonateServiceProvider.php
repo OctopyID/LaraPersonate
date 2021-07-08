@@ -38,17 +38,14 @@ class ImpersonateServiceProvider extends ServiceProvider
      */
     public function boot() : void
     {
+        $this->registerPublishing();
+
         if (! config('impersonate.enabled')) {
             return;
         }
 
         $this->registerViews();
         $this->registerRoutes();
-        $this->registerPublishing();
-
-        $this->loadViewsFrom(
-            __DIR__ . '/../resources/views', 'impersonate'
-        );
     }
 
     /**
@@ -75,11 +72,11 @@ class ImpersonateServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__ . '/../public' => public_path('vendor/octopyid/impersonate/'),
-            ], 'impersonate-assets');
+            ], 'impersonate');
 
             $this->publishes([
                 __DIR__ . '/../config/impersonate.php' => config_path('impersonate.php'),
-            ], 'impersonate-config');
+            ], 'impersonate');
         }
     }
 }
