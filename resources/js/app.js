@@ -1,3 +1,5 @@
+// noinspection JSUnresolvedVariable
+
 import $ from 'jquery';
 import 'select2';
 
@@ -12,7 +14,7 @@ $(document).ready(() => {
     const select = $('.impersonate-select');
     const logout = $('.impersonate-logout');
 
-    toggle.on('click', function () {
+    toggle.on('click', () => {
         $('.impersonate-interface').toggleClass('impersonate-hidden');
 
         select.select2({
@@ -37,40 +39,34 @@ $(document).ready(() => {
 
     select.select2().on('select2:open', () => {
         $('.select2-search__field').attr('placeholder', ' Search...');
-    })
+    });
 
-    select.on('change', function () {
-        fetch('/impersonate/signin', {
+    const xhr = (url, body) => {
+        fetch(url, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-type': 'application/json',
                 'X-Requested-With': 'XMLHttpRequest',
             },
-            body: JSON.stringify({
-                user: window.impersonate.user,
-                take: $(this).val(),
-                _token: window.impersonate.csrf,
-            })
+            body: body
         })
             .then(() => {
                 window.location = '';
             });
+    }
+
+    select.on('change', function () {
+        xhr('/impersonate/signin', JSON.stringify({
+            user: window.impersonate.user,
+            take: $(this).val(),
+            _token: window.impersonate.csrf,
+        }));
     });
 
-    logout.on('click', function () {
-        fetch('/impersonate/logout', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-type': 'application/json',
-                'X-Requested-With': 'XMLHttpRequest',
-            },
-            body: JSON.stringify({
-                _token: window.impersonate.csrf,
-            })
-        }).then(() => {
-            window.location = '';
-        });
+    logout.on('click', () => {
+        xhr('/impersonate/logout', JSON.stringify({
+            _token: window.impersonate.csrf,
+        }));
     });
 });
