@@ -5,6 +5,7 @@ namespace Octopy\LaraPersonate\Http\Middleware;
 use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Octopy\LaraPersonate\Exceptions\MissingImpersonateTraitException;
 use Octopy\LaraPersonate\Impersonate;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,7 +25,7 @@ class ImpersonateMiddleware
     /**
      * @var string[]
      */
-    protected array $except = [
+    protected array $excepted = [
         'impersonate/*',
     ];
 
@@ -35,7 +36,7 @@ class ImpersonateMiddleware
     public function __construct(Impersonate $impersonate)
     {
         $this->impersonate = $impersonate;
-        $this->except = array_merge($this->except, config('impersonate.except', [
+        $this->excepted = array_merge($this->excepted, config('impersonate.except', [
             //
         ]));
     }
@@ -44,20 +45,13 @@ class ImpersonateMiddleware
      * @param  Request $request
      * @param  Closure $next
      * @return mixed
+     * @throws MissingImpersonateTraitException
      */
     public function handle(Request $request, Closure $next)
     {
         $response = $next($request);
 
-        if (! $this->impersonate->enabled() || $request->ajax() || $this->excepted($request)) {
-            return $response;
-        }
-
-        if ($response instanceof JsonResponse || $response instanceof BinaryFileResponse || $response instanceof StreamedResponse) {
-            return $response;
-        }
-
-        if (! preg_match('/<[^<]+>/', $response->getContent())) {
+        if (! $this->impersonate->enabled() || $request->ajax() || $this->excepted($request) || $this->exclude($response)) {
             return $response;
         }
 
@@ -74,7 +68,7 @@ class ImpersonateMiddleware
      */
     protected function excepted(Request $request) : bool
     {
-        foreach ($this->except as $except) {
+        foreach ($this->excepted as $except) {
             if ($except !== '/') {
                 $except = trim($except, '/');
             }
@@ -91,7 +85,7 @@ class ImpersonateMiddleware
      * @param  Response $response
      * @return Response
      */
-    private function modify(Response $response) : Response
+    protected function modify(Response $response) : Response
     {
         $content = $response->getContent();
 
@@ -111,8 +105,21 @@ class ImpersonateMiddleware
      * @param  string $content
      * @return string
      */
-    private function minify(string $content) : string
+    protected function minify(string $content) : string
     {
         return preg_replace('/>\s+</m', '><', preg_replace('/\n/', '', $content));
+    }
+
+    /**
+     * @param  mixed $response
+     * @return bool
+     */
+    protected function exclude($response) : bool
+    {
+        return
+            $response instanceof JsonResponse ||
+            $response instanceof BinaryFileResponse ||
+            $response instanceof StreamedResponse ||
+            ! preg_match('/<[^<]+>/', $response->getContent());
     }
 }
