@@ -24,7 +24,7 @@ class Impersonate
     /**
      * @var string
      */
-    public const VERSION = 'v2.0.6';
+    public const VERSION = 'v2.0.7';
 
     /**
      * @var string
