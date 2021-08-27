@@ -36,15 +36,15 @@ class ImpersonateController extends Controller
      */
     public function list(Request $request) : Collection
     {
-        $query = App::make(config('impersonate.model'));
+        $query = App::make(config('impersonate.model'))->query();
 
-        if ($request->has('search')) {
-            $query = $query->where(function ($query) use ($request) {
+        $query->when($request->has('search'), function ($query) use ($request) {
+            $query->where(function ($query) use ($request) {
                 foreach (config('impersonate.field.search_keys', []) as $field) {
                     $query->orWhere($field, 'LIKE', '%' . $request->get('search') . '%');
                 }
             });
-        }
+        });
 
         $query = $query->get()->filter(function ($user) {
             return $user->canBeImpersonated();

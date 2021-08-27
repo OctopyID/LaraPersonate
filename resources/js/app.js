@@ -17,12 +17,13 @@ $(document).ready(() => {
 
         toggle.on('click', () => {
             $('.impersonate-interface').toggleClass('impersonate-hidden');
-            
+
             select.select2({
                 dropdownParent: $('.impersonate'),
                 ajax: {
                     url: '/impersonate/list',
-                    dataType: 'json',
+                    dataType: 'JSON',
+                    method: 'GET',
                     delay: window.impersonate.rate,
                     data: (params) => {
                         return {
@@ -59,8 +60,8 @@ $(document).ready(() => {
 
         select.on('change', function () {
             xhr('/impersonate/signin', JSON.stringify({
+                take: this.value,
                 user: window.impersonate.user,
-                take: $(this).val(),
                 _token: window.impersonate.csrf,
             }));
         });
