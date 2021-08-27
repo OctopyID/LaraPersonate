@@ -15,11 +15,11 @@
         }
     ],
     "require": {
-        "laravel/framework": "^v7|^v8",
-        "php": "^7.4|^8.0"
+        "php": "^7.4|^8.0",
+        "laravel/framework": "^7"
     },
     "require-dev": {
-        "orchestra/testbench": "6.17."
+        "orchestra/testbench": "^5|^6"
     },
     "autoload": {
         "psr-4": {
