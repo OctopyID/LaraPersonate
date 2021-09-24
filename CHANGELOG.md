@@ -1,5 +1,14 @@
 # Change Logs
 
+### v2.0.8
+
+- Update Doc
+- Remove Laravel From Dependency
+
+### v2.0.7
+
+- Prevent Overriding Custom Style
+
 ### v2.0.6
 
 - Fix User Can't Publish Package When Disabled
