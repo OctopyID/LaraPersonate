@@ -22,12 +22,12 @@
             <div class="impersonate-info-line">
                 <table>
                     <tr>
-                        <td class="impersonate-bold">Impersonated</td>
+                        <td class="impersonate-bold">IMPERSONATED</td>
                         <td class="impersonate-bold">:</td>
                         <td>{{ $impersonate->getDisplayNameNextUser() }}</td>
                     </tr>
                     <tr>
-                        <td class="impersonate-bold">Impersonating</td>
+                        <td class="impersonate-bold">IMPERSONATING</td>
                         <td class="impersonate-bold">:</td>
                         <td>{{ $impersonate->getDisplayNamePrevUser() }}</td>
                     </tr>
@@ -51,17 +51,17 @@
         @if($impersonate->impersonated())
             <div class="impersonate-footer">
                 <div class="impersonate-logout">
-                    <a href="#">&#10007; Leave</a>
+                    <a href="#">&#10007; LEAVE</a>
                 </div>
 
                 <div class="impersonate-version">
-                    version :
+                    VERSION :
                     <a href="https://github.com/OctopyID/LaraPersonate">
                         {{ \Octopy\LaraPersonate\Impersonate::VERSION }}
                     </a>
                 </div>
             </div>
-            @endif
+        @endif
     </div>
 </div>
 

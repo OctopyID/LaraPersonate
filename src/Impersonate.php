@@ -24,7 +24,7 @@ class Impersonate
     /**
      * @var string
      */
-    public const VERSION = 'v2.0.7';
+    public const VERSION = 'v2.0.8';
 
     /**
      * @var string
@@ -180,6 +180,7 @@ class Impersonate
     /**
      * @return bool
      * @noinspection PhpPossiblePolymorphicInvocationInspection
+     * @throws MissingImpersonateTraitException
      */
     public function authorized() : bool
     {

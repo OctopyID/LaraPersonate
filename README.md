@@ -24,6 +24,7 @@ $ composer require octopyid/laravel-impersonate:^2
 
 $ artisan vendor:publish --provider="Octopy\LaraPersonate\ImpersonateServiceProvider"
 ```
+
 > Sometimes some users experience the problem of layout after upgrading the package, this can be solved by deleting the `public/vendor/octopyid/impersonate` folder then republish the assets.
 
 Add the trait `Octopy\LaraPersonate\Models\Impersonate` to your **User** model.
@@ -60,8 +61,8 @@ To limit the users who can **impersonate**. Add `canImpersonate()` to the **User
 */
 public function canImpersonate() : bool
 {
-    // example
-    return $this->is_admin === 1;
+    // example usage with laratrust package
+    return $this->hasRole('super-admin');
 }
 ```
 
@@ -73,8 +74,10 @@ To limit which users can be **impersonated** by other users, for example super a
 */
 public function canBeImpersonated() : bool
 {
-    // example
-    return $this->can_be_impersonated === 1;
+    // example usage with laratrust package
+    return $this->hasRole([
+        'merchant', 'other-role' 
+    ]);
 }
 ```
 
