@@ -22,6 +22,14 @@ class ImpersonateController extends Controller
     protected Impersonate $impersonate;
 
     /**
+     * @var array|string[]
+     */
+    protected array $roleProviders = [
+        'Spatie\Permission\Traits\HasRoles', // spatie/laravel-permission
+        'Laratrust\Traits\LaratrustUserTrait' // santigarcor/laratrust
+    ];
+
+    /**
      * ImpersonateController constructor.
      * @param  Impersonate $impersonate
      */
@@ -36,7 +44,18 @@ class ImpersonateController extends Controller
      */
     public function list(Request $request) : Collection
     {
-        $query = App::make(config('impersonate.model'))->query();
+        $query = App::make(
+            $model = config('impersonate.model')
+        )->query();
+
+        // Prevent lazy loading roles
+        $classUses = class_uses($model);
+        foreach ($this->roleProviders as $provider) {
+            if (isset($classUses[$provider])) {
+                $query->with('roles');
+                break;
+            }
+        }
 
         $query->when($request->has('search'), function ($query) use ($request) {
             $query->where(function ($query) use ($request) {
