@@ -116,6 +116,10 @@ class ImpersonateMiddleware
      */
     protected function exclude($response) : bool
     {
+        if ($response->getStatusCode() < 200 || $response->getStatusCode() > 299) {
+            return true;
+        }
+        
         return
             $response instanceof JsonResponse ||
             $response instanceof BinaryFileResponse ||
