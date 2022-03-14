@@ -20,9 +20,11 @@ To install the package, simply follow the steps below.
 Install the package using Composer:
 
 ```
-$ composer require octopyid/laravel-impersonate:^2
+composer require octopyid/laravel-impersonate:^2
+```
 
-$ artisan vendor:publish --provider="Octopy\LaraPersonate\ImpersonateServiceProvider"
+```
+php artisan vendor:publish --provider="Octopy\LaraPersonate\ImpersonateServiceProvider"
 ```
 
 > Sometimes some users experience the problem of layout after upgrading the package, this can be solved by deleting the `public/vendor/octopyid/impersonate` folder then republish the assets.
