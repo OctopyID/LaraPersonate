@@ -11,21 +11,6 @@ use Octopy\Impersonate\Tests\TestCase;
 class ImpersonateTest extends TestCase
 {
     /**
-     * @var Impersonate
-     */
-    protected Impersonate $impersonate;
-
-    /**
-     * @return void
-     */
-    protected function setUp() : void
-    {
-        parent::setUp();
-
-        $this->impersonate = $this->app->make('impersonate');
-    }
-
-    /**
      * @return void
      * @throws ImpersonateException
      */
@@ -81,11 +66,6 @@ class ImpersonateTest extends TestCase
             'admin' => false,
         ]);
 
-        $this->impersonate->criteria(
-            fn($impersonator) : bool => $impersonator->admin,
-            fn($impersonated) : bool => ! $impersonated->admin
-        );
-
         // first, we need to login as foo
         $this
             ->actingAs($foo)
@@ -96,6 +76,7 @@ class ImpersonateTest extends TestCase
         $this->assertEquals($bar->toArray(), $this->impersonate->getCurrentUser()->toArray());
 
         // then, try to impersonate baz
+
         $bar->impersonate($baz);
         $this->assertEquals($baz->toArray(), $this->impersonate->getCurrentUser()->toArray());
     }
@@ -173,11 +154,6 @@ class ImpersonateTest extends TestCase
         $this->expectException(ImpersonateException::class);
         $this->expectExceptionMessage('You don\'t have the ability to impersonate.');
 
-        $this->impersonate->criteria(
-            fn($impersonator) => $impersonator->admin,
-            fn($impersonated) => ! $impersonated->admin
-        );
-
         $foo = User::create([
             'name'  => 'Foo',
             'email' => 'foo@bar.baz',
@@ -202,11 +178,6 @@ class ImpersonateTest extends TestCase
     {
         $this->expectException(ImpersonateException::class);
         $this->expectExceptionMessage('You can\'t impersonate this user.');
-
-        $this->impersonate->criteria(
-            fn($impersonator) : bool => $impersonator->admin,
-            fn($impersonated) : bool => ! $impersonated->admin
-        );
 
         $foo = User::create([
             'name'  => 'Foo',

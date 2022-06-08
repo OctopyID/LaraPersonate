@@ -25,7 +25,10 @@ class TestCase extends \Orchestra\Testbench\TestCase
         parent::setUp();
 
         config([
-            'impersonate.model' => User::class,
+            'impersonate.model'         => User::class,
+            'impersonate.field.columns' => array_merge(config('impersonate.field.columns'), [
+                'admin',
+            ]),
         ]);
 
         $this->impersonate = $this->app->make('impersonate');

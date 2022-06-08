@@ -32,11 +32,13 @@ class ImpersonateRepositoryTest extends TestCase
         $foo = User::create([
             'name'  => 'Foo',
             'email' => 'foo@bar.baz',
+            'admin' => true,
         ]);
 
         $bar = User::create([
             'name'  => 'Bar',
             'email' => 'bar@baz.qux',
+            'admin' => false,
         ]);
 
         $this->actingAs($foo);
@@ -56,11 +58,13 @@ class ImpersonateRepositoryTest extends TestCase
         $foo = User::create([
             'name'  => 'Foo',
             'email' => 'foo@bar.baz',
+            'admin' => true,
         ]);
 
         $bar = User::create([
             'name'  => 'Bar',
             'email' => 'bar@baz.qux',
+            'admin' => false,
         ]);
 
         $this->actingAs($foo);

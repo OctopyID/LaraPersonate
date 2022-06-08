@@ -3,7 +3,7 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | Impersonate
+    | Impersonate GUI
     |--------------------------------------------------------------------------
     | You can override the value by setting enable to true or false instead of null.
     |
@@ -30,7 +30,7 @@ return [
     | displayed in the select dropdown. This must be an Eloquent Model instance.
     |
     */
-    'model'   => config('auth.providers.users.model', App\Models\User::class),
+    'model'   => App\Models\User::class,
 
     'field'   => [
         /*
@@ -42,7 +42,7 @@ return [
         | for example such as `name`, `user_name`, `full_name`, `email` or etc.
         |
         */
-        'display'     => 'name',
+        'display' => 'name',
 
         /*
         |--------------------------------------------------------------------------
@@ -52,7 +52,7 @@ return [
         | The name of the column used as the search keys.
         |
         */
-        'search_keys' => [
+        'columns' => [
             'name', 'email',
         ],
     ],
