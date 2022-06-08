@@ -32,7 +32,7 @@ return [
     */
     'model'   => config('auth.providers.users.model', App\Models\User::class),
 
-    'field' => [
+    'field'   => [
         /*
         |--------------------------------------------------------------------------
         | Field Name
@@ -59,6 +59,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Storage Driver
+    |--------------------------------------------------------------------------
+    |
+    | Storage is used to store impersonation data which will be reused
+    | when exiting impersonation mode.
+    |
+    | Currently, only the `session` driver is available.
+    |
+    */
+    'storage' => 'session',
+
+    /*
+    |--------------------------------------------------------------------------
     | Rate-limiting Requests
     |--------------------------------------------------------------------------
     |
@@ -69,7 +82,7 @@ return [
     | to wait after a user has stopped typing before sending the request
     |
     */
-    'delay' => 250,
+    'delay'   => 250,
 
     /*
     |--------------------------------------------------------------------------
@@ -81,5 +94,5 @@ return [
     | Be careful, this might make your application crash if there is a lot of user data.
     |
     */
-    'limit' => env('IMPERSONATE_MAX_DISPLAY', 5),
+    'limit'   => env('IMPERSONATE_MAX_DISPLAY', 5),
 ];
