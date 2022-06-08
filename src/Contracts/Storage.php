@@ -32,4 +32,9 @@ interface Storage
      * @return mixed
      */
     public function getImpersonatedIdentifier() : mixed;
+
+    /**
+     * @return bool
+     */
+    public function clearStorage() : bool;
 }

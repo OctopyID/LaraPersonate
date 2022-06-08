@@ -109,10 +109,10 @@ class Impersonate
      *
      * @param  Authenticatable $impersonator
      * @param  Authenticatable $impersonated
-     * @return void
+     * @return Authenticatable|User
      * @throws ImpersonateException
      */
-    public function impersonate(Authenticatable $impersonator, Authenticatable $impersonated) : void
+    public function impersonate(Authenticatable $impersonator, Authenticatable $impersonated) : Authenticatable|User
     {
         // when in impersonation mode, $impersonator set to current impersonator
         if ($this->storage->isInImpersonatingMode()) {
@@ -127,6 +127,23 @@ class Impersonate
 
             $this->guard->login($impersonated);
         }
+
+        return $impersonated;
+    }
+
+    /**
+     * Leave impersonation mode.
+     *
+     * @return bool
+     */
+    public function leave() : bool
+    {
+        if ($this->storage->isInImpersonatingMode()) {
+            $this->guard->login($this->getImpersonator());
+            $this->storage->clearStorage();
+        }
+
+        return true;
     }
 
     /**

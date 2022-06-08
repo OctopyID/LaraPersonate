@@ -69,4 +69,29 @@ class SessionStorageTest extends TestCase
         $this->assertEquals($foo->id, $this->storage->getImpersonatorIdentifier());
         $this->assertEquals($bar->id, $this->storage->getImpersonatedIdentifier());
     }
+
+    /**
+     * @return void
+     */
+    public function testItCanClearSession() : void
+    {
+        $foo = User::create([
+            'name'  => 'Foo Bar',
+            'email' => 'foo@bar.baz',
+        ]);
+
+        $bar = User::create([
+            'name'  => 'Bar Baz',
+            'email' => 'bar@baz.qux',
+        ]);
+
+        $this->storage->setImpersonatorIdentifier($foo);
+        $this->storage->setImpersonatedIdentifier($bar);
+
+        $this->assertTrue($this->storage->isInImpersonatingMode());
+
+        $this->storage->clearStorage();
+
+        $this->assertFalse($this->storage->isInImpersonatingMode());
+    }
 }

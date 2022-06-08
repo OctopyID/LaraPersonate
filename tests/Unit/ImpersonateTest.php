@@ -55,6 +55,33 @@ class ImpersonateTest extends TestCase
     /**
      * @return void
      */
+    public function testItCanLeaveImpersonation() : void
+    {
+        $foo = User::create([
+            'name'  => 'Foo',
+            'email' => 'foo@bar.baz',
+            'admin' => true,
+        ]);
+
+        $bar = User::create([
+            'name'  => 'Bar',
+            'email' => 'bar@baz.qux',
+        ]);
+
+        $foo->impersonate($bar);
+
+        $this->assertEquals($bar->toArray(), $this->impersonate->getCurrentUser()->toArray());
+
+        $foo->impersonate()->leave();
+
+        $this->assertEquals($foo->toArray(), $this->impersonate->getCurrentUser()->toArray());
+
+        $this->assertFalse($this->impersonate->storage()->isInImpersonatingMode());
+    }
+
+    /**
+     * @return void
+     */
     public function testThrowExceptionWhenImpersonatingYourSelf() : void
     {
         $this->expectException(ImpersonateException::class);

@@ -56,4 +56,18 @@ class SessionStorage implements Storage
     {
         return decrypt(session('impersonate.impersonated'));
     }
+
+    /**
+     * @return bool
+     */
+    public function clearStorage() : bool
+    {
+        session()->forget([
+            'impersonate',
+            'impersonate.impersonator',
+            'impersonate.impersonated',
+        ]);
+
+        return true;
+    }
 }
