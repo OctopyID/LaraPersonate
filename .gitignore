@@ -10,4 +10,5 @@ yarn.lock
 composer.lock
 
 # PHP Unit
+.phpunit.cache
 .phpunit.result.cache
