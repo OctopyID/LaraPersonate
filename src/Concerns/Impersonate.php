@@ -11,6 +11,15 @@ use Octopy\Impersonate\Impersonate as Manager;
 trait Impersonate
 {
     /**
+     * @return Manager
+     * @throws ImpersonateException
+     */
+    public function getImpersonateAttribute() : Manager
+    {
+        return $this->impersonate();
+    }
+
+    /**
      * @param  Authenticatable|null $user
      * @return Authenticatable|User|Manager
      * @throws ImpersonateException

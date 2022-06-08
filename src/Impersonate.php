@@ -114,6 +114,10 @@ class Impersonate
      */
     public function impersonate(Authenticatable $impersonator, Authenticatable $impersonated) : Authenticatable|User
     {
+        if (! $this->guard->check()) {
+            throw new ImpersonateException('You must be logged in to impersonate.');
+        }
+
         // when in impersonation mode, $impersonator set to current impersonator
         if ($this->storage->isInImpersonatingMode()) {
             $impersonator = $this->getImpersonator();
@@ -121,10 +125,12 @@ class Impersonate
 
         // check if impersonation is allowed
         if ($this->check($impersonator, $impersonated)) {
+            // set impersonator and impersonated to storage
             $this->storage
                 ->setImpersonatorIdentifier($impersonator)
                 ->setImpersonatedIdentifier($impersonated);
 
+            // then, set impersonator to current user
             $this->guard->login($impersonated);
         }
 
@@ -139,7 +145,12 @@ class Impersonate
     public function leave() : bool
     {
         if ($this->storage->isInImpersonatingMode()) {
-            $this->guard->login($this->getImpersonator());
+            // first, we need set current user to impersonator
+            $this->guard->login(
+                $this->getImpersonator()
+            );
+
+            // then, we need to clear storage
             $this->storage->clearStorage();
         }
 
@@ -189,6 +200,7 @@ class Impersonate
         }
 
         // try to find the storage class
+        // @codeCoverageIgnoreStart
         if (is_string($storage) && ! class_exists($storage)) {
             try {
                 $storage = match (strtolower($storage)) {
@@ -198,6 +210,8 @@ class Impersonate
                 //
             }
         }
+
+        // @codeCoverageIgnoreEnd
 
         return $this->storage = ! is_string($storage) ? $storage : App::make($storage);
     }

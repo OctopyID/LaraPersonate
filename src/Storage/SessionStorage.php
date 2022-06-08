@@ -2,6 +2,7 @@
 
 namespace Octopy\Impersonate\Storage;
 
+use Exception;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Octopy\Impersonate\Contracts\Storage;
 

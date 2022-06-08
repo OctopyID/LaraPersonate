@@ -35,12 +35,14 @@ class ImpersonateTest extends TestCase
             'name'  => 'Foo',
             'email' => 'foo@bar.baz',
             'admin' => true,
-        ]);
+        ])
+            ->refresh();
 
         $bar = User::create([
             'name'  => 'Bar',
             'email' => 'bar@baz.qux',
-        ]);
+        ])
+            ->refresh();
 
         // first, we need to login as foo
         $this
@@ -50,6 +52,52 @@ class ImpersonateTest extends TestCase
         // then, try to impersonate bar
         $foo->impersonate($bar);
         $this->assertEquals($bar->toArray(), $this->impersonate->getCurrentUser()->toArray());
+
+        $this->assertEquals($foo->toArray(), $this->impersonate->getImpersonator()->toArray());
+        $this->assertEquals($bar->toArray(), $this->impersonate->getImpersonated()->toArray());
+    }
+
+    /**
+     * @return void
+     * @throws ImpersonateException
+     */
+    public function testItCanImpersonateAnotherUserViaImpersonatedUser() : void
+    {
+        $foo = User::create([
+            'name'  => 'Foo',
+            'email' => 'foo@bar.baz',
+            'admin' => true,
+        ]);
+
+        $bar = User::create([
+            'name'  => 'Bar',
+            'email' => 'bar@baz.qux',
+            'admin' => false,
+        ]);
+
+        $baz = User::create([
+            'name'  => 'Baz',
+            'email' => 'baz@bar.foo',
+            'admin' => false,
+        ]);
+
+        $this->impersonate->criteria(
+            fn($impersonator) : bool => $impersonator->admin,
+            fn($impersonated) : bool => ! $impersonated->admin
+        );
+
+        // first, we need to login as foo
+        $this
+            ->actingAs($foo)
+            ->assertEquals($foo->toArray(), $this->impersonate->getCurrentUser()->toArray());
+
+        // then, try to impersonate bar
+        $foo->impersonate($bar);
+        $this->assertEquals($bar->toArray(), $this->impersonate->getCurrentUser()->toArray());
+
+        // then, try to impersonate baz
+        $bar->impersonate($baz);
+        $this->assertEquals($baz->toArray(), $this->impersonate->getCurrentUser()->toArray());
     }
 
     /**
@@ -68,15 +116,33 @@ class ImpersonateTest extends TestCase
             'email' => 'bar@baz.qux',
         ]);
 
+        $this->actingAs($foo);
+
         $foo->impersonate($bar);
 
         $this->assertEquals($bar->toArray(), $this->impersonate->getCurrentUser()->toArray());
 
-        $foo->impersonate()->leave();
+        $foo->impersonate->leave();
 
         $this->assertEquals($foo->toArray(), $this->impersonate->getCurrentUser()->toArray());
 
         $this->assertFalse($this->impersonate->storage()->isInImpersonatingMode());
+    }
+
+    /**
+     * @return void
+     */
+    public function testThrowExceptionWhenNotAuthenticated() : void
+    {
+        $this->expectException(ImpersonateException::class);
+        $this->expectExceptionMessage('You must be logged in to impersonate.');
+
+        $foo = User::create([
+            'name'  => 'Foo',
+            'email' => 'foo@bar.baz',
+        ]);
+
+        $foo->impersonate($foo);
     }
 
     /**
@@ -108,8 +174,8 @@ class ImpersonateTest extends TestCase
         $this->expectExceptionMessage('You don\'t have the ability to impersonate.');
 
         $this->impersonate->criteria(
-            fn(User $impersonator) => $impersonator->admin,
-            fn(User $impersonated) => ! $impersonated->admin
+            fn($impersonator) => $impersonator->admin,
+            fn($impersonated) => ! $impersonated->admin
         );
 
         $foo = User::create([
@@ -123,6 +189,8 @@ class ImpersonateTest extends TestCase
             'email' => 'bar@baz.qux',
             'admin' => false,
         ]);
+
+        $this->actingAs($foo);
 
         $foo->impersonate($bar);
     }
@@ -136,8 +204,8 @@ class ImpersonateTest extends TestCase
         $this->expectExceptionMessage('You can\'t impersonate this user.');
 
         $this->impersonate->criteria(
-            fn(User $impersonator) : bool => $impersonator->admin,
-            fn(User $impersonated) : bool => ! $impersonated->admin
+            fn($impersonator) : bool => $impersonator->admin,
+            fn($impersonated) : bool => ! $impersonated->admin
         );
 
         $foo = User::create([
@@ -151,6 +219,8 @@ class ImpersonateTest extends TestCase
             'email' => 'bar@baz.qux',
             'admin' => true,
         ]);
+
+        $this->actingAs($foo);
 
         $foo->impersonate($bar);
     }
