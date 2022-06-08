@@ -4,11 +4,18 @@ namespace Octopy\Impersonate\Tests;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Octopy\Impersonate\Impersonate;
 use Octopy\Impersonate\ImpersonateServiceProvider;
+use Octopy\Impersonate\Tests\Models\User;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
     use RefreshDatabase;
+
+    /**
+     * @var Impersonate
+     */
+    protected Impersonate $impersonate;
 
     /**
      * @return void
@@ -16,6 +23,12 @@ class TestCase extends \Orchestra\Testbench\TestCase
     protected function setUp() : void
     {
         parent::setUp();
+
+        config([
+            'impersonate.model' => User::class,
+        ]);
+
+        $this->impersonate = $this->app->make('impersonate');
     }
 
     /**

@@ -32,21 +32,10 @@ class Impersonate
     protected ImpersonateRepository $repository;
 
     /**
-     * @var array<string, Closure<User>>
-     */
-    protected array $criteria = [
-        'impersonator' => false,
-        'impersonated' => false,
-    ];
-
-    /**
      * Impersonate constructor.
      */
     public function __construct()
     {
-        // Set default criteria.
-        $this->criteria(fn() => true, fn() => true);
-
         // Set auth guard.
         $this->guard(config(
             'impersonate.guard', 'web'
@@ -69,37 +58,6 @@ class Impersonate
     public function guard(string $guard) : self
     {
         $this->guard = Auth::guard($guard);
-
-        return $this;
-    }
-
-    /**
-     * Set criteria to check if impersonation is allowed.
-     *
-     * @param  Closure|bool $impersonator
-     * @param  Closure|bool $impersonated
-     * @return Impersonate
-     */
-    public function criteria(Closure|bool $impersonator = true, Closure|bool $impersonated = true) : self
-    {
-        // @codeCoverageIgnoreStart
-        if (! $impersonator instanceof Closure) {
-            $impersonator = function (User $user) use ($impersonator) {
-                return $impersonator;
-            };
-        }
-
-        if (! $impersonated instanceof Closure) {
-            $impersonated = function (User $user) use ($impersonated) {
-                return $impersonated;
-            };
-        }
-        // @codeCoverageIgnoreEnd
-
-        $this->criteria = [
-            'impersonator' => $impersonator,
-            'impersonated' => $impersonated,
-        ];
 
         return $this;
     }
@@ -230,11 +188,13 @@ class Impersonate
             throw new ImpersonateException('You cannot impersonate yourself.');
         }
 
-        if (! $this->criteria['impersonator']($impersonator)) {
+        /** @noinspection PhpPossiblePolymorphicInvocationInspection */
+        if (! $impersonator->canImpersonate()) {
             throw new ImpersonateException('You don\'t have the ability to impersonate.');
         }
 
-        if (! $this->criteria['impersonated']($impersonated)) {
+        /** @noinspection PhpPossiblePolymorphicInvocationInspection */
+        if (! $impersonated->canBeImpersonated()) {
             throw new ImpersonateException('You can\'t impersonate this user.');
         }
 

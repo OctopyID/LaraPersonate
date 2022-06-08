@@ -26,4 +26,20 @@ class User extends Authenticatable
     protected $casts = [
         'admin' => 'boolean',
     ];
+
+    /**
+     * @return bool
+     */
+    public function canImpersonate() : bool
+    {
+        return $this->admin;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canBeImpersonated() : bool
+    {
+        return ! $this->admin;
+    }
 }

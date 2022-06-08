@@ -37,4 +37,20 @@ trait Impersonate
 
         return $manager;
     }
+
+    /**
+     * @return bool
+     */
+    public function canImpersonate() : bool
+    {
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canBeImpersonated() : bool
+    {
+        return true;
+    }
 }
