@@ -29,10 +29,10 @@ class ImpersonateRepository
     public function getUsers(string $search = null) : Collection
     {
         $query = $this->model->newModelQuery()->limit(config(
-            'impersonate.limit'
-        ))
-            ->with('comments');
+            'impersonate.display.limit', 10
+        ));
 
+        // If search is not null, we will add a where clause to the query
         if ($search) {
             foreach ($this->getColumns() as $column) {
                 if (! str_contains($column, '.')) {
