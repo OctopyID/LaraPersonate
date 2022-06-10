@@ -41,9 +41,68 @@ class ImpersonateInterfaceTest extends TestCase
         $response
             ->assertStatus(200)
             ->assertJsonStructure([
-                '*' => config('impersonate.field.columns'),
+                '*' => [
+                    'key', 'val',
+                ],
             ]);
 
+        $response->assertSee($bar->name);
+        $response->assertSee($qux->name);
+
+        // Non impersonated users should not be shown
         $response->assertDontSee($foo->name);
+        $response->assertDontSee($baz->name);
+
+        $this->assertCount(2, $response->json());
+    }
+
+    /**
+     * @return void
+     */
+    public function testGetUsersWithQuery() : void
+    {
+        User::create([
+            'name'  => 'Supian M',
+            'email' => 'supianidz@github.com',
+            'admin' => false,
+        ]);
+
+        $foo = User::create([
+            'name'  => 'Foo Bar',
+            'email' => 'foo@bar.baz',
+            'admin' => true,
+        ]);
+
+        $bar = User::create([
+            'name'  => 'Bar Baz',
+            'email' => 'bar@baz.qux',
+            'admin' => false,
+        ]);
+
+        $baz = User::create([
+            'name'  => 'Baz Qux',
+            'email' => 'baz@qux.foo',
+            'admin' => true,
+        ]);
+
+        $qux = User::create([
+            'name'  => 'Qux Foo',
+            'email' => 'qux@foo.bar',
+            'admin' => false,
+        ]);
+
+        $response = $this->actingAs($foo)->json('GET', route('impersonate.index'), [
+            'search' => 'supian',
+        ]);
+
+        $response
+            ->assertStatus(200)
+            ->assertJsonStructure([
+                '*' => [
+                    'key', 'val',
+                ],
+            ]);
+
+        $this->assertCount(1, $response->json());
     }
 }

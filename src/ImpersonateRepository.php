@@ -2,8 +2,8 @@
 
 namespace Octopy\Impersonate;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
 
 class ImpersonateRepository
@@ -22,13 +22,60 @@ class ImpersonateRepository
     }
 
     /**
+     * @param  string|null $search
      * @return Collection
+     * @noinspection PhpPossiblePolymorphicInvocationInspection
      */
-    public function getUsers() : Collection
+    public function getUsers(string $search = null) : Collection
     {
-        return $this->model->select($this->getColumns())->get()->filter(function ($user) {
-            return $user->canBeImpersonated();
-        });
+        $query = $this->model->newModelQuery()->limit(config(
+            'impersonate.limit'
+        ))
+            ->with('comments');
+
+        if ($search) {
+            foreach ($this->getColumns() as $column) {
+                if (! str_contains($column, '.')) {
+                    $query->orWhere($column, 'LIKE', "%{$search}%");
+                } else {
+                    // when the field is a relation, try to search the related model
+                    $fields = explode('.', $column);
+                    $column = array_pop($fields);
+
+                    $query->orWhereHas(implode('.', $fields), function ($query) use ($column, $search) {
+                        $query->where($column, 'LIKE', "%{$search}%");
+                    });
+                }
+            }
+        }
+
+        return $query->get()
+            ->filter(function ($user) {
+                return $user->canBeImpersonated(); // filter out users that cannot be impersonated
+            })
+            ->map(function ($user) {
+                $val = [];
+                $tmp = $user; // to avoid modifying the original object
+
+                foreach (config('impersonate.display.fields', []) as $field) {
+                    if (! str_contains($field, '.')) {
+                        $val[] = $user->{$field};
+                    } else {
+                        // when the field is a relation, try to display the related model
+                        // e.g : 'comments.user.name'
+                        foreach (explode('.', $field) as $key) {
+                            $tmp = $tmp instanceof Collection ? $tmp[$key] : $tmp;
+                        }
+
+                        $val[] = $tmp;
+                    }
+                }
+
+                return [
+                    'key' => $user->getKey(),
+                    'val' => implode(config('impersonate.display.separator'), $val),
+                ];
+            });
     }
 
     /**
@@ -52,7 +99,7 @@ class ImpersonateRepository
      */
     private function getColumns() : array
     {
-        return array_merge([$this->model->getAuthIdentifierName()], config('impersonate.field.columns', [
+        return array_merge([$this->model->getAuthIdentifierName()], config('impersonate.display.searchable', [
             //
         ]));
     }

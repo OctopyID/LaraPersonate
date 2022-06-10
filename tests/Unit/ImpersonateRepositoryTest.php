@@ -10,9 +10,9 @@ use Octopy\Impersonate\Tests\TestCase;
 class ImpersonateRepositoryTest extends TestCase
 {
     /**
-     * @var Impersonate
+     * @var ImpersonateRepository
      */
-    protected Impersonate $impersonate;
+    protected ImpersonateRepository $repository;
 
     /**
      * @return void
@@ -21,7 +21,7 @@ class ImpersonateRepositoryTest extends TestCase
     {
         parent::setUp();
 
-        $this->impersonate = $this->app->make('impersonate');
+        $this->repository = new ImpersonateRepository($this->impersonate);
     }
 
     /**
@@ -45,9 +45,7 @@ class ImpersonateRepositoryTest extends TestCase
 
         $foo->impersonate($bar);
 
-        $repository = new ImpersonateRepository($this->impersonate);
-
-        $this->assertEquals($foo->refresh()->toArray(), $repository->getImpersonatorInStorage()->toArray());
+        $this->assertEquals($foo->refresh()->toArray(), $this->repository->getImpersonatorInStorage()->toArray());
     }
 
     /**
@@ -71,8 +69,38 @@ class ImpersonateRepositoryTest extends TestCase
 
         $foo->impersonate($bar);
 
-        $repository = new ImpersonateRepository($this->impersonate);
+        $this->assertEquals($bar->refresh()->toArray(), $this->repository->getImpersonatedInStorage()->toArray());
+    }
 
-        $this->assertEquals($bar->refresh()->toArray(), $repository->getImpersonatedInStorage()->toArray());
+    /**
+     * @return void
+     */
+    public function testGetImpersonationUsers() : void
+    {
+        User::create([
+            'name'  => 'Foo Bar',
+            'email' => 'foo@bar.baz',
+            'admin' => true,
+        ]);
+
+        User::create([
+            'name'  => 'Bar Baz',
+            'email' => 'bar@baz.qux',
+            'admin' => false,
+        ]);
+
+        User::create([
+            'name'  => 'Baz Qux',
+            'email' => 'baz@qux.foo',
+            'admin' => true,
+        ]);
+
+        User::create([
+            'name'  => 'Qux Foo',
+            'email' => 'qux@foo.bar',
+            'admin' => false,
+        ]);
+
+        $this->assertCount(2, $this->repository->getUsers());
     }
 }

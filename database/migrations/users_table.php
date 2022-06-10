@@ -23,6 +23,12 @@ return new class extends Migration
             $table->boolean('admin')->default(false);
             $table->timestamps();
         });
+
+        Schema::create('comments', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained();
+            $table->string('comment');
+        });
     }
 
     /**
@@ -33,5 +39,6 @@ return new class extends Migration
     public function down() : void
     {
         Schema::dropIfExists('users');
+        Schema::dropIfExists('comments');
     }
 };

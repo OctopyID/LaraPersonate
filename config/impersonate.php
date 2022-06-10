@@ -32,7 +32,7 @@ return [
     */
     'model'   => App\Models\User::class,
 
-    'field'   => [
+    'display' => [
         /*
         |--------------------------------------------------------------------------
         | Field Name
@@ -42,17 +42,21 @@ return [
         | for example such as `name`, `user_name`, `full_name`, `email` or etc.
         |
         */
-        'display' => 'name',
+        'fields' => [
+            'name',
+        ],
+
+        'separator'  => ' - ',
 
         /*
         |--------------------------------------------------------------------------
-        | Search Keys
-        |--------------------------------------------------------------------------
-        |
-        | The name of the column used as the search keys.
-        |
-        */
-        'columns' => [
+           | Search Keys
+           |--------------------------------------------------------------------------
+           |
+           | The name of the column used as the search keys.
+           |
+           */
+        'searchable' => [
             'name', 'email',
         ],
     ],

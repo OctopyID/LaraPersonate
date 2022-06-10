@@ -2,7 +2,8 @@
 
 namespace Octopy\Impersonate\Http\Controllers;
 
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Octopy\Impersonate\Impersonate;
 use Octopy\Impersonate\ImpersonateRepository;
 
@@ -22,10 +23,11 @@ class ImpersonateController
     }
 
     /**
+     * @param  Request $request
      * @return Collection
      */
-    public function index()
+    public function index(Request $request) : Collection
     {
-        return $this->repository->getUsers();
+        return $this->repository->getUsers($request->get('search'));
     }
 }
