@@ -51,6 +51,10 @@ $(document).ready(function () {
         $('.select2-search__field').attr('placeholder', ' Search...');
     });
 
+    if (impersonate.active) {
+        toggle.addClass('impersonate-toggle-active')
+    }
+
     toggle.click(function () {
 
         // Init SELECT2
@@ -78,8 +82,13 @@ $(document).ready(function () {
         wrapper.toggleClass('impersonate-border');
 
         toggle
-            .toggleClass('impersonate-toggle-toggled')
             .find('img').toggleClass('impersonate-animate');
+
+        if (impersonate.active) {
+            toggle.addClass('impersonate-toggle-active')
+        } else {
+            toggle.toggleClass('impersonate-toggle-active')
+        }
 
         content.toggle('fast', function () {
             content.toggleClass('impersonate-content-toggled');

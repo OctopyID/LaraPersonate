@@ -46,7 +46,7 @@
         @endif
     </div>
 
-    <button class="impersonate-toggle {{ $impersonate->hasImpersonation() ? 'impersonate-toggle-active' : '' }}">
+    <button class="impersonate-toggle">
         <img src="{{ asset('vendor/octopyid/impersonate/img/icon.svg') }}" alt="Impersonate">
     </button>
 </div>
