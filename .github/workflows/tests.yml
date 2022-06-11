@@ -1,0 +1,39 @@
+name: Run Unit Testing
+
+on:
+  push:
+    paths-ignore: [ 'public/**', '*.md' ]
+
+  pull_request:
+    paths-ignore: [ 'public/**', '*.md' ]
+
+jobs:
+  linux_tests:
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        php: [ '8.0', '8.1' ]
+        laravel: [ 8.*, 9.* ]
+
+    name: PHP ${{ matrix.php }} - LARAVEL ${{ matrix.laravel }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, libxml, mbstring, zip, pdo, sqlite, pdo_sqlite
+          tools: composer:v2
+          coverage: none
+
+      - name: Install Dependencies
+        run: |
+          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+          composer update --prefer-dist
+
+      - name: Execute Tests
+        run: vendor/bin/phpunit --verbose --colors=always
