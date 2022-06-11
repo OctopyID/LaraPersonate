@@ -1,20 +1,17 @@
 @import "~select2";
 
+// TODO : Optimize this file
 
 .impersonate {
-
-
     &-wrapper {
         color: #526484;
-        font-family: 'Roboto', sans-serif !important;
+        font-family: "DM Sans", sans-serif;
         position: fixed;
         bottom: 40px;
         right: 20px;
-        //height: 58px;
         min-width: 58px;
         border-radius: 34px;
         background: #FFFFFF;
-
         font-size: .8em !important;
     }
 
@@ -47,7 +44,7 @@
     }
 
     &-info {
-        font-weight: bold;
+        font-weight: bolder;
         letter-spacing: .5px;
         font-size: 90%;
         margin-top: 10px;
@@ -56,7 +53,7 @@
 
     &-footer {
         position: relative;
-        margin-top: 15px;
+        margin-top: 12px;
         font-size: 90%;
 
         &-logout {

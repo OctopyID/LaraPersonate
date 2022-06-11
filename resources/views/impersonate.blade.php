@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="{{ asset('vendor/octopyid/impersonate/app.css') }}">
 
-<div class="impersonate-wrapper" title="IMPERSONATION">
+<div class="impersonate-wrapper">
     <div class="impersonate-content">
         <select class="impersonate-select">
             <option>Foo Bar</option>
