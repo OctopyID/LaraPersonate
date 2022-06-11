@@ -21,7 +21,10 @@ $(document).ready(function () {
 
     toggle.click(function () {
         wrapper.toggleClass('impersonate-border');
-        toggle.toggleClass('impersonate-toggle-active');
+
+        toggle
+            .toggleClass('impersonate-toggle-active')
+            .find('img').toggleClass('impersonate-animate');
 
         content.toggle('fast', function () {
             content.toggleClass('impersonate-content-active');
