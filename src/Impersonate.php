@@ -17,6 +17,11 @@ use Throwable;
 final class Impersonate
 {
     /**
+     * @const string
+     */
+    public const VERSION = 'v3.0.0';
+
+    /**
      * @var Storage
      */
     protected Storage $storage;

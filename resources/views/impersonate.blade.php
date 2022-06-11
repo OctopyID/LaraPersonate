@@ -38,7 +38,9 @@
                 </div>
 
                 <div class="impersonate-footer-version">
-                    <a href="https://github.com/OctopyID/LaraPersonate"> v2.1.0 </a>
+                    <a href="https://github.com/OctopyID/LaraPersonate" target="_blank">
+                        {{ \Octopy\Impersonate\Impersonate::VERSION }}
+                    </a>
                 </div>
             </div>
         @endif

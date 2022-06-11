@@ -9,19 +9,19 @@ Route::group(['prefix' => 'impersonate', 'middleware' => 'web', 'as' => 'imperso
      *     search: string
      * }
      */
-    Route::get('users', [ImpersonateController::class, 'index']);
+    Route::get('users', [ImpersonateController::class, 'index'])->name('index');
 
     /**
      * body:POST {
      *     user: int|string
      * }
      */
-    Route::post('login', [ImpersonateController::class, 'login']);
+    Route::post('login', [ImpersonateController::class, 'login'])->name('login');
 
     /**
      * body:POST {
      *
      * }
      */
-    Route::post('leave', [ImpersonateController::class, 'leave']);
+    Route::post('leave', [ImpersonateController::class, 'leave'])->name('leave');
 });
