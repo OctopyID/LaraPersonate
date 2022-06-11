@@ -15,6 +15,13 @@ Is a user impersonate for the Laravel framework. This package makes it easier fo
 
 ## 1. Installation
 
+> **Warning**
+>
+> This version is a breaking change, many changes were made to the addition of new features, new UI design, and code structure.
+>
+> If you are upgrade from an old version, please delete the old assets and republish the assets, configure and reset the [limitations](#311-defining-limitation) on the User Model
+> according to this version.
+
 To install the package, simply follow the steps below.
 
 ### 1.1. Install The Package
@@ -29,6 +36,8 @@ composer require octopyid/laravel-impersonate:^3
 artisan vendor:publish --provider="Octopy\Impersonate\ImpersonateServiceProvider"
 ```
 
+> **Note**
+>
 > Sometimes some users experience the problem of layout after upgrading the package, this can be solved by deleting the `public/vendor/octopyid/impersonate` folder then republish
 > the assets.
 
@@ -59,8 +68,12 @@ Please refer to the [impersonate.php](config/impersonate.php) file to see the av
 
 ### 3.1. Basic Usage
 
-By default, you don't need to do anything, but keep in mind, Impersonation can be done by anyone if you don't define the rules of who can do impersonation or who can be imitated
-and this can cause serious security problems.
+By default, you don't need to do anything, but keep in mind, Impersonation can be done by anyone if you don't define the rules of who can do impersonation or who can be
+impersonated.
+
+> **Warning**
+>
+> Not defining the Impersonation rules in the Model or misdefining them can lead to serious security issues.
 
 #### 3.1.1. Defining Limitation
 
