@@ -146,7 +146,7 @@ class ImpersonateRepositoryTest extends TestCase
                 'comments.user_id',
             ]),
             'impersonate.display.fields'     => array_merge(config('impersonate.display.fields'), [
-                'comments.0.user_id',
+                'email', 'comments.0.user_id',
             ]),
         ]);
 

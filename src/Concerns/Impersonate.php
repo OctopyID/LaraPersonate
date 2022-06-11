@@ -37,11 +37,11 @@ trait Impersonate
     public abstract function impersonatable(Impersonation $impersonation) : void;
 
     /**
-     * @param  User|null $user
+     * @param  User|int|string|null $user
      * @return User|Manager
      * @throws ImpersonateException
      */
-    public function impersonate(User $user = null) : User|Manager
+    public function impersonate(User|int|string $user = null) : User|Manager
     {
         /**
          * @var Manager $manager

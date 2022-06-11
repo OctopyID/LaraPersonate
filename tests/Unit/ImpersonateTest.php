@@ -43,6 +43,37 @@ class ImpersonateTest extends TestCase
     }
 
     /**
+     * @throws ImpersonateException
+     */
+    public function testItCanImpersonateAnotherUserUsingId() : void
+    {
+        $foo = User::create([
+            'name'  => 'Foo',
+            'email' => 'foo@bar.baz',
+            'admin' => true,
+        ])
+            ->refresh();
+
+        $bar = User::create([
+            'name'  => 'Bar',
+            'email' => 'bar@baz.qux',
+        ])
+            ->refresh();
+
+        // first, we need to login as foo
+        $this
+            ->actingAs($foo)
+            ->assertEquals($foo->toArray(), $this->impersonate->getCurrentUser()->toArray());
+
+        // then, try to impersonate bar
+        $this->impersonate->impersonate(1, 2);
+        $this->assertEquals($bar->toArray(), $this->impersonate->getCurrentUser()->toArray());
+
+        $this->assertEquals($foo->toArray(), $this->impersonate->getImpersonator()->toArray());
+        $this->assertEquals($bar->toArray(), $this->impersonate->getImpersonated()->toArray());
+    }
+
+    /**
      * @return void
      * @throws ImpersonateException
      */

@@ -73,15 +73,25 @@ final class Impersonate
     /**
      * Impersonate user.
      *
-     * @param  User $impersonator
-     * @param  User $impersonated
+     * @param  User|int|string $impersonator
+     * @param  User|int|string $impersonated
      * @return User
      * @throws ImpersonateException
      */
-    public function impersonate(User $impersonator, User $impersonated) : User
+    public function impersonate(User|int|string $impersonator, User|int|string $impersonated) : User
     {
         if (! $this->guard->check()) {
             throw new ImpersonateException('You must be logged in to impersonate.');
+        }
+
+        // When impersonator is not a user, we will try to find it by id.
+        if (! $impersonator instanceof User) {
+            $impersonator = $this->repository->findUser($impersonator);
+        }
+
+        // When impersonated is not a user, we will try to find it by id.
+        if (! $impersonated instanceof User) {
+            $impersonated = $this->repository->findUser($impersonated);
         }
 
         // when in impersonation mode, $impersonator set to current impersonator
@@ -124,6 +134,14 @@ final class Impersonate
     }
 
     /**
+     * @return bool
+     */
+    public function hasImpersonation() : bool
+    {
+        return $this->storage->isInImpersonatingMode();
+    }
+
+    /**
      * Get current authenticated user.
      *
      * @return Authenticatable|User
@@ -140,7 +158,11 @@ final class Impersonate
      */
     public function getImpersonator() : User
     {
-        return $this->repository->getImpersonatorInStorage();
+        if ($this->storage->isInImpersonatingMode()) {
+            return $this->repository->getImpersonatorInStorage();
+        }
+
+        return $this->getCurrentUser();
     }
 
     /**
