@@ -32,7 +32,7 @@ return [
     | This must be an Eloquent Model instance.
     |
     */
-    'model'   => App\Models\User::class,
+    'model'   => config('auth.providers.users.model', App\Models\User::class),
 
     'display' => [
         /*
