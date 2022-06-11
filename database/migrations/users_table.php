@@ -28,6 +28,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->string('comment');
+            $table->timestamps();
         });
     }
 

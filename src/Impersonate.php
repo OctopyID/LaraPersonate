@@ -14,7 +14,7 @@ use Octopy\Impersonate\Storage\SessionStorage;
 use ReflectionClass;
 use Throwable;
 
-class Impersonate
+final class Impersonate
 {
     /**
      * @var Storage
@@ -63,14 +63,22 @@ class Impersonate
     }
 
     /**
+     * @return Impersonation
+     */
+    public function impersonation() : Impersonation
+    {
+        return App::make('impersonation');
+    }
+
+    /**
      * Impersonate user.
      *
-     * @param  Authenticatable $impersonator
-     * @param  Authenticatable $impersonated
-     * @return Authenticatable|User
+     * @param  User $impersonator
+     * @param  User $impersonated
+     * @return User
      * @throws ImpersonateException
      */
-    public function impersonate(Authenticatable $impersonator, Authenticatable $impersonated) : Authenticatable|User
+    public function impersonate(User $impersonator, User $impersonated) : User
     {
         if (! $this->guard->check()) {
             throw new ImpersonateException('You must be logged in to impersonate.');
@@ -177,24 +185,22 @@ class Impersonate
     /**
      * Check if impersonation is allowed.
      *
-     * @param  Authenticatable $impersonator
-     * @param  Authenticatable $impersonated
+     * @param  User $impersonator
+     * @param  User $impersonated
      * @return bool
      * @throws ImpersonateException
      */
-    private function check(Authenticatable $impersonator, Authenticatable $impersonated) : bool
+    private function check(User $impersonator, User $impersonated) : bool
     {
         if ($impersonator->getAuthIdentifier() === $impersonated->getAuthIdentifier()) {
             throw new ImpersonateException('You cannot impersonate yourself.');
         }
 
-        /** @noinspection PhpPossiblePolymorphicInvocationInspection */
-        if (! $impersonator->canImpersonate()) {
+        if (! $this->impersonation()->check('impersonator', $impersonator)) {
             throw new ImpersonateException('You don\'t have the ability to impersonate.');
         }
 
-        /** @noinspection PhpPossiblePolymorphicInvocationInspection */
-        if (! $impersonated->canBeImpersonated()) {
+        if (! $this->impersonation()->check('impersonated', $impersonated)) {
             throw new ImpersonateException('You can\'t impersonate this user.');
         }
 

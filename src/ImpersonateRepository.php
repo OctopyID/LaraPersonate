@@ -24,7 +24,6 @@ class ImpersonateRepository
     /**
      * @param  string|null $search
      * @return Collection
-     * @noinspection PhpPossiblePolymorphicInvocationInspection
      */
     public function getUsers(string $search = null) : Collection
     {
@@ -51,7 +50,7 @@ class ImpersonateRepository
 
         return $query->get()
             ->filter(function ($user) {
-                return $user->canBeImpersonated(); // filter out users that cannot be impersonated
+                return $this->impersonate->impersonation()->check('impersonated', $user); // filter out users that cannot be impersonated
             })
             ->map(function ($user) {
                 $val = [];
@@ -64,7 +63,7 @@ class ImpersonateRepository
                         // when the field is a relation, try to display the related model
                         // e.g : 'comments.user.name'
                         foreach (explode('.', $field) as $key) {
-                            $tmp = $tmp instanceof Collection ? $tmp[$key] : $tmp;
+                            $tmp = $tmp instanceof Collection ? $tmp->get($key) : $tmp->$key;
                         }
 
                         $val[] = $tmp;
@@ -75,7 +74,8 @@ class ImpersonateRepository
                     'key' => $user->getKey(),
                     'val' => implode(config('impersonate.display.separator'), $val),
                 ];
-            });
+            })
+            ->values();
     }
 
     /**

@@ -7,9 +7,20 @@ use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\App;
 use Octopy\Impersonate\Exceptions\ImpersonateException;
 use Octopy\Impersonate\Impersonate as Manager;
+use Octopy\Impersonate\Impersonation;
 
 trait Impersonate
 {
+    /**
+     * @return void
+     */
+    public static function bootImpersonate() : void
+    {
+        (new static)->impersonatable(App::make(
+            'impersonation'
+        ));
+    }
+
     /**
      * @return Manager
      * @throws ImpersonateException
@@ -20,11 +31,17 @@ trait Impersonate
     }
 
     /**
-     * @param  Authenticatable|null $user
-     * @return Authenticatable|User|Manager
+     * @param  Impersonation $impersonation
+     * @return void
+     */
+    public abstract function impersonatable(Impersonation $impersonation) : void;
+
+    /**
+     * @param  User|null $user
+     * @return User|Manager
      * @throws ImpersonateException
      */
-    public function impersonate(Authenticatable $user = null) : Authenticatable|User|Manager
+    public function impersonate(User $user = null) : User|Manager
     {
         /**
          * @var Manager $manager
@@ -36,21 +53,5 @@ trait Impersonate
         }
 
         return $manager;
-    }
-
-    /**
-     * @return bool
-     */
-    public function canImpersonate() : bool
-    {
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
-    public function canBeImpersonated() : bool
-    {
-        return true;
     }
 }

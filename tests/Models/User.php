@@ -5,7 +5,9 @@ namespace Octopy\Impersonate\Tests\Models;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Str;
 use Octopy\Impersonate\Concerns\Impersonate;
+use Octopy\Impersonate\Impersonation;
 
 /**
  * @method static create(string[] $array)
@@ -30,19 +32,32 @@ class User extends Authenticatable
     ];
 
     /**
-     * @return bool
+     * @return void
      */
-    public function canImpersonate() : bool
+    public static function boot()
     {
-        return $this->admin;
+        parent::boot();
+
+        static::created(function (User $user) {
+            $user->comments()->create([
+                'comment' => Str::random(),
+            ]);
+        });
     }
 
     /**
-     * @return bool
+     * @param  Impersonation $impersonation
+     * @return void
      */
-    public function canBeImpersonated() : bool
+    public function impersonatable(Impersonation $impersonation) : void
     {
-        return ! $this->admin;
+        $impersonation->impersonator(function (User $user) {
+            return $user->admin;
+        });
+
+        $impersonation->impersonated(function (User $user) {
+            return ! $user->admin;
+        });
     }
 
     /**

@@ -22,6 +22,12 @@ class ImpersonateRepositoryTest extends TestCase
         parent::setUp();
 
         $this->repository = new ImpersonateRepository($this->impersonate);
+
+        config([
+            'impersonate.display.searchable' => array_merge(config('impersonate.display.searchable'), [
+                'admin',
+            ]),
+        ]);
     }
 
     /**
@@ -102,5 +108,49 @@ class ImpersonateRepositoryTest extends TestCase
         ]);
 
         $this->assertCount(2, $this->repository->getUsers());
+    }
+
+    /**
+     * @return void
+     */
+    public function testGetImpersonationUsersWithWQuery() : void
+    {
+        User::create([
+            'name'  => 'Foo Bar',
+            'email' => 'foo@bar.baz',
+            'admin' => true,
+        ]);
+
+        User::create([
+            'name'  => 'Bar Baz',
+            'email' => 'bar@baz.qux',
+            'admin' => false,
+        ]);
+
+        User::create([
+            'name'  => 'Baz Qux',
+            'email' => 'baz@qux.foo',
+            'admin' => true,
+        ]);
+
+        User::create([
+            'name'  => 'Qux Foo',
+            'email' => 'qux@foo.bar',
+            'admin' => false,
+        ]);
+
+        $this->assertCount(1, $this->repository->getUsers('Bar Baz'));
+
+        config([
+            'impersonate.display.searchable' => array_merge(config('impersonate.display.searchable'), [
+                'comments.user_id',
+            ]),
+            'impersonate.display.fields'     => array_merge(config('impersonate.display.fields'), [
+                'comments.0.user_id',
+            ]),
+        ]);
+
+        $this->assertCount(1, $this->repository->getUsers(2));
+        $this->assertSame('Bar Baz - bar@baz.qux - 2', $this->repository->getUsers(2)[0]['val']);
     }
 }
