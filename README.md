@@ -9,79 +9,149 @@
     <img src="https://img.shields.io/packagist/l/octopyid/laravel-impersonate.svg?style=for-the-badge" alt="License">
 </p>
 
-# Lara Personate
+# Laravel Impersonate
 
 Is a user impersonate for the Laravel framework. This package makes it easier for users who have access rights such as super admin to take over other user accounts.
 
-## Installation
+## 1. Installation
 
 To install the package, simply follow the steps below.
 
-Install the package using Composer:
+### 1.1. Install The Package
 
-```
-composer require octopyid/laravel-impersonate:^2
-```
-
-```
-php artisan vendor:publish --provider="Octopy\LaraPersonate\ImpersonateServiceProvider"
+```bash
+composer require octopyid/laravel-impersonate:^3
 ```
 
-> Sometimes some users experience the problem of layout after upgrading the package, this can be solved by deleting the `public/vendor/octopyid/impersonate` folder then republish the assets.
+### 1.2. Publish The Package
 
-Add the trait `Octopy\LaraPersonate\Models\Impersonate` to your **User** model.
+```bash
+artisan vendor:publish --provider="Octopy\Impersonate\ImpersonateServiceProvider"
+```
+
+> Sometimes some users experience the problem of layout after upgrading the package, this can be solved by deleting the `public/vendor/octopyid/impersonate` folder then republish
+> the assets.
+
+### 1.3. Add Impersonate Trait to  User Model
+
+Add the trait `Octopy\Impersonate\Concerns\Impersonate` to your **User** model.
 
 ```php
-<?php
-
 namespace App\Models;
 
-use Octopy\LaraPersonate\Models\Impersonate;
+use Octopy\Impersonate\Cocerns\Impersonate;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-/**
- * Class User
- * @package App\Models
- */
 class User extends Authenticatable
 {
     use Impersonate;
 }
 ```
 
-## Usage
+## 2. Configuration
 
-By default, the user can **impersonate** and who is can be **impersonated**, but this causes security issues.
+This configuration is intended to customize the appearance of Laravel Impersonate, if you don't need a UI, don't forget to set `IMPERSONATE_ENABLED` to `false` in your environment
+file because it is enabled by default.
 
-### Defining Authorization
+Please refer to the [impersonate.php](config/impersonate.php) file to see the available configurations.
 
-To limit the users who can **impersonate**. Add `canImpersonate()` to the **User** model.
+## 3. Usage
+
+### 3.1. Basic Usage
+
+By default, you don't need to do anything, but keep in mind, Impersonation can be done by anyone if you don't define the rules of who can do impersonation or who can be imitated
+and this can cause serious security problems.
+
+#### 3.1.1. Defining Limitation
+
+To limit who can do **impersonation** or who is can be **impersonated**, add
+`impersonatable(Impersonation $impersonation)` on the Model to enforce the limitation.
+
+The **impersonator** method is intended for who can perform the impersonation and the **impersonated** method is intended for anyone who is allowed to be imitated.
+
+The example below uses [Laratrust](https://github.com/santigarcor/laratrust/) for role management where **SUPER_ADMIN** can perform impersonation against **CUSTOMER**. Feel
+free to use any other Role Management you like.
 
 ```php
-/**
-* @return bool
-*/
-public function canImpersonate() : bool
+use Octopy\Impersonate\Cocerns\Impersonate;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
+class User extends Authenticatable
 {
-    // example usage with laratrust package
-    return $this->hasRole('super-admin');
+    use Impersonate;
+    
+    /**
+     * @param  Impersonation $impersonation
+     * @return void
+     */
+    public function impersonatable(Impersonation $impersonation) : void
+    {
+        $impersonation->impersonator(function (User $user) {
+            return $user->hasRole('SUPER_ADMIN');
+        });
+
+        $impersonation->impersonated(function (User $user) {
+            return $user->hasRole('CUSTOMER');
+        });
+    }
 }
 ```
 
-To limit which users can be **impersonated** by other users, for example super admin permissions cannot be impersonated by others, add `canBeImpersonated()` to the **User** model.
+### 3.2. Advanced Usage
+
+#### 3.2.1. Impersonating User Manually
+
+Sometimes you need Impersonation manually, to perform it, you can use the singleton.
 
 ```php
-/**
-* @return bool
-*/
-public function canBeImpersonated() : bool
+$foo = App::make('impersonate');
+$foo->impersonate($admin, $customer);
+```
+
+Or you just simply call the impersonation method directly through the User Model.
+
+```php
+$admin->impersonate($customer);
+```
+
+#### 3.2.2. Defining Guard
+
+Sometimes, you want to use custom guards for authentication, instead of the built-in guards.
+
+There are two ways to define Guard.
+
+##### 3.2.2.1. On The Fly Guard
+
+```php
+$foo->guard('admin')->impersonate($admin, $customer);
+```
+
+##### 2.2 Global Guard
+
+You can use Guard for all Impersonation actions by registering the guard with the `AppServiceProvider`.
+
+```php
+public function boot() : void 
 {
-    // example usage with laratrust package
-    return $this->hasRole([
-        'merchant', 'other-role' 
-    ]);
+    App::make('impersonate')->guard('foo');
 }
 ```
+
+#### 3. Leaving Impersonation Mode
+
+To leave Impersonation mode, you just need to call the `leave` method on impersonate singleton. This will return you to the original user.
+
+```php
+$foo->leave();
+```
+
+Or via Model directly, but you can't use guard on the fly.
+
+```php
+$admin->impersonate->leave();
+```
+
+Don't hesitate to use a guard if you need it.
 
 ## Disclaimer
 
@@ -91,7 +161,7 @@ By using this package, you agree that Octopy ID and the contributors of this pac
 
 ## Security
 
-If you discover any security related issues, please email [supianidz@gmail.com](mailto:supianidz@gmail.com) or [me@octopy.id](mailto:me@octopy.id) instead of using the issue
+If you discover any security related issues, please email [supianidz@gmail.com](mailto:supianidz@gmail.com) instead of using the issue
 tracker.
 
 ## Credits
