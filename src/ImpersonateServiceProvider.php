@@ -40,8 +40,18 @@ class ImpersonateServiceProvider extends ServiceProvider
      */
     public function boot(Router $router) : void
     {
-        if (config('impersonate.enabled')) {
-            $this->loadRoutesFrom(__DIR__ . '/../routes/impersonate.php');
+        if (config('impersonate.enabled', false)) {
+            // Register the impersonation routes.
+            $this->loadRoutesFrom(
+                __DIR__ . '/../routes/impersonate.php'
+            );
+
+            // Register the impersonation UI views.
+            $this->loadViewsFrom(
+                __DIR__ . '/../resources/views', 'impersonate'
+            );
+
+            // Register the impersonation middleware.
             $router->pushMiddlewareToGroup('web', ImpersonateMiddleware::class);
         }
     }

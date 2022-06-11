@@ -206,4 +206,27 @@ final class Impersonate
 
         return true;
     }
+
+    /**
+     * @return bool
+     */
+    public function enabled() : bool
+    {
+        return config('impersonate.enabled', false);
+    }
+
+    /**
+     * Check if current user or impersonator is authorized to impersonate.
+     *
+     * @return bool
+     */
+    public function authorized() : bool
+    {
+        if ($this->storage->isInImpersonatingMode()) {
+            return $this->guard->check() && $this->impersonation()->check('impersonator', $this->getImpersonator());
+        }
+
+        // When not in impersonation mode, we need to check if current user can act as impersonator.
+        return $this->guard->check() && $this->impersonation()->check('impersonator', $this->getCurrentUser());
+    }
 }

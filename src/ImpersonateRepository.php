@@ -27,6 +27,8 @@ class ImpersonateRepository
      */
     public function getUsers(string $search = null) : Collection
     {
+        // TODO : Allow to search users by raw query.
+
         $query = $this->model->newModelQuery()->limit(config(
             'impersonate.display.limit', 10
         ));
