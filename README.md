@@ -71,16 +71,16 @@ Please refer to the [impersonate.php](config/impersonate.php) file to see the av
 By default, you don't need to do anything, but keep in mind, Impersonation can be done by anyone if you don't define the rules of who can do impersonation or who can be
 impersonated.
 
-> **Warning**
->
-> Not defining the Impersonation rules in the Model or misdefining them can lead to serious security issues.
-
 #### 3.1.1. Defining Limitation
 
 To limit who can do **impersonation** or who is can be **impersonated**, add
 `impersonatable(Impersonation $impersonation)` on the Model to enforce the limitation.
 
 The **impersonator** method is intended for who can perform the impersonation and the **impersonated** method is intended for anyone who is allowed to be imitated.
+
+> **Warning**
+>
+> Not defining the Impersonation rules in the Model or misdefining them can lead to serious security issues.
 
 The example below uses [Laratrust](https://github.com/santigarcor/laratrust/) for role management where **SUPER_ADMIN** can perform impersonation against **CUSTOMER**. Feel
 free to use any other Role Management you like.
@@ -139,7 +139,7 @@ There are two ways to define Guard.
 $foo->guard('admin')->impersonate($admin, $customer);
 ```
 
-##### 2.2 Global Guard
+##### 3.2.2.2 Global Guard
 
 You can use Guard for all Impersonation actions by registering the guard with the `AppServiceProvider`.
 
@@ -150,7 +150,7 @@ public function boot() : void
 }
 ```
 
-#### 3. Leaving Impersonation Mode
+#### 3.2.3. Leaving Impersonation Mode
 
 To leave Impersonation mode, you just need to call the `leave` method on impersonate singleton. This will return you to the original user.
 
