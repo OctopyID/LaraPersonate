@@ -54,7 +54,7 @@ return [
         |
         */
         'fields' => [
-            'name', 'email',
+            'name',
         ],
 
         'separator'  => ' - ',
@@ -75,6 +75,18 @@ return [
 
         /*
         |--------------------------------------------------------------------------
+        | Interface Width
+        |--------------------------------------------------------------------------
+        |
+        | You are free to determine the required interface width.
+        |
+        | This is very useful for avoiding hard wraps on the interface.
+        |
+        */
+        'width'      => env('IMPERSONATE_WIDTH', '350px'),
+
+        /*
+        |--------------------------------------------------------------------------
         | Rate-limiting Requests
         |--------------------------------------------------------------------------
         |
@@ -85,7 +97,7 @@ return [
         | to wait after a user has stopped typing before sending the request
         |
         */
-        'delay'      => 250,
+        'delay'      => env('IMPERSONATE_SEARCH_DELAY', 500),
 
         /*
         |--------------------------------------------------------------------------
@@ -97,7 +109,7 @@ return [
         | Be careful, this might make your application crash if there is a lot of user data.
         |
         */
-        'limit'      => env('IMPERSONATE_MAX_DISPLAY', 10),
+        'limit'      => env('IMPERSONATE_MAX_DISPLAY', 40),
     ],
 
     /*
