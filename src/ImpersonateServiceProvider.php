@@ -61,6 +61,7 @@ class ImpersonateServiceProvider extends ServiceProvider
      */
     protected function registerPublishing() : void
     {
+        $this->publishes([__DIR__ . '/../public' => public_path('vendor/octopyid/impersonate/')], 'impersonate');
         $this->publishes([__DIR__ . '/../config/impersonate.php' => config_path('impersonate.php')], 'impersonate');
     }
 }
