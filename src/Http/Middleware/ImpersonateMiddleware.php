@@ -9,6 +9,7 @@ use Octopy\Impersonate\Http\ResponseModifier;
 use Octopy\Impersonate\ImpersonateManager;
 use Octopy\Impersonate\ImpersonateAuthorization;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -101,6 +102,7 @@ class ImpersonateMiddleware
         return
             $response instanceof JsonResponse ||
             $response instanceof StreamedResponse ||
+            $response instanceof RedirectResponse ||
             $response instanceof BinaryFileResponse ||
             ! preg_match('/<[^<]+>/', $response->getContent());
     }

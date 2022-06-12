@@ -12,6 +12,14 @@ class ImpersonateTest extends TestCase
 {
     /**
      * @return void
+     */
+    public function testItCanGetVersion() : void
+    {
+        $this->assertEquals(ImpersonateManager::VERSION, $this->impersonate->version());
+    }
+
+    /**
+     * @return void
      * @throws ImpersonateException
      */
     public function testItCanImpersonateAnotherUser() : void

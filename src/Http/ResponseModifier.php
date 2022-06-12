@@ -33,11 +33,14 @@ class ResponseModifier
         // If the response contains html body, insert the impersonation view into the body.
         $position = strripos($content, '</body>');
 
+        // @codeCoverageIgnoreStart
         if ($position !== false) {
             $content = substr($content, 0, $position) . $impersonate . PHP_EOL . substr($content, $position);
         } else {
             $content .= $impersonate;
         }
+
+        // @codeCoverageIgnoreEnd
 
         return $response->setContent($content);
     }

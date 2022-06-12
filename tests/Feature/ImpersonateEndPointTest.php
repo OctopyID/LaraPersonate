@@ -5,7 +5,7 @@ namespace Octopy\Impersonate\Tests\Feature;
 use Octopy\Impersonate\Tests\Models\User;
 use Octopy\Impersonate\Tests\TestCase;
 
-class ImpersonateInterfaceTest extends TestCase
+class ImpersonateEndPointTest extends TestCase
 {
     /**
      * @return void
@@ -104,5 +104,59 @@ class ImpersonateInterfaceTest extends TestCase
             ]);
 
         $this->assertCount(1, $response->json());
+    }
+
+    /**
+     * @return void
+     */
+    public function testImpersonatorCanTakeOverImpersonatedUser() : void
+    {
+        $foo = User::create([
+            'name'  => 'Foo Bar',
+            'email' => 'foo@bar.baz',
+            'admin' => true,
+        ]);
+
+        $bar = User::create([
+            'name'  => 'Bar Baz',
+            'email' => 'bar@baz.com',
+            'admin' => false,
+        ]);
+
+        $response = $this->actingAs($foo)->json('POST', route('impersonate.login'), [
+            'user' => $bar->id,
+        ]);
+
+        $response->assertStatus(200);
+
+        $this->assertTrue($this->impersonate->hasImpersonation());
+    }
+
+    /**
+     * @return void
+     */
+    public function testImpersonatorCanLeaveImpersonation() : void
+    {
+        $foo = User::create([
+            'name'  => 'Foo Bar',
+            'email' => 'foo@bar.baz',
+            'admin' => true,
+        ]);
+
+        $bar = User::create([
+            'name'  => 'Bar Baz',
+            'email' => 'bar@baz.com',
+            'admin' => false,
+        ]);
+
+        $response = $this->actingAs($foo)->json('POST', route('impersonate.login'), [
+            'user' => $bar->id,
+        ]);
+
+        $response->assertStatus(200);
+
+        $this->actingAs($bar)->json('POST', route('impersonate.leave'));
+
+        $this->assertFalse($this->impersonate->hasImpersonation());
     }
 }
