@@ -14,7 +14,7 @@ use Octopy\Impersonate\Storage\SessionStorage;
 use ReflectionClass;
 use Throwable;
 
-final class Impersonate
+final class ImpersonateManager
 {
     /**
      * @const string
@@ -55,6 +55,22 @@ final class Impersonate
     }
 
     /**
+     * @return string
+     */
+    public function version() : string
+    {
+        return ImpersonateManager::VERSION;
+    }
+
+    /**
+     * @return bool
+     */
+    public function enabled() : bool
+    {
+        return config('impersonate.enabled', false);
+    }
+
+    /**
      * Set auth guard.
      *
      * @param  string $guard
@@ -68,11 +84,21 @@ final class Impersonate
     }
 
     /**
-     * @return Impersonation
+     * @return ImpersonateAuthorization
      */
-    public function impersonation() : Impersonation
+    public function authorization() : ImpersonateAuthorization
     {
-        return App::make('impersonation');
+        return App::make('impersonate.authorization');
+    }
+
+    /**
+     * Check if current user or impersonator is authorized to impersonate.
+     *
+     * @return bool
+     */
+    public function authorized() : bool
+    {
+        return $this->guard->check() && $this->authorization()->checkImpersonator($this->getImpersonator());
     }
 
     /**
@@ -163,7 +189,7 @@ final class Impersonate
      */
     public function getImpersonator() : User
     {
-        if ($this->storage->isInImpersonatingMode()) {
+        if ($this->hasImpersonation()) {
             return $this->repository->getImpersonatorInStorage();
         }
 
@@ -223,37 +249,14 @@ final class Impersonate
             throw new ImpersonateException('You cannot impersonate yourself.');
         }
 
-        if (! $this->impersonation()->check('impersonator', $impersonator)) {
+        if (! $this->authorization()->checkImpersonator($impersonator)) {
             throw new ImpersonateException('You don\'t have the ability to impersonate.');
         }
 
-        if (! $this->impersonation()->check('impersonated', $impersonated)) {
+        if (! $this->authorization()->checkImpersonated($impersonated)) {
             throw new ImpersonateException('You can\'t impersonate this user.');
         }
 
         return true;
-    }
-
-    /**
-     * @return bool
-     */
-    public function enabled() : bool
-    {
-        return config('impersonate.enabled', false);
-    }
-
-    /**
-     * Check if current user or impersonator is authorized to impersonate.
-     *
-     * @return bool
-     */
-    public function authorized() : bool
-    {
-        if ($this->storage->isInImpersonatingMode()) {
-            return $this->guard->check() && $this->impersonation()->check('impersonator', $this->getImpersonator());
-        }
-
-        // When not in impersonation mode, we need to check if current user can act as impersonator.
-        return $this->guard->check() && $this->impersonation()->check('impersonator', $this->getCurrentUser());
     }
 }

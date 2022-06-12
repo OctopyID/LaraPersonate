@@ -19,14 +19,14 @@ class ImpersonateServiceProvider extends ServiceProvider
             __DIR__ . '/../config/impersonate.php', 'impersonate'
         );
 
-        $this->app->alias(Impersonate::class, 'impersonate');
-        $this->app->singleton(Impersonate::class, function () {
-            return new Impersonate;
+        $this->app->alias(ImpersonateManager::class, 'impersonate');
+        $this->app->singleton(ImpersonateManager::class, function () {
+            return new ImpersonateManager;
         });
 
-        $this->app->alias(Impersonation::class, 'impersonation');
-        $this->app->singleton(Impersonation::class, function () {
-            return new Impersonation($this->app->make('impersonate'));
+        $this->app->alias(ImpersonateAuthorization::class, 'impersonate.authorization');
+        $this->app->singleton(ImpersonateAuthorization::class, function () {
+            return new ImpersonateAuthorization($this->app->make('impersonate'));
         });
 
         if ($this->app->runningInConsole()) {

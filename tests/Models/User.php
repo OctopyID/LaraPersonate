@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Str;
 use Octopy\Impersonate\Concerns\Impersonate;
-use Octopy\Impersonate\Impersonation;
+use Octopy\Impersonate\ImpersonateAuthorization;
 
 /**
  * @method static create(string[] $array)
@@ -46,10 +46,10 @@ class User extends Authenticatable
     }
 
     /**
-     * @param  Impersonation $impersonation
+     * @param  ImpersonateAuthorization $impersonation
      * @return void
      */
-    public function impersonatable(Impersonation $impersonation) : void
+    public function impersonatable(ImpersonateAuthorization $impersonation) : void
     {
         $impersonation->impersonator(function (User $user) {
             return $user->admin;

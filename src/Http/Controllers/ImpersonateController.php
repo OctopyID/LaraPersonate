@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
 use Octopy\Impersonate\Exceptions\ImpersonateException;
-use Octopy\Impersonate\Impersonate;
+use Octopy\Impersonate\ImpersonateManager;
 use Octopy\Impersonate\ImpersonateRepository;
 
 class ImpersonateController
@@ -18,9 +18,9 @@ class ImpersonateController
     protected ImpersonateRepository $repository;
 
     /**
-     * @param  Impersonate $impersonate
+     * @param  ImpersonateManager $impersonate
      */
-    public function __construct(protected Impersonate $impersonate)
+    public function __construct(protected ImpersonateManager $impersonate)
     {
         $this->repository = new ImpersonateRepository($impersonate);
     }

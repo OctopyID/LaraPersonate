@@ -39,7 +39,7 @@
 
                 <div class="impersonate-footer-version">
                     <a href="https://github.com/OctopyID/LaraPersonate" target="_blank">
-                        {{ \Octopy\Impersonate\Impersonate::VERSION }}
+                        {{ $impersonate->version() }}
                     </a>
                 </div>
             </div>

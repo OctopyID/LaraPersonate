@@ -6,8 +6,8 @@ use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Octopy\Impersonate\Http\ResponseModifier;
-use Octopy\Impersonate\Impersonate;
-use Octopy\Impersonate\Impersonation;
+use Octopy\Impersonate\ImpersonateManager;
+use Octopy\Impersonate\ImpersonateAuthorization;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -27,9 +27,9 @@ class ImpersonateMiddleware
     protected ResponseModifier $modifier;
 
     /**
-     * @param  Impersonate $impersonate
+     * @param  ImpersonateManager $impersonate
      */
-    public function __construct(protected Impersonate $impersonate)
+    public function __construct(protected ImpersonateManager $impersonate)
     {
         $this->modifier = new ResponseModifier($impersonate);
 

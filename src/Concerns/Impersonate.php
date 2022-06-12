@@ -6,8 +6,8 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\App;
 use Octopy\Impersonate\Exceptions\ImpersonateException;
-use Octopy\Impersonate\Impersonate as Manager;
-use Octopy\Impersonate\Impersonation;
+use Octopy\Impersonate\ImpersonateManager;
+use Octopy\Impersonate\ImpersonateAuthorization;
 
 trait Impersonate
 {
@@ -17,34 +17,34 @@ trait Impersonate
     public static function bootImpersonate() : void
     {
         (new static)->impersonatable(App::make(
-            'impersonation'
+            'impersonate.authorization'
         ));
     }
 
     /**
-     * @return Manager
+     * @return ImpersonateManager
      * @throws ImpersonateException
      */
-    public function getImpersonateAttribute() : Manager
+    public function getImpersonateAttribute() : ImpersonateManager
     {
         return $this->impersonate();
     }
 
     /**
-     * @param  Impersonation $impersonation
+     * @param  ImpersonateAuthorization $impersonation
      * @return void
      */
-    public abstract function impersonatable(Impersonation $impersonation) : void;
+    public abstract function impersonatable(ImpersonateAuthorization $impersonation) : void;
 
     /**
      * @param  User|int|string|null $user
-     * @return User|Manager
+     * @return User|ImpersonateManager
      * @throws ImpersonateException
      */
-    public function impersonate(User|int|string $user = null) : User|Manager
+    public function impersonate(User|int|string $user = null) : User|ImpersonateManager
     {
         /**
-         * @var Manager $manager
+         * @var ImpersonateManager $manager
          */
         $manager = App::make('impersonate');
 

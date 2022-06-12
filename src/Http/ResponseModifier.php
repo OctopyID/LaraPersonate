@@ -6,14 +6,14 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Response;
-use Octopy\Impersonate\Impersonate;
+use Octopy\Impersonate\ImpersonateManager;
 
 class ResponseModifier
 {
     /**
-     * @param  Impersonate $impersonate
+     * @param  ImpersonateManager $impersonate
      */
-    public function __construct(protected Impersonate $impersonate)
+    public function __construct(protected ImpersonateManager $impersonate)
     {
         //
     }

@@ -4,7 +4,7 @@ namespace Octopy\Impersonate\Tests\Unit;
 
 use Illuminate\Support\Facades\Auth;
 use Octopy\Impersonate\Exceptions\ImpersonateException;
-use Octopy\Impersonate\Impersonate;
+use Octopy\Impersonate\ImpersonateManager;
 use Octopy\Impersonate\Tests\Models\User;
 use Octopy\Impersonate\Tests\TestCase;
 

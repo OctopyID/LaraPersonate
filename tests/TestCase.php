@@ -4,7 +4,7 @@ namespace Octopy\Impersonate\Tests;
 
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Octopy\Impersonate\Impersonate;
+use Octopy\Impersonate\ImpersonateManager;
 use Octopy\Impersonate\ImpersonateServiceProvider;
 use Octopy\Impersonate\Tests\Models\User;
 
@@ -13,9 +13,9 @@ class TestCase extends \Orchestra\Testbench\TestCase
     use RefreshDatabase;
 
     /**
-     * @var Impersonate
+     * @var ImpersonateManager
      */
-    protected Impersonate $impersonate;
+    protected ImpersonateManager $impersonate;
 
     /**
      * @return void

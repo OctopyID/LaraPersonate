@@ -15,9 +15,9 @@ class ImpersonateRepository
     protected User $model;
 
     /**
-     * @param  Impersonate $impersonate
+     * @param  ImpersonateManager $impersonate
      */
-    public function __construct(protected Impersonate $impersonate)
+    public function __construct(protected ImpersonateManager $impersonate)
     {
         $this->model = App::make(config('impersonate.model'));
     }
@@ -62,7 +62,7 @@ class ImpersonateRepository
 
         return $query->get()
             ->filter(function ($user) {
-                return $this->impersonate->impersonation()->check('impersonated', $user); // filter out users that cannot be impersonated
+                return $this->impersonate->authorization()->check('impersonated', $user); // filter out users that cannot be impersonated
             })
             ->map(function ($user) {
                 $display = new TextDisplay($user);

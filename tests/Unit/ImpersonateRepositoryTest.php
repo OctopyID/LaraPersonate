@@ -2,7 +2,7 @@
 
 namespace Octopy\Impersonate\Tests\Unit;
 
-use Octopy\Impersonate\Impersonate;
+use Octopy\Impersonate\ImpersonateManager;
 use Octopy\Impersonate\ImpersonateRepository;
 use Octopy\Impersonate\Tests\Models\User;
 use Octopy\Impersonate\Tests\TestCase;
