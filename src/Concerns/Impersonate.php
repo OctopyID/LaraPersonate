@@ -33,6 +33,7 @@ trait Impersonate
     /**
      * @param  ImpersonateAuthorization $authorization
      * @return void
+     * @codeCoverageIgnore
      */
     public function impersonatable(ImpersonateAuthorization $authorization) : void
     {
