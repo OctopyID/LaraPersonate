@@ -24,7 +24,7 @@
     }
 
     &-border {
-        border: 1px solid #526484;
+        border: 1px solid #DBDFEA;
     }
 
     &-content {
@@ -48,10 +48,6 @@
         &-non-active {
             height: 55px;
             padding: 10px 65px 3px 10px;
-        }
-
-        & > select.impersonate-select + .select2-container {
-            width: 100% !important;
         }
     }
 
@@ -78,7 +74,6 @@
             }
         }
 
-
         &-version {
             width: 50%;
             position: absolute;
@@ -102,7 +97,7 @@
         height: 56px;
         background: rgb(58, 144, 162);
         background: linear-gradient(100deg, rgba(58, 144, 162, 1) 0%, rgba(49, 173, 199, 1) 48%, rgba(14, 178, 211, 1) 72%);
-        border: 1px solid #526484;
+        border: 1px solid #DBDFEA;
         border-radius: 50%;
         left: 0;
         right: 0;
@@ -134,4 +129,4 @@
     }
 }
 
-@import "select2";
+@import "resources/sass/select";

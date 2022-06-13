@@ -3,7 +3,7 @@
 <div class="impersonate-wrapper">
     <div class="impersonate-content">
         <label for="impersonate"></label>
-        <select class="impersonate-select" id="impersonate">
+        <select class="impersonate-select" id="impersonate" style="width: 100% !important;">
             @if($impersonate->isInImpersonation())
                 <option value="{{ $impersonate->getImpersonated()->getKey() }}" selected="selected">
                     {{ new \Octopy\Impersonate\Support\TextDisplay($impersonate->getImpersonated()) }}

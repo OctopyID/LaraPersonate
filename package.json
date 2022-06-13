@@ -6,7 +6,7 @@
     },
     "dependencies": {
         "jquery": "^3.6.0",
-        "select2": "^4.1.0-rc.0"
+        "select2": "4.0.13"
     },
     "devDependencies": {
         "laravel-mix": "^6.0.48",
