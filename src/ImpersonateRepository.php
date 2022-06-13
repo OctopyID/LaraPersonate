@@ -40,7 +40,7 @@ class ImpersonateRepository
         // TODO : Allow to search users by raw query.
 
         $query = $this->model->newModelQuery()->limit(config(
-            'impersonate.display.limit', 10
+            'impersonate.interface.limit', 10
         ));
 
         // If search is not null, we will add a where clause to the query
@@ -96,7 +96,7 @@ class ImpersonateRepository
      */
     private function getColumns() : array
     {
-        return array_merge([$this->model->getAuthIdentifierName()], config('impersonate.display.searchable', [
+        return array_merge([$this->model->getAuthIdentifierName()], config('impersonate.interface.searchable', [
             //
         ]));
     }

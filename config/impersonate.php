@@ -32,9 +32,25 @@ return [
     | This must be an Eloquent Model instance.
     |
     */
-    'model'   => config('auth.providers.users.model', App\Models\User::class),
+    'model'   => config('auth.providers.users.model'),
 
-    'display' => [
+    /*
+    |--------------------------------------------------------------------------
+    | Authentication Guards
+    |--------------------------------------------------------------------------
+    |
+    | Next, you may define every authentication guard for your application.
+    | Of course, a great default configuration has been defined for you
+    | here which uses session storage and the Eloquent user provider.
+    |
+    | All authentication drivers have a user provider. This defines how the
+    | users are actually retrieved out of your database or other storage
+    | mechanisms used by this application to persist your user's data.
+    |
+    */
+    'guard'   => config('auth.defaults.guard'),
+
+    'interface' => [
         /*
         |--------------------------------------------------------------------------
         | Field Name
@@ -79,7 +95,6 @@ return [
         |--------------------------------------------------------------------------
         |
         | You are free to determine the required interface width.
-        |
         | This is very useful for avoiding hard wraps on the interface.
         |
         */
@@ -109,19 +124,6 @@ return [
         | Be careful, this might make your application crash if there is a lot of user data.
         |
         */
-        'limit'      => env('IMPERSONATE_MAX_DISPLAY', 40),
+        'limit'      => env('IMPERSONATE_MAX_DISPLAY', 20),
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Storage Driver
-    |--------------------------------------------------------------------------
-    |
-    | Storage is used to store impersonation data which will be reused
-    | when exiting impersonation mode.
-    |
-    | Currently, only the `session` driver is available.
-    |
-    */
-    'storage' => 'session',
 ];

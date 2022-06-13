@@ -41,16 +41,11 @@ final class ImpersonateManager
      */
     public function __construct()
     {
-        // Set auth guard.
         $this->guard(config(
-            'impersonate.guard', 'web'
+            'impersonate.guard'
         ));
 
-        // Set storage.
-        $this->storage(config(
-            'impersonate.storage', 'session'
-        ));
-
+        $this->storage = new SessionStorage;
         $this->repository = new ImpersonateRepository($this);
     }
 
@@ -68,6 +63,14 @@ final class ImpersonateManager
     public function enabled() : bool
     {
         return config('impersonate.enabled', false);
+    }
+
+    /**
+     * @return Storage
+     */
+    public function storage() : Storage
+    {
+        return $this->storage;
     }
 
     /**
@@ -126,7 +129,7 @@ final class ImpersonateManager
         }
 
         // when in impersonation mode, $impersonator set to current impersonator
-        if ($this->storage->isInImpersonatingMode()) {
+        if ($this->isInImpersonation()) {
             $impersonator = $this->getImpersonator();
         }
 
@@ -151,11 +154,9 @@ final class ImpersonateManager
      */
     public function leave() : bool
     {
-        if ($this->storage->isInImpersonatingMode()) {
+        if ($this->isInImpersonation()) {
             // first, we need set current user to impersonator
-            $this->guard->login(
-                $this->getImpersonator()
-            );
+            $this->guard->login($this->getImpersonator());
 
             // then, we need to clear storage
             $this->storage->clearStorage();
@@ -167,7 +168,7 @@ final class ImpersonateManager
     /**
      * @return bool
      */
-    public function hasImpersonation() : bool
+    public function isInImpersonation() : bool
     {
         return $this->storage->isInImpersonatingMode();
     }
@@ -189,7 +190,7 @@ final class ImpersonateManager
      */
     public function getImpersonator() : User
     {
-        if ($this->hasImpersonation()) {
+        if ($this->isInImpersonation()) {
             return $this->repository->getImpersonatorInStorage();
         }
 
@@ -204,35 +205,6 @@ final class ImpersonateManager
     public function getImpersonated() : User
     {
         return $this->repository->getImpersonatedInStorage();
-    }
-
-    /**
-     * Set or get storage.
-     *
-     * @param  Storage|string|null $storage
-     * @return Storage
-     */
-    public function storage(Storage|string $storage = null) : Storage
-    {
-        if (is_null($storage)) {
-            return $this->storage;
-        }
-
-        // try to find the storage class
-        // @codeCoverageIgnoreStart
-        if (is_string($storage) && ! class_exists($storage)) {
-            try {
-                $storage = match (strtolower($storage)) {
-                    'session' => SessionStorage::class,
-                };
-            } catch (Throwable) {
-                //
-            }
-        }
-
-        // @codeCoverageIgnoreEnd
-
-        return $this->storage = ! is_string($storage) ? $storage : App::make($storage);
     }
 
     /**

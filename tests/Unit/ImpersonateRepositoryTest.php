@@ -24,7 +24,7 @@ class ImpersonateRepositoryTest extends TestCase
         $this->repository = new ImpersonateRepository($this->impersonate);
 
         config([
-            'impersonate.display.searchable' => array_merge(config('impersonate.display.searchable'), [
+            'impersonate.interface.searchable' => array_merge(config('impersonate.interface.searchable'), [
                 'admin',
             ]),
         ]);
@@ -142,10 +142,10 @@ class ImpersonateRepositoryTest extends TestCase
         $this->assertCount(1, $this->repository->getUsers('Bar Baz'));
 
         config([
-            'impersonate.display.searchable' => array_merge(config('impersonate.display.searchable'), [
+            'impersonate.interface.searchable' => array_merge(config('impersonate.interface.searchable'), [
                 'comments.user_id',
             ]),
-            'impersonate.display.fields'     => array_merge(config('impersonate.display.fields'), [
+            'impersonate.interface.fields'     => array_merge(config('impersonate.interface.fields'), [
                 'email', 'comments.0.user_id',
             ]),
         ]);

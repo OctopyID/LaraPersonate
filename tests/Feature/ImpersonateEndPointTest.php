@@ -129,7 +129,7 @@ class ImpersonateEndPointTest extends TestCase
 
         $response->assertStatus(200);
 
-        $this->assertTrue($this->impersonate->hasImpersonation());
+        $this->assertTrue($this->impersonate->isInImpersonation());
     }
 
     /**
@@ -157,6 +157,6 @@ class ImpersonateEndPointTest extends TestCase
 
         $this->actingAs($bar)->json('POST', route('impersonate.leave'));
 
-        $this->assertFalse($this->impersonate->hasImpersonation());
+        $this->assertFalse($this->impersonate->isInImpersonation());
     }
 }

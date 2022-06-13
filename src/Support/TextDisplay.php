@@ -33,7 +33,7 @@ final class TextDisplay implements Stringable
         $val = [];
         $tmp = $this->user;
 
-        $fields = config('impersonate.display.fields', []);
+        $fields = config('impersonate.interface.fields', []);
 
         if ($single) {
             $fields = [$fields[0]];
@@ -53,6 +53,6 @@ final class TextDisplay implements Stringable
             }
         }
 
-        return implode(config('impersonate.display.separator'), $val);
+        return implode(config('impersonate.interface.separator'), $val);
     }
 }

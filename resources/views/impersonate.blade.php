@@ -4,7 +4,7 @@
     <div class="impersonate-content">
         <label for="impersonate"></label>
         <select class="impersonate-select" id="impersonate">
-            @if($impersonate->hasImpersonation())
+            @if($impersonate->isInImpersonation())
                 <option value="{{ $impersonate->getImpersonated()->getKey() }}" selected="selected">
                     {{ new \Octopy\Impersonate\Support\TextDisplay($impersonate->getImpersonated()) }}
                 </option>
@@ -15,7 +15,7 @@
             @endif
         </select>
 
-        @if($impersonate->hasImpersonation())
+        @if($impersonate->isInImpersonation())
 
             <div class="impersonate-info">
                 <table>
@@ -53,11 +53,11 @@
 
 <script>
     const impersonate = {
-        active: {{ $impersonate->hasImpersonation() ? 'true' : 'false' }},
+        active: {{ $impersonate->isInImpersonation() ? 'true' : 'false' }},
         config: {
             token: '{{ csrf_token() }}',
-            delay: '{{ config('impersonate.display.delay') }}',
-            width: '{{ config('impersonate.display.width') }}'
+            delay: '{{ config('impersonate.interface.delay') }}',
+            width: '{{ config('impersonate.interface.width') }}'
         },
     }
 </script>
