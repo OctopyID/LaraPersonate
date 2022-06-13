@@ -1,3 +1,23 @@
+.select2.select2-container.select2-container--impersonate {
+    width: 100% !important;
+    display: inline-block;
+}
+
+.impersonate-select {
+    &.select2-hidden-accessible {
+        border: 0 !important;
+        clip: rect(0 0 0 0) !important;
+        -webkit-clip-path: inset(50%) !important;
+        clip-path: inset(50%) !important;
+        height: 1px !important;
+        overflow: hidden !important;
+        padding: 0 !important;
+        position: absolute !important;
+        width: 1px !important;
+        white-space: nowrap !important;
+    }
+}
+
 .select2-container--impersonate {
     box-sizing: border-box;
     margin: 0;
