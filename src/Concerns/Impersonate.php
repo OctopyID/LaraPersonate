@@ -34,7 +34,16 @@ trait Impersonate
      * @param  ImpersonateAuthorization $authorization
      * @return void
      */
-    public abstract function impersonatable(ImpersonateAuthorization $authorization) : void;
+    public function impersonatable(ImpersonateAuthorization $authorization) : void
+    {
+        $authorization->impersonator(function (User $user) {
+            return true;
+        });
+
+        $authorization->impersonated(function (User $user) {
+            return true;
+        });
+    }
 
     /**
      * @param  User|int|string|null $user

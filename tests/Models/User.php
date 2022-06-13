@@ -46,16 +46,16 @@ class User extends Authenticatable
     }
 
     /**
-     * @param  ImpersonateAuthorization $impersonation
+     * @param  ImpersonateAuthorization $authorization
      * @return void
      */
-    public function impersonatable(ImpersonateAuthorization $impersonation) : void
+    public function impersonatable(ImpersonateAuthorization $authorization) : void
     {
-        $impersonation->impersonator(function (User $user) {
+        $authorization->impersonator(function (User $user) {
             return $user->admin;
         });
 
-        $impersonation->impersonated(function (User $user) {
+        $authorization->impersonated(function (User $user) {
             return ! $user->admin;
         });
     }
