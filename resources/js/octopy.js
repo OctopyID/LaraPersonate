@@ -55,29 +55,31 @@ $(document).ready(function () {
         toggle.addClass('impersonate-toggle-active')
     }
 
-    toggle.click(function () {
-
-        // Init SELECT2
-        select.select2({
-            dropdownParent: wrapper,
-            ajax: {
-                url: '/impersonate/users',
-                dataType: 'JSON',
-                method: 'GET',
-                delay: impersonate.config.delay,
-                data: (params) => {
-                    return {
-                        search: params.term,
-                    };
-                },
-                processResults: data => ({
-                    // parse the results into the format expected by Select2.
-                    results: $.map(data, ({ key, val }) => ({
-                        id: key, text: val
-                    }))
-                })
+    select.select2({
+        theme: 'impersonate',
+        ajax: {
+            url: '/impersonate/users',
+            dataType: 'JSON',
+            method: 'GET',
+            delay: impersonate.config.delay,
+            data: (params) => {
+                return {
+                    search: params.term,
+                };
             },
-        });
+            processResults: data => ({
+                // parse the results into the format expected by Select2.
+                results: $.map(data, ({ key, val }) => ({
+                    id: key, text: val
+                }))
+            })
+        },
+    });
+
+    select.select2('open');
+    select.select2('close');
+
+    toggle.click(function () {
 
         wrapper.toggleClass('impersonate-border');
 

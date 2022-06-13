@@ -13,8 +13,8 @@ mix.options({
         processCssUrls: false
     })
     .setPublicPath('public')
-    .js('resources/js/app.js', 'public')
-    .sass('resources/sass/app.scss', 'public', [
+    .js('resources/js/octopy.js', 'public')
+    .sass('resources/sass/octopy.scss', 'public', [
         //
     ])
     .version();

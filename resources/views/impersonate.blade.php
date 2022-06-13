@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="{{ asset('vendor/octopyid/impersonate/app.css?debug='.microtime()) }}">
+<link rel="stylesheet" href="{{ asset('vendor/octopyid/impersonate/octopy.css') }}">
 
 <div class="impersonate-wrapper">
     <div class="impersonate-content">
@@ -62,4 +62,4 @@
     }
 </script>
 
-<script src="{{ asset('vendor/octopyid/impersonate/app.js?time=' . time()) }}"></script>
+<script src="{{ asset('vendor/octopyid/impersonate/octopy.js') }}"></script>
