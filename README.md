@@ -27,7 +27,7 @@ To install the package, simply follow the steps below.
 ### 1.1. Install The Package
 
 ```bash
-composer require octopyid/laravel-impersonate:^3
+composer require octopyid/laravel-impersonate:dev-main
 ```
 
 ### 1.2. Publish The Package
@@ -74,13 +74,13 @@ impersonated.
 #### 3.1.1. Defining Limitation
 
 To limit who can do **impersonation** or who is can be **impersonated**, add
-`impersonatable(Impersonation $impersonation)` on the Model to enforce the limitation.
+`impersonatable(ImpersonateAuthorization $authorization)` on the Model to enforce the limitation.
 
 The **impersonator** method is intended for who can perform the impersonation and the **impersonated** method is intended for anyone who is allowed to be imitated.
 
 > **Warning**
 >
-> Not defining the Impersonation rules in the Model or misdefining them can lead to serious security issues.
+> Not defining the ImpersonateAuthorization rules in the Model or misdefining them can lead to serious security issues.
 
 The example below uses [Laratrust](https://github.com/santigarcor/laratrust/) for role management where **SUPER_ADMIN** can perform impersonation against **CUSTOMER**. Feel
 free to use any other Role Management you like.
@@ -94,16 +94,16 @@ class User extends Authenticatable
     use Impersonate;
     
     /**
-     * @param  Impersonation $impersonation
+     * @param  ImpersonateAuthorization $authorization
      * @return void
      */
-    public function impersonatable(Impersonation $impersonation) : void
+    public function impersonatable(ImpersonateAuthorization $authorization) : void
     {
-        $impersonation->impersonator(function (User $user) {
+        $authorization->impersonator(function (User $user) {
             return $user->hasRole('SUPER_ADMIN');
         });
 
-        $impersonation->impersonated(function (User $user) {
+        $authorization->impersonated(function (User $user) {
             return $user->hasRole('CUSTOMER');
         });
     }
@@ -114,7 +114,7 @@ class User extends Authenticatable
 
 #### 3.2.1. Impersonating User Manually
 
-Sometimes you need Impersonation manually, to perform it, you can use the singleton.
+Sometimes you need ImpersonateAuthorization manually, to perform it, you can use the singleton.
 
 ```php
 $foo = App::make('impersonate');
@@ -141,7 +141,7 @@ $foo->guard('admin')->impersonate($admin, $customer);
 
 ##### 3.2.2.2 Global Guard
 
-You can use Guard for all Impersonation actions by registering the guard with the `AppServiceProvider`.
+You can use Guard for all ImpersonateAuthorization actions by registering the guard with the `AppServiceProvider`.
 
 ```php
 public function boot() : void 
@@ -150,9 +150,9 @@ public function boot() : void
 }
 ```
 
-#### 3.2.3. Leaving Impersonation Mode
+#### 3.2.3. Leaving ImpersonateAuthorization Mode
 
-To leave Impersonation mode, you just need to call the `leave` method on impersonate singleton. This will return you to the original user.
+To leave ImpersonateAuthorization mode, you just need to call the `leave` method on impersonate singleton. This will return you to the original user.
 
 ```php
 $foo->leave();

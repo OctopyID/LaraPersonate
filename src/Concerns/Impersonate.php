@@ -31,10 +31,10 @@ trait Impersonate
     }
 
     /**
-     * @param  ImpersonateAuthorization $impersonation
+     * @param  ImpersonateAuthorization $authorization
      * @return void
      */
-    public abstract function impersonatable(ImpersonateAuthorization $impersonation) : void;
+    public abstract function impersonatable(ImpersonateAuthorization $authorization) : void;
 
     /**
      * @param  User|int|string|null $user
