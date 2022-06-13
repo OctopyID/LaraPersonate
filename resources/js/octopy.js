@@ -48,11 +48,15 @@ $(document).ready(function () {
     content.css('width', impersonate.config.width)
 
     select.select2().on('select2:open', () => {
-        $('.select2-search__field').attr('placeholder', ' Search...');
+        $('.select2-container--impersonate .select2-search__field').attr('placeholder', ' Search...');
     });
 
     if (impersonate.active) {
         toggle.addClass('impersonate-toggle-active')
+    }
+
+    if (select.hasClass('select2-hidden-accessible')) {
+        wrapper.find('.select2-container').remove();
     }
 
     select.select2({
@@ -96,7 +100,6 @@ $(document).ready(function () {
             content.toggleClass('impersonate-content-toggled');
         });
 
-        // fix layout
         if (impersonate.active) {
             wrapper.addClass('impersonate-wrapper-active');
             content.addClass('impersonate-content-active');
