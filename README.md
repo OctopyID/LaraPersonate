@@ -11,7 +11,10 @@
 
 # Laravel Impersonate
 
-Is a user impersonate for the Laravel framework. This package makes it easier for users who have access rights such as super admin to take over other user accounts.
+Is an Impersonation package for the Laravel Framework. With this package you can easily impersonate other users either manually or using the interface we provide.
+
+You don't have to worry about authorizing who can impersonate or who can be impersonated, coz we provided it by default, just need to adjust it a little according to your
+rules.
 
 ## 1. Installation
 
@@ -114,11 +117,11 @@ class User extends Authenticatable
 
 #### 3.2.1. Impersonating User Manually
 
-Sometimes you need ImpersonateAuthorization manually, to perform it, you can use the singleton.
+Sometimes you need Impersonating manually, to perform it, you can use the impersonate singleton.
 
 ```php
-$foo = App::make('impersonate');
-$foo->impersonate($admin, $customer);
+$impersonate = App::make('impersonate');
+$impersonate->take($admin, $customer);
 ```
 
 Or you just simply call the impersonation method directly through the User Model.
@@ -133,13 +136,13 @@ Sometimes, you want to use custom guards for authentication, instead of the buil
 
 There are two ways to define Guard.
 
-##### 3.2.2.1. On The Fly Guard
+##### 3.2.2.1. On The Fly
 
 ```php
-$foo->guard('admin')->impersonate($admin, $customer);
+$impersonate->guard('foo')->impersonate($admin, $customer);
 ```
 
-##### 3.2.2.2 Global Guard
+##### 3.2.2.2 Globally
 
 You can use Guard for all ImpersonateAuthorization actions by registering the guard with the `AppServiceProvider`.
 
@@ -155,7 +158,7 @@ public function boot() : void
 To leave ImpersonateAuthorization mode, you just need to call the `leave` method on impersonate singleton. This will return you to the original user.
 
 ```php
-$foo->leave();
+$impersonate->leave();
 ```
 
 Or via Model directly, but you can't use guard on the fly.

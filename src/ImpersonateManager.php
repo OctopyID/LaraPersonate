@@ -112,7 +112,7 @@ final class ImpersonateManager
      * @return User
      * @throws ImpersonateException
      */
-    public function impersonate(User|int|string $impersonator, User|int|string $impersonated) : User
+    public function take(User|int|string $impersonator, User|int|string $impersonated) : User
     {
         if (! $this->guard->check()) {
             throw new ImpersonateException('You must be logged in to impersonate.');

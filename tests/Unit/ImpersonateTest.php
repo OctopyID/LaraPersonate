@@ -74,7 +74,7 @@ class ImpersonateTest extends TestCase
             ->assertEquals($foo->toArray(), $this->impersonate->getCurrentUser()->toArray());
 
         // then, try to impersonate bar
-        $this->impersonate->impersonate(1, 2);
+        $this->impersonate->take(1, 2);
         $this->assertEquals($bar->toArray(), $this->impersonate->getCurrentUser()->toArray());
 
         $this->assertEquals($foo->toArray(), $this->impersonate->getImpersonator()->toArray());

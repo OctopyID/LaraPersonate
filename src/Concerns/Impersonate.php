@@ -59,7 +59,7 @@ trait Impersonate
         $manager = App::make('impersonate');
 
         if ($user) {
-            return $manager->impersonate($this, $user);
+            return $manager->take($this, $user);
         }
 
         return $manager;

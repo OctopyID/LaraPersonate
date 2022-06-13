@@ -41,7 +41,7 @@ class ImpersonateController
      */
     public function login(Request $request)
     {
-        return $this->impersonate->impersonate($this->impersonate->getImpersonator(), $request->get('user'));
+        return $this->impersonate->take($this->impersonate->getImpersonator(), $request->get('user'));
     }
 
     /**
