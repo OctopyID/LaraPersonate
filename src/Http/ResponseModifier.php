@@ -30,7 +30,7 @@ class ResponseModifier
             'impersonate' => $this->impersonate,
         ]));
 
-        // If the response contains html body, insert the impersonation view into the body.
+        // if the response contains html body, insert the impersonation view into the body.
         $position = strripos($content, '</body>');
 
         // @codeCoverageIgnoreStart
@@ -51,6 +51,14 @@ class ResponseModifier
      */
     private function minify(string $content) : string
     {
-        return preg_replace('/>\s+</m', '><', preg_replace('/\n/', '', $content));
+        $pattern = [
+            '/>[^\S ]+/s'       => '>',     // strip whitespaces after tags, except space
+            '/[^\S ]+</s'       => '<',     // strip whitespaces before tags, except space
+            '/(\s)+/s'          => '\\1',   // shorten multiple whitespace sequences
+            '/<!--(.|\s)*?-->/' => '',      // remove HTML comments
+            '/> </'             => '><',    // remove whitespace between tags
+        ];
+
+        return preg_replace(array_keys($pattern), array_values($pattern), $content);
     }
 }
