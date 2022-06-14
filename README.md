@@ -30,7 +30,7 @@ To install the package, simply follow the steps below.
 ### 1.1. Install The Package
 
 ```bash
-composer require octopyid/laravel-impersonate:dev-main
+composer require octopyid/laravel-impersonate:^3
 ```
 
 ### 1.2. Publish The Package
