@@ -11,6 +11,7 @@
         min-width: 58px;
         position: fixed;
         right: 40px;
+	z-index: 9999;
 
         &-active {
             border-radius: 5px 5px 5px 5px !important;
