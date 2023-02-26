@@ -56,7 +56,7 @@
         active: {{ $impersonate->isInImpersonation() ? 'true' : 'false' }},
         config: {
             token: '{{ csrf_token() }}',
-            route: '{{ config('app.url') }}',
+            route: '{{ rtrim(config('app.url'), '/') }}',
             delay: '{{ config('impersonate.interface.delay') }}',
             width: '{{ config('impersonate.interface.width') }}',
         },
