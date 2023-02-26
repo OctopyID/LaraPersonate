@@ -5,17 +5,18 @@ import 'select2';
 
 $.noConflict();
 
+
 /**
  * @var impersonate = {
  *     active: false,
  *     config: {
  *         token: 'foo',
+ *         route: 'http://localhost:8000/subdir
  *         delay: '500',
  *         width: '100%',
  *     }
  * }
  */
-
 const xhr = (url, body) => {
     fetch(url, {
         method: 'POST',
@@ -62,9 +63,9 @@ $(document).ready(function () {
     select.select2({
         theme: 'impersonate',
         ajax: {
-            url: '/impersonate/users',
-            dataType: 'JSON',
             method: 'GET',
+            dataType: 'JSON',
+            url: impersonate.config.route + '/impersonate/users',
             delay: impersonate.config.delay,
             data: (params) => {
                 return {
@@ -110,13 +111,13 @@ $(document).ready(function () {
     });
 
     select.on('change', function () {
-        xhr('/impersonate/login', JSON.stringify({
+        xhr(impersonate.config.route + '/impersonate/login', JSON.stringify({
             user: this.value
         }));
     });
 
     signout.on('click', function () {
-        xhr('/impersonate/leave', {
+        xhr(impersonate.config.route + '/impersonate/leave', {
             //
         });
     });
