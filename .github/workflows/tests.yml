@@ -8,13 +8,13 @@ on:
     paths-ignore: [ 'public/**', '*.md' ]
 
 jobs:
-  linux_tests:
+  tests:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        php: [ '8.0', '8.1', '8.2' ]
-        laravel: [ 9.*, 10.* ]
+        php: [ 8.0, 8.1, 8.2 ]
+        laravel: ['^9.0', '^10.0']
         exclude:
           - php: 8.2
             laravel: '^9.0'
@@ -27,7 +27,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Cache dependencies
+      - name: Cache Dependencies
         uses: actions/cache@v1
         with:
           path: ~/.composer/cache/files
