@@ -44,7 +44,8 @@ jobs:
       - name: Install Dependencies
 
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update --prefer-dist
+          composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
+          composer update --prefer-dist
 
       - name: Execute Tests
         run: vendor/bin/phpunit --colors=always
