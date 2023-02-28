@@ -13,14 +13,25 @@ jobs:
 
     strategy:
       matrix:
-        php: [ '8.0', '8.1', '8.1' ]
+        php: [ '8.0', '8.1', '8.2' ]
         laravel: [ 9.*, 10.* ]
+        exclude:
+          - php: 8.2
+            laravel: '^9.0'
+          - php: 8.0
+            laravel: '^10.0'
 
     name: PHP ${{ matrix.php }} - LARAVEL ${{ matrix.laravel }}
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+
+      - name: Cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.composer/cache/files
+          key: dependencies-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -31,6 +42,7 @@ jobs:
           coverage: none
 
       - name: Install Dependencies
+
         run: |
           composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
           composer update --prefer-dist
