@@ -19,7 +19,7 @@
     },
     "require-dev": {
         "nunomaduro/collision": "^6.2",
-        "orchestra/testbench": "^7.5"
+        "orchestra/testbench": "^7.5|^8.0"
     },
     "autoload": {
         "psr-4": {
