@@ -120,8 +120,7 @@ class User extends Authenticatable
 Sometimes you need Impersonating manually, to perform it, you can use the impersonate singleton.
 
 ```php
-$impersonate = App::make('impersonate');
-$impersonate->take($admin, $customer);
+App::make('impersonate')->take($admin, $customer);
 ```
 
 Or you just simply call the impersonation method directly through the User Model.
