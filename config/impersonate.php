@@ -36,6 +36,17 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Show Trashed Users
+    |--------------------------------------------------------------------------
+    |
+    | If you are using the SoftDeletes trait on your User model, you can
+    | set this to true to show trashed users in the select dropdown.
+    |
+    */
+    'trashed' => true,
+
+    /*
+    |--------------------------------------------------------------------------
     | Authentication Guards
     |--------------------------------------------------------------------------
     |

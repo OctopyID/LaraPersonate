@@ -2,6 +2,7 @@
 
 namespace Octopy\Impersonate;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
@@ -38,10 +39,14 @@ class ImpersonateRepository
     public function getUsers(string $search = null) : Collection
     {
         // TODO : Allow to search users by raw query.
-
-        $query = $this->model->newModelQuery()->limit(config(
+        $query = $this->model->newQuery()->limit(config(
             'impersonate.interface.limit', 10
         ));
+
+        // If trashed is true, we will add a withTrashed clause to the query
+        if (config('impersonate.trashed', false) && in_array(SoftDeletes::class, class_uses_recursive($this->model))) {
+            $query = $query->withTrashed();
+        }
 
         // If search is not null, we will add a where clause to the query
         if ($search) {
