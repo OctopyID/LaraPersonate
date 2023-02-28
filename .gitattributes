@@ -1,9 +1,9 @@
-demo.gif export-ignore
+demo.gif        export-ignore
 
-phpunit.xml export-ignore
-.gitignore export-ignore
-.gitattributes export-ignore
+.gitignore      export-ignore
+.gitattributes  export-ignore
+phpunit.xml     export-ignore
 
-/tests export-ignore
-/.github export-ignore
-/database export-ignore
+/tests          export-ignore
+/.github        export-ignore
+/database       export-ignore
