@@ -51,7 +51,7 @@ Add the trait `Octopy\Impersonate\Concerns\Impersonate` to your **User** model.
 ```php
 namespace App\Models;
 
-use Octopy\Impersonate\Cocerns\Impersonate;
+use Octopy\Impersonate\Concerns\Impersonate;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
