@@ -89,7 +89,7 @@ The example below uses [Laratrust](https://github.com/santigarcor/laratrust/) fo
 free to use any other Role Management you like.
 
 ```php
-use Octopy\Impersonate\Cocerns\Impersonate;
+use Octopy\Impersonate\Concerns\Impersonate;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
