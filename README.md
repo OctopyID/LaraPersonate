@@ -90,6 +90,7 @@ free to use any other Role Management you like.
 
 ```php
 use Octopy\Impersonate\Concerns\Impersonate;
+use Octopy\Impersonate\ImpersonateAuthorization;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
