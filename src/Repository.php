@@ -2,41 +2,25 @@
 
 namespace Octopy\Impersonate;
 
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User;
-use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
-use Octopy\Impersonate\Support\TextDisplay;
 
-class ImpersonateRepository
+class Repository
 {
     /**
-     * @var User|mixed
+     * @var Model
      */
-    protected User $model;
+    protected Model $model;
 
     /**
-     * @param  ImpersonateManager $impersonate
+     *
      */
-    public function __construct(protected ImpersonateManager $impersonate)
+    public function __construct()
     {
         $this->model = App::make(config('impersonate.model'));
     }
 
-    /**
-     * @param  int|string $impersonator
-     * @return User
-     */
-    public function findUser(int|string $impersonator) : User
-    {
-        return $this->model->where($this->model->getAuthIdentifierName(), $impersonator)->first();
-    }
-
-    /**
-     * @param  string|null $search
-     * @return Collection
-     */
-    public function getUsers(string $search = null) : Collection
+    public function get(string|null $search = null)
     {
         // TODO : Allow to search users by raw query.
         $query = $this->model->newQuery()->limit(config(
@@ -66,34 +50,13 @@ class ImpersonateRepository
         }
 
         return $query->get()
-            ->filter(function ($user) {
-                return $this->impersonate->authorization()->check('impersonated', $user); // filter out users that cannot be impersonated
-            })
             ->map(function ($user) {
-                $display = new TextDisplay($user);
-
                 return [
-                    'key' => $user->getKey(),
-                    'val' => $display->displayTextByFields(),
+                    'key'   => $user->getKey(),
+                    'value' => $user->name,
                 ];
             })
             ->values();
-    }
-
-    /**
-     * @return User
-     */
-    public function getImpersonatorInStorage() : User
-    {
-        return $this->findUser($this->impersonate->storage()->getImpersonatorIdentifier());
-    }
-
-    /**
-     * @return User
-     */
-    public function getImpersonatedInStorage() : User
-    {
-        return $this->findUser($this->impersonate->storage()->getImpersonatedIdentifier());
     }
 
     /**

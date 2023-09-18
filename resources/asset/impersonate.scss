@@ -1,0 +1,78 @@
+@import "../../node_modules/choices.js/public/assets/styles/choices.min.css";
+
+
+.oim {
+    &-root {
+        display: flex;
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: #e9edf2;
+        border-radius: 8px 25px 0 8px;
+        border: #DBDFEA solid 1px;
+
+        a {
+            color: #329FB9;
+            font-weight: bolder;
+            text-decoration: none;
+
+            &:hover {
+                text-shadow: #DBDFEA 1px 1px 1px;
+            }
+        }
+
+
+        .tail-select .select-label, .tail-select .select-dropdown {
+            box-shadow: none;
+            border: #DBDFEA solid 1px;
+        }
+
+        .tail-select .select-dropdown {
+            margin-bottom: -3px;
+        }
+    }
+
+    &-hidden {
+        display: none !important;
+    }
+
+    &-rounded {
+        border-radius: 50% !important;
+    }
+
+    &-container {
+        align-items: center;
+        padding: 5px 60px 5px 5px;
+        min-height: 47px;
+        width: 250px;
+    }
+
+    &-toggle {
+        height: 47px;
+        width: 47px;
+        border-radius: 25px 25px 0 25px;
+        padding: 5px;
+        position: absolute;
+        bottom: 0;
+        right: 0;
+
+        background: rgb(58, 144, 162);
+        background: linear-gradient(100deg, rgba(58, 144, 162, 1) 0%, rgba(49, 173, 199, 1) 48%, rgba(14, 178, 211, 1) 72%);
+
+        > img {
+            display: block;
+            width: 100%;
+        }
+
+        &-active {
+            background-image: linear-gradient(to right bottom, #329fb9, #3ca2c4, #4aa4ce, #5aa6d7, #6ca7df, #6bafe7, #6ab7f0, #69bff8, #52cffe, #41dfff, #46eefa, #5ffbf1);
+            border-bottom-right-radius: 5px;
+        }
+    }
+
+    &-footer {
+        font-size: 90%;
+        display: flex;
+        justify-content: space-between;
+    }
+}

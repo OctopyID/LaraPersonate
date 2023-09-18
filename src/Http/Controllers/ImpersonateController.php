@@ -2,53 +2,20 @@
 
 namespace Octopy\Impersonate\Http\Controllers;
 
-use Illuminate\Foundation\Auth\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Auth;
-use Octopy\Impersonate\Exceptions\ImpersonateException;
-use Octopy\Impersonate\ImpersonateManager;
-use Octopy\Impersonate\ImpersonateRepository;
+use Octopy\Impersonate\Repository;
 
 class ImpersonateController
 {
     /**
-     * @var ImpersonateRepository
+     * @param  Repository $repository
      */
-    protected ImpersonateRepository $repository;
-
-    /**
-     * @param  ImpersonateManager $impersonate
-     */
-    public function __construct(protected ImpersonateManager $impersonate)
+    public function __construct(protected Repository $repository)
     {
-        $this->repository = new ImpersonateRepository($impersonate);
+        //
     }
 
-    /**
-     * @param  Request $request
-     * @return Collection
-     */
-    public function index(Request $request) : Collection
+    public function index()
     {
-        return $this->repository->getUsers($request->get('search'));
-    }
-
-    /**
-     * @param  Request $request
-     * @return User
-     * @throws ImpersonateException
-     */
-    public function login(Request $request)
-    {
-        return $this->impersonate->take($this->impersonate->getImpersonator(), $request->get('user'));
-    }
-
-    /**
-     * @return bool
-     */
-    public function leave()
-    {
-        return $this->impersonate->leave();
+        return $this->repository->get();
     }
 }

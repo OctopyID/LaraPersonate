@@ -12,9 +12,17 @@ mix.options({
     .options({
         processCssUrls: false
     })
+
     .setPublicPath('public')
-    .js('resources/js/octopy.js', 'public')
-    .sass('resources/sass/octopy.scss', 'public', [
+
+    .sass('resources/asset/impersonate.scss', 'public', [
         //
     ])
+
+    .scripts([
+        'resources/asset/impersonate.js',
+        'node_modules/choices.js/public/assets/scripts/choices.js'
+        // 'node_modules/tail.select.js/js/tail.select.js'
+    ], 'public/impersonate.js')
+
     .version();

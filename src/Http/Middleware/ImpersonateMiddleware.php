@@ -4,13 +4,12 @@ namespace Octopy\Impersonate\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Octopy\Impersonate\Http\ResponseModifier;
-use Octopy\Impersonate\ImpersonateManager;
-use Octopy\Impersonate\ImpersonateAuthorization;
+use Octopy\Impersonate\Impersonate;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ImpersonateMiddleware
@@ -19,24 +18,20 @@ class ImpersonateMiddleware
      * @var array|string[]
      */
     protected array $excepted = [
-        'impersonate/*',
+        '_impersonate/*',
     ];
 
     /**
      * @var ResponseModifier
      */
-    protected ResponseModifier $modifier;
+    protected ResponseModifier $response;
 
     /**
-     * @param  ImpersonateManager $impersonate
+     * @param  Impersonate $impersonate
      */
-    public function __construct(protected ImpersonateManager $impersonate)
+    public function __construct(protected Impersonate $impersonate)
     {
-        $this->modifier = new ResponseModifier($impersonate);
-
-        $this->excepted = array_merge($this->excepted, config('impersonate.except', [
-            //
-        ]));
+        $this->response = new ResponseModifier;
     }
 
     /**
@@ -48,18 +43,12 @@ class ImpersonateMiddleware
     {
         $response = $next($request);
 
-        if (! $this->impersonate->enabled()) {
-            return $response;
-        }
-
-        // Check if request or response is excluded.
         if ($this->excepted($request) || $this->excluded($response)) {
             return $response;
         }
 
-        // Modify the response if user can do impersonation.
-        if ($this->impersonate->authorized()) {
-            return $this->modifier->modify($response);
+        if ($this->impersonate->enabled()) {
+            $response = $this->response->modify($response);
         }
 
         return $response;
