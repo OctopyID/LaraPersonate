@@ -10,4 +10,18 @@ Route::group(['prefix' => '_impersonate', 'middleware' => 'web', 'as' => 'impers
      * }
      */
     Route::get('users', [ImpersonateController::class, 'index'])->name('index');
+
+    /**
+     * body:POST {
+     *     user: int|string
+     * }
+     */
+    Route::post('login', [ImpersonateController::class, 'login'])->name('login');
+
+    /**
+     * body:POST {
+     *
+     * }
+     */
+    Route::post('leave', [ImpersonateController::class, 'leave'])->name('leave');
 });

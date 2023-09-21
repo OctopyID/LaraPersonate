@@ -6,9 +6,19 @@ use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Response;
+use Octopy\Impersonate\Impersonate;
+use function Octopy\Impersonate\impersonate;
 
 class ResponseModifier
 {
+    /**
+     * @param  Impersonate $impersonate
+     */
+    public function __construct(protected Impersonate $impersonate)
+    {
+        //
+    }
+
     /**
      * @param  Response $response
      * @return Response
@@ -17,9 +27,9 @@ class ResponseModifier
     {
         $content = $response->getContent();
 
-        $impersonate = $this->minify(view(
-            'impersonate::impersonate'
-        ));
+        $impersonate = $this->minify(view('impersonate::impersonate', [
+            'impersonate' => $this->impersonate,
+        ]));
 
         // if the response contains html body, insert the impersonation view into the body.
         $position = strripos($content, '</body>');

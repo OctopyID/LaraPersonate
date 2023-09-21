@@ -5,7 +5,9 @@ namespace Octopy\Impersonate\Providers;
 use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
+use Octopy\Impersonate\Authorization;
 use Octopy\Impersonate\Http\Middleware\ImpersonateMiddleware;
+use Octopy\Impersonate\Impersonate;
 
 class ImpersonateServiceProvider extends ServiceProvider
 {
@@ -36,5 +38,10 @@ class ImpersonateServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__ . '/../../config/impersonate.php', 'impersonate'
         );
+
+        $this->app->alias(Authorization::class, 'impersonate.authorization');
+        $this->app->singleton(Authorization::class, function () {
+            return new Authorization;
+        });
     }
 }

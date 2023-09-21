@@ -51,12 +51,12 @@ Add the trait `Octopy\Impersonate\Concerns\Impersonate` to your **User** model.
 ```php
 namespace App\Models;
 
-use Octopy\Impersonate\Concerns\Impersonate;
+use Octopy\Impersonate\Concerns\HasImpersonation;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use Impersonate;
+    use HasImpersonation;
 }
 ```
 
@@ -89,19 +89,19 @@ The example below uses [Laratrust](https://github.com/santigarcor/laratrust/) fo
 free to use any other Role Management you like.
 
 ```php
-use Octopy\Impersonate\Concerns\Impersonate;
-use Octopy\Impersonate\ImpersonateAuthorization;
+use Octopy\Impersonate\Concerns\HasImpersonation;
+use Octopy\Impersonate\Authorization;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use Impersonate;
+    use HasImpersonation;
     
     /**
-     * @param  ImpersonateAuthorization $authorization
+     * @param  Authorization $authorization
      * @return void
      */
-    public function impersonatable(ImpersonateAuthorization $authorization) : void
+    public function impersonatable(Authorization $authorization) : void
     {
         $authorization->impersonator(function (User $user) {
             return $user->hasRole('SUPER_ADMIN');

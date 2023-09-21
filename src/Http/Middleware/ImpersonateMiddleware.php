@@ -6,10 +6,10 @@ use Closure;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Octopy\Impersonate\Http\ResponseModifier;
 use Octopy\Impersonate\Impersonate;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ImpersonateMiddleware
@@ -31,7 +31,10 @@ class ImpersonateMiddleware
      */
     public function __construct(protected Impersonate $impersonate)
     {
-        $this->response = new ResponseModifier;
+        $this->response = new ResponseModifier($this->impersonate);
+        $this->excepted = array_merge($this->excepted, config('impersonate.except', [
+
+        ]));
     }
 
     /**
@@ -43,11 +46,11 @@ class ImpersonateMiddleware
     {
         $response = $next($request);
 
-        if ($this->excepted($request) || $this->excluded($response)) {
+        if (! config('impersonate.enabled') || $this->excepted($request) || $this->excluded($response)) {
             return $response;
         }
 
-        if ($this->impersonate->enabled()) {
+        if ($this->impersonate->authorized()) {
             $response = $this->response->modify($response);
         }
 
@@ -60,12 +63,12 @@ class ImpersonateMiddleware
      */
     private function excepted(Request $request) : bool
     {
-        // If request is ajax or wants json, then it is excluded.
+        // if request is ajax or wants json, then it is excluded.
         if ($request->ajax() || $request->wantsJson()) {
             return true;
         }
 
-        // And try to match the request path against the excepted.
+        // and try to match the request path against the excepted.
         foreach ($this->excepted as $excepted) {
             if ($request->is($excepted)) {
                 return true;
@@ -81,18 +84,16 @@ class ImpersonateMiddleware
      */
     private function excluded(Response $response) : bool
     {
-        //  We only want to modify the response if it's a successful response.
+        // modify the response if it's a successful response.
         if ($response->getStatusCode() < 200 || $response->getStatusCode() > 299) {
             return true;
         }
 
-        // Also, we don't want to modify the response if it's a json, binary or streamed response.
-        // We just want to modify the response if it's a view contains html tags.
+        // also, we don't want to modify the response if it's a json, binary or streamed response.
+        // we just want to modify the response if it's a view contains html tags.
         return
-            $response instanceof JsonResponse ||
-            $response instanceof StreamedResponse ||
-            $response instanceof RedirectResponse ||
-            $response instanceof BinaryFileResponse ||
+            $response instanceof JsonResponse || $response instanceof BinaryFileResponse ||
+            $response instanceof RedirectResponse || $response instanceof StreamedResponse ||
             ! preg_match('/<[^<]+>/', $response->getContent());
     }
 }

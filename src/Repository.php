@@ -2,7 +2,9 @@
 
 namespace Octopy\Impersonate;
 
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\App;
 
 class Repository
@@ -10,31 +12,44 @@ class Repository
     /**
      * @var Model
      */
-    protected Model $model;
+    private Model $model;
 
     /**
-     *
+     * Repository constructor.
      */
     public function __construct()
     {
-        $this->model = App::make(config('impersonate.model'));
+        $this->model = App::make(config(
+            'impersonate.model'
+        ));
     }
 
-    public function get(string|null $search = null)
+    /**
+     * @param  mixed $id
+     * @return Model
+     */
+    public function find(mixed $id) : Model
     {
-        // TODO : Allow to search users by raw query.
-        $query = $this->model->newQuery()->limit(config(
-            'impersonate.interface.limit', 10
-        ));
+        return $this->model->find($id);
+    }
 
-        // If trashed is true, we will add a withTrashed clause to the query
+    /**
+     * @param  string|null $search
+     * @return Paginator
+     * @noinspection PhpUndefinedMethodInspection
+     */
+    public function get(string|null $search = null) : Paginator
+    {
+        $query = $this->model->newQuery();
+
+        // if trashed is true, we will add a withTrashed clause to the query
         if (config('impersonate.trashed', false) && in_array(SoftDeletes::class, class_uses_recursive($this->model))) {
             $query = $query->withTrashed();
         }
 
-        // If search is not null, we will add a where clause to the query
-        if ($search) {
-            foreach ($this->getColumns() as $column) {
+        // if search is not null, we will add a where clause to the query
+        $query->when($search, function ($query) use ($search) {
+            foreach ($this->model->getImpersonateSearchField() as $column) {
                 if (! str_contains($column, '.')) {
                     $query->orWhere($column, 'LIKE', "%{$search}%");
                 } else {
@@ -47,25 +62,8 @@ class Repository
                     });
                 }
             }
-        }
+        });
 
-        return $query->get()
-            ->map(function ($user) {
-                return [
-                    'key'   => $user->getKey(),
-                    'value' => $user->name,
-                ];
-            })
-            ->values();
-    }
-
-    /**
-     * @return array
-     */
-    private function getColumns() : array
-    {
-        return array_merge([$this->model->getAuthIdentifierName()], config('impersonate.interface.searchable', [
-            //
-        ]));
+        return $query->simplePaginate(perPage: 20);
     }
 }
