@@ -22,7 +22,7 @@ class SessionStorage
     public function setImpersonator(Model $model) : self
     {
         session([
-            'impersonate.impersonator' => encrypt($model->getKey()),
+            'impersonate.impersonator' => $model->getKey(),
         ]);
 
         return $this;
@@ -33,7 +33,7 @@ class SessionStorage
      */
     public function getImpersonator() : mixed
     {
-        return decrypt(session('impersonate.impersonator'));
+        return session('impersonate.impersonator');
     }
 
     /**
@@ -43,7 +43,7 @@ class SessionStorage
     public function setImpersonated(Model $model) : self
     {
         session([
-            'impersonate.impersonated' => encrypt($model->getKey()),
+            'impersonate.impersonated' => $model->getKey(),
         ]);
 
         return $this;
@@ -54,7 +54,7 @@ class SessionStorage
      */
     public function getImpersonated() : mixed
     {
-        return decrypt(session('impersonate.impersonated'));
+        return session('impersonate.impersonated');
     }
 
     /**

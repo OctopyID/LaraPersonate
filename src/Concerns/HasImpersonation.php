@@ -14,7 +14,7 @@ trait HasImpersonation
      */
     public static function bootHasImpersonation() : void
     {
-        (new static)->impersonatable(App::make(
+        (new static)->setImpersonateAuthorization(App::make(
             'impersonate.authorization'
         ));
     }
@@ -36,18 +36,19 @@ trait HasImpersonation
     }
 
     /**
+     * @return string[]
+     */
+    abstract public function getImpersonateSearchField() : array;
+
+    /**
+     * @return string
+     */
+    abstract public function getImpersonateDisplayText() : string;
+
+    /**
      * @param  Authorization $authorization
      * @return void
      * @codeCoverageIgnore
      */
-    public function impersonatable(Authorization $authorization) : void
-    {
-        $authorization->impersonator(function ($user) {
-            return true;
-        });
-
-        $authorization->impersonated(function ($user) {
-            return true;
-        });
-    }
+    abstract public function setImpersonateAuthorization(Authorization $authorization) : void;
 }

@@ -7,10 +7,30 @@ use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Octopy\Impersonate\Impersonate;
 use Octopy\Impersonate\Providers\ImpersonateServiceProvider;
+use Octopy\Impersonate\Tests\Models\User;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
     use RefreshDatabase;
+
+    /**
+     * @var Impersonate
+     */
+    protected Impersonate $impersonate;
+
+    /**
+     * @return void
+     */
+    protected function setUp() : void
+    {
+        parent::setUp();
+
+        config([
+            'impersonate.model' => User::class,
+        ]);
+
+        $this->impersonate = $this->app->make('impersonate');
+    }
 
     /**
      * @return void
@@ -28,7 +48,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
     /**
      * @param  Application $app
      */
-    protected function getEnvironmentSetUp($app) : void
+    protected function defineEnvironment($app) : void
     {
         // Setup default database to use sqlite :memory:
         $app['config']->set('database.default', 'testbench');

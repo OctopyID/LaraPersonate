@@ -5,8 +5,7 @@
 
         <label for="oim-select"></label>
         <select id="oim-select" class="oim-select" style="width: 100% !important;">
-            <option value="1">Supian M</option>
-            <option value="2">Yulia</option>
+            <option>{{ $impersonate->impersonator()->getImpersonateDisplayText() }}</option>
         </select>
 
         @if($impersonate->check())

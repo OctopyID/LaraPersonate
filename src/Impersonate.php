@@ -61,23 +61,23 @@ class Impersonate
     /**
      * @return bool
      */
-    public function authorized() : bool
-    {
-        return $this->guard->check();
-    }
-
-    /**
-     * @return bool
-     */
     public function check() : bool
     {
         return $this->storage->isInImpersonatingMode();
     }
 
     /**
-     * @return Model|Authenticatable|Impersonation
+     * @return bool
      */
-    public function impersonator() : Model|Authenticatable|Impersonation
+    public function authorized() : bool
+    {
+        return $this->guard->check() && app('impersonate.authorization')->isImpersonator($this->impersonator());
+    }
+
+    /**
+     * @return Model|Authenticatable
+     */
+    public function impersonator() : Model|Authenticatable
     {
         if ($this->check()) {
             return $this->repository->find($this->storage->getImpersonator());
@@ -87,9 +87,9 @@ class Impersonate
     }
 
     /**
-     * @return Model|Authenticatable|Impersonation
+     * @return Model|Authenticatable
      */
-    public function impersonated() : Model|Authenticatable|Impersonation
+    public function impersonated() : Model|Authenticatable
     {
         return $this->repository->find($this->storage->getImpersonated());
     }
@@ -162,11 +162,11 @@ class Impersonate
          * @var $authorization Authorization
          */
         $authorization = App::make('impersonate.authorization');
-        if (! $authorization->check('impersonator', $impersonator)) {
+        if (! $authorization->isImpersonator($impersonator)) {
             throw new ImpersonateException('You don\'t have the ability to impersonate.');
         }
 
-        if (! $authorization->check('impersonated', $impersonated)) {
+        if (! $authorization->isImpersonated($impersonated)) {
             throw new ImpersonateException('You can\'t impersonate this user.');
         }
 

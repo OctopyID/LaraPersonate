@@ -1,16 +1,14 @@
 <?php
 
-namespace Octopy\Impersonate\Tests\Feature;
+namespace Octopy\Impersonate\Tests\Unit;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
-use Octopy\Impersonate\Events\LeaveImpersonation;
 use Octopy\Impersonate\Events\BeginImpersonation;
+use Octopy\Impersonate\Events\LeaveImpersonation;
 use Octopy\Impersonate\Exceptions\ImpersonateException;
 use Octopy\Impersonate\Tests\Models\User;
 use Octopy\Impersonate\Tests\TestCase;
-use function Octopy\Impersonate\impersonate;
 
 class ImpersonateTest extends TestCase
 {

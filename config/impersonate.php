@@ -85,6 +85,6 @@ return [
         | to wait after a user has stopped typing before sending the request
         |
         */
-        'delay' => env('IMPERSONATE_SEARCH_DELAY', 500),
+        'delay' => env('IMPERSONATE_BOUNCE', 500),
     ],
 ];

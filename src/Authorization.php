@@ -17,6 +17,20 @@ final class Authorization
     private Closure $impersonated;
 
     /**
+     * Authorization constructor.
+     */
+    public function __construct()
+    {
+        $this->impersonator = function () {
+            return true;
+        };
+
+        $this->impersonated = function () {
+            return true;
+        };
+    }
+
+    /**
      * @param  Closure $param
      * @return Authorization
      */
@@ -39,12 +53,20 @@ final class Authorization
     }
 
     /**
-     * @param  string $name
-     * @param  mixed  $user
+     * @param  mixed $user
      * @return bool
      */
-    public function check(string $name, mixed $user) : bool
+    public function isImpersonator(mixed $user) : bool
     {
-        return call_user_func($this->$name, $user);
+        return call_user_func($this->impersonator, $user);
+    }
+
+    /**
+     * @param  mixed $user
+     * @return bool
+     */
+    public function isImpersonated(mixed $user) : bool
+    {
+        return call_user_func($this->impersonated, $user);
     }
 }

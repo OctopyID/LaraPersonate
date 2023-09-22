@@ -6,7 +6,6 @@ vendor
 node_modules
 
 # Locked File
-yarn.lock
 composer.lock
 
 # PHP Unit

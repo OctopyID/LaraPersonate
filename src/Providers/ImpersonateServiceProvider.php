@@ -39,6 +39,8 @@ class ImpersonateServiceProvider extends ServiceProvider
             __DIR__ . '/../../config/impersonate.php', 'impersonate'
         );
 
+        $this->app->alias(Impersonate::class, 'impersonate');
+
         $this->app->alias(Authorization::class, 'impersonate.authorization');
         $this->app->singleton(Authorization::class, function () {
             return new Authorization;
