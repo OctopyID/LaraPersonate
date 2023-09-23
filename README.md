@@ -16,7 +16,12 @@ Is an Impersonation package for the Laravel Framework. With this package you can
 You don't have to worry about authorizing who can impersonate or who can be impersonated, coz we provided it by default, just need to adjust it a little according to your
 rules.
 
-## 1. Installation
+| Impersonate                                                | Laravel    | Impersonate                                               | Laravel   |
+|------------------------------------------------------------|------------|-----------------------------------------------------------|-----------|
+| [4.x](https://github.com/OctopyID/LaraPersonate/tree/main) | 10.x       | [2.x](https://github.com/OctopyID/LaraPersonate/tree/2.x) | 7.x - 8.x |
+| [3.x](https://github.com/OctopyID/LaraPersonate/tree/3.x)  | 9.x - 10.x | [1.x](https://github.com/OctopyID/LaraPersonate/tree/1.x) | 7.x - 8.x |
+
+## Installation
 
 > **Warning**
 >
@@ -27,13 +32,13 @@ rules.
 
 To install the package, simply follow the steps below.
 
-### 1.1. Install The Package
+### Install The Package
 
 ```bash
 composer require octopyid/laravel-impersonate:^4
 ```
 
-### 1.2. Publish The Package
+### Publish The Package
 
 ```bash
 artisan vendor:publish --tag="impersonate"
@@ -44,7 +49,7 @@ artisan vendor:publish --tag="impersonate"
 > Sometimes some users experience the problem of layout after upgrading the package, this can be solved by deleting the `public/vendor/octopyid/impersonate` folder then republish
 > the assets.
 
-### 1.3. Add HasImpersonation Trait to  User Model
+### Add `HasImpersonation` Trait to  User Model
 
 Add the trait `Octopy\Impersonate\Concerns\HasImpersonation` to your **User** model.
 
