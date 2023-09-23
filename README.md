@@ -30,13 +30,13 @@ To install the package, simply follow the steps below.
 ### 1.1. Install The Package
 
 ```bash
-composer require octopyid/laravel-impersonate:^3
+composer require octopyid/laravel-impersonate:^4
 ```
 
 ### 1.2. Publish The Package
 
 ```bash
-artisan vendor:publish --provider="Octopy\Impersonate\ImpersonateServiceProvider"
+artisan vendor:publish --tag="impersonate"
 ```
 
 > **Note**
@@ -44,9 +44,9 @@ artisan vendor:publish --provider="Octopy\Impersonate\ImpersonateServiceProvider
 > Sometimes some users experience the problem of layout after upgrading the package, this can be solved by deleting the `public/vendor/octopyid/impersonate` folder then republish
 > the assets.
 
-### 1.3. Add Impersonate Trait to  User Model
+### 1.3. Add HasImpersonation Trait to  User Model
 
-Add the trait `Octopy\Impersonate\Concerns\Impersonate` to your **User** model.
+Add the trait `Octopy\Impersonate\Concerns\HasImpersonation` to your **User** model.
 
 ```php
 namespace App\Models;
@@ -57,51 +57,80 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     use HasImpersonation;
+    
+    /**
+     * @return string
+     */
+    public function getImpersonateDisplayText() : string
+    {
+        return $this->name;
+    }
+    
+    /**
+     * This following is useful for performing user searches through the interface,
+     * You can use fields in relations freely using dot notation,
+     * 
+     * example: posts.title, department.name.   
+     */
+    public function getImpersonateSearchField() : array
+    {
+        return [
+            'name', 'posts.title',
+        ];
+    }
 }
+
 ```
 
-## 2. Configuration
+## Events
+
+There are two events available that can be used to improve your workflow:
+
+- `Octopy\Impersonate\Events\BeginImpersonation` is fired when an impersonation is begin.
+- `Octopy\Impersonate\Events\LeaveImpersonation` is fired when an impersonation is leave.
+
+## Configuration
 
 This configuration is intended to customize the appearance of Laravel Impersonate, if you don't need a UI, don't forget to set `IMPERSONATE_ENABLED` to `false` in your environment
 file because it is enabled by default.
 
 Please refer to the [impersonate.php](config/impersonate.php) file to see the available configurations.
 
-## 3. Usage
+## Usage
 
-### 3.1. Basic Usage
+### Basic Usage
 
 By default, you don't need to do anything, but keep in mind, Impersonation can be done by anyone if you don't define the rules of who can do impersonation or who can be
 impersonated.
 
-#### 3.1.1. Defining Limitation
+#### Defining Limitation
 
 To limit who can do **impersonation** or who is can be **impersonated**, add
-`impersonatable(ImpersonateAuthorization $authorization)` on the Model to enforce the limitation.
+`setImpersonateAuthorization(Authorization $authorization)` on the Model to enforce the limitation.
 
 The **impersonator** method is intended for who can perform the impersonation and the **impersonated** method is intended for anyone who is allowed to be imitated.
 
 > **Warning**
 >
-> Not defining the ImpersonateAuthorization rules in the Model or misdefining them can lead to serious security issues.
+> Not defining the Authorization rules in the Model or misdefining them can lead to serious security issues.
 
 The example below uses [Laratrust](https://github.com/santigarcor/laratrust/) for role management where **SUPER_ADMIN** can perform impersonation against **CUSTOMER**. Feel
 free to use any other Role Management you like.
 
 ```php
-use Octopy\Impersonate\Concerns\HasImpersonation;
+use Octopy\Impersonate\Concerns\Impersonate;
 use Octopy\Impersonate\Authorization;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use HasImpersonation;
+    use Impersonate;
     
     /**
      * @param  Authorization $authorization
      * @return void
      */
-    public function impersonatable(Authorization $authorization) : void
+    public function setImpersonateAuthorization(Authorization $authorization) : void
     {
         $authorization->impersonator(function (User $user) {
             return $user->hasRole('SUPER_ADMIN');
@@ -114,57 +143,42 @@ class User extends Authenticatable
 }
 ```
 
-### 3.2. Advanced Usage
+### Advanced Usage
 
-#### 3.2.1. Impersonating User Manually
+#### Impersonating User Manually
 
 Sometimes you need Impersonating manually, to perform it, you can use the impersonate singleton.
 
 ```php
-App::make('impersonate')->take($admin, $customer);
+impersonate()->begin($admin, $customer);
 ```
 
-Or you just simply call the impersonation method directly through the User Model.
+Or just simply call the impersonation method directly through the User Model.
 
 ```php
 $admin->impersonate($customer);
 ```
 
-#### 3.2.2. Defining Guard
+#### Defining Guard
 
 Sometimes, you want to use custom guards for authentication, instead of the built-in guards.
 
-There are two ways to define Guard.
-
-##### 3.2.2.1. On The Fly
-
 ```php
-$impersonate->guard('foo')->impersonate($admin, $customer);
+impersonate()->guard('foo')->begin($admin, $customer);
 ```
 
-##### 3.2.2.2 Globally
+#### Leaving Impersonation Mode
 
-You can use Guard for all ImpersonateAuthorization actions by registering the guard with the `AppServiceProvider`.
+To leave Impersonation mode, you just need to call the `leave` method on impersonate singleton. This will return you to the original user.
 
 ```php
-public function boot() : void 
-{
-    App::make('impersonate')->guard('foo');
-}
+impersonate()->leave();
 ```
 
-#### 3.2.3. Leaving ImpersonateAuthorization Mode
-
-To leave ImpersonateAuthorization mode, you just need to call the `leave` method on impersonate singleton. This will return you to the original user.
+Or via Model directly
 
 ```php
-$impersonate->leave();
-```
-
-Or via Model directly, but you can't use guard on the fly.
-
-```php
-$admin->impersonate->leave();
+$admin->impersonate()->leave();
 ```
 
 Don't hesitate to use a guard if you need it.
