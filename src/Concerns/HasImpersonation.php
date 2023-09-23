@@ -50,5 +50,14 @@ trait HasImpersonation
      * @return void
      * @codeCoverageIgnore
      */
-    abstract public function setImpersonateAuthorization(Authorization $authorization) : void;
+    public function setImpersonateAuthorization(Authorization $authorization) : void
+    {
+        $authorization->impersonator(function () {
+            return true;
+        });
+
+        $authorization->impersonated(function () {
+            return true;
+        });
+    }
 }
