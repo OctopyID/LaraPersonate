@@ -8,18 +8,16 @@ return new class extends Migration
 {
     public function up() : void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email');
-            $table->boolean('admin')->default(false);
+            $table->string('title');
+            $table->foreignId('user_id')->constrained();
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
     public function down() : void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('posts');
     }
 };

@@ -55,11 +55,11 @@ $(document).ready(function () {
         ajax: {
             dataType: 'JSON',
             url: '/_impersonate/users',
-            delay: window.impersonate.config.delay,
+            delay: window.impersonate.config.bounce,
             data: (params) => ({
                 query: params.term, page: params.page || 1
             }),
-            processResults: (res, params) => ({
+            processResults: (res) => ({
                 results: $.map(res.data, ({ key, val }) => ({
                     id: key, text: val
                 })),

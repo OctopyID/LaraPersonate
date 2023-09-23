@@ -2,8 +2,7 @@
 
 namespace Octopy\Impersonate\Tests\Feature;
 
-use Illuminate\Testing\Fluent\AssertableJson;
-use Octopy\Impersonate\Tests\Models\User;
+use Octopy\Impersonate\Tests\Models\User1;
 use Octopy\Impersonate\Tests\TestCase;
 
 class ImpersonateControllerTest extends TestCase
@@ -13,25 +12,25 @@ class ImpersonateControllerTest extends TestCase
      */
     public function testGetUsers() : void
     {
-        $foo = User::create([
+        $foo = User1::create([
             'name'  => 'Foo Bar',
             'email' => 'foo@bar.baz',
             'admin' => true,
         ]);
 
-        $bar = User::create([
+        $bar = User1::create([
             'name'  => 'Bar Baz',
             'email' => 'bar@baz.qux',
             'admin' => false,
         ]);
 
-        $baz = User::create([
+        $baz = User1::create([
             'name'  => 'Baz Qux',
             'email' => 'baz@qux.foo',
             'admin' => true,
         ]);
 
-        $qux = User::create([
+        $qux = User1::create([
             'name'  => 'Qux Foo',
             'email' => 'qux@foo.bar',
             'admin' => false,
@@ -62,31 +61,31 @@ class ImpersonateControllerTest extends TestCase
      */
     public function testGetUsersWithQuery() : void
     {
-        User::create([
+        User1::create([
             'name'  => 'Supian M',
             'email' => 'supianidz@github.com',
             'admin' => false,
         ]);
 
-        $foo = User::create([
+        $foo = User1::create([
             'name'  => 'Foo Bar',
             'email' => 'foo@bar.baz',
             'admin' => true,
         ]);
 
-        $bar = User::create([
+        $bar = User1::create([
             'name'  => 'Bar Baz',
             'email' => 'bar@baz.qux',
             'admin' => false,
         ]);
 
-        $baz = User::create([
+        $baz = User1::create([
             'name'  => 'Baz Qux',
             'email' => 'baz@qux.foo',
             'admin' => true,
         ]);
 
-        $qux = User::create([
+        $qux = User1::create([
             'name'  => 'Qux Foo',
             'email' => 'qux@foo.bar',
             'admin' => false,
@@ -112,13 +111,13 @@ class ImpersonateControllerTest extends TestCase
      */
     public function testImpersonatorCanTakeOverImpersonatedUser() : void
     {
-        $foo = User::create([
+        $foo = User1::create([
             'name'  => 'Foo Bar',
             'email' => 'foo@bar.baz',
             'admin' => true,
         ]);
 
-        $bar = User::create([
+        $bar = User1::create([
             'name'  => 'Bar Baz',
             'email' => 'bar@baz.com',
             'admin' => false,
@@ -138,13 +137,13 @@ class ImpersonateControllerTest extends TestCase
      */
     public function testImpersonatorCanLeaveImpersonation() : void
     {
-        $foo = User::create([
+        $foo = User1::create([
             'name'  => 'Foo Bar',
             'email' => 'foo@bar.baz',
             'admin' => true,
         ]);
 
-        $bar = User::create([
+        $bar = User1::create([
             'name'  => 'Bar Baz',
             'email' => 'bar@baz.com',
             'admin' => false,

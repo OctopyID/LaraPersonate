@@ -26,7 +26,7 @@ trait HasImpersonation
      */
     public function impersonate(mixed $impersonated = null) : Impersonate
     {
-        $manager = App::make(Impersonate::class);
+        $manager = App::make('impersonate');
 
         if ($impersonated) {
             $manager->begin($this, $impersonated);

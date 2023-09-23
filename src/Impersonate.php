@@ -3,17 +3,15 @@
 namespace Octopy\Impersonate;
 
 use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Contracts\Auth\StatefulGuard;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
-use Octopy\Impersonate\Contracts\Impersonation;
-use Octopy\Impersonate\Events\LeaveImpersonation;
+use Octopy\Impersonate\Concerns\HasImpersonation;
 use Octopy\Impersonate\Events\BeginImpersonation;
+use Octopy\Impersonate\Events\LeaveImpersonation;
 use Octopy\Impersonate\Exceptions\ImpersonateException;
 use Octopy\Impersonate\Storage\SessionStorage;
-use Illuminate\Contracts\Auth\StatefulGuard;
 
 class Impersonate
 {
@@ -71,6 +69,10 @@ class Impersonate
      */
     public function authorized() : bool
     {
+        if (! in_array(HasImpersonation::class, class_uses(config('impersonate.model')))) {
+            return false;
+        }
+
         return $this->guard->check() && app('impersonate.authorization')->isImpersonator($this->impersonator());
     }
 
@@ -102,13 +104,8 @@ class Impersonate
      */
     public function begin(mixed $impersonator, mixed $impersonated) : Impersonate
     {
-        if (! $impersonator instanceof Model) {
-            $impersonator = $this->repository->find($impersonator);
-        }
-
-        if (! $impersonated instanceof Model) {
-            $impersonated = $this->repository->find($impersonated);
-        }
+        $impersonator = $this->fetchModel($impersonator);
+        $impersonated = $this->fetchModel($impersonated);
 
         if ($this->validate($impersonator, $impersonated)) {
             $this->storage
@@ -154,6 +151,10 @@ class Impersonate
      */
     private function validate(Model $impersonator, Model $impersonated) : bool
     {
+        if (! in_array(HasImpersonation::class, class_uses($impersonator))) {
+            throw new ImpersonateException(get_class($impersonator) . ' does not uses ' . HasImpersonation::class);
+        }
+
         if ($impersonator->is($impersonated)) {
             throw new ImpersonateException('You cannot impersonate yourself.');
         }
@@ -171,5 +172,18 @@ class Impersonate
         }
 
         return true;
+    }
+
+    /**
+     * @param  mixed $modelOrId
+     * @return Model|Authenticatable
+     */
+    private function fetchModel(mixed $modelOrId) : Model|Authenticatable
+    {
+        if (! $modelOrId instanceof Model) {
+            return $this->repository->find($modelOrId);
+        }
+
+        return $modelOrId;
     }
 }

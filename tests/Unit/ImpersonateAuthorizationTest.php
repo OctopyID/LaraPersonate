@@ -3,7 +3,7 @@
 namespace Octopy\Impersonate\Tests\Unit;
 
 use Octopy\Impersonate\Exceptions\ImpersonateException;
-use Octopy\Impersonate\Tests\Models\User;
+use Octopy\Impersonate\Tests\Models\User1;
 use Octopy\Impersonate\Tests\TestCase;
 
 class ImpersonateAuthorizationTest extends TestCase
@@ -13,13 +13,13 @@ class ImpersonateAuthorizationTest extends TestCase
      */
     public function testNonAdminCannotImpersonate() : void
     {
-        $foo = User::create([
+        $foo = User1::create([
             'name'  => 'Foo Bar',
             'email' => 'foo@bar.baz',
             'admin' => false,
         ]);
 
-        $bar = User::create([
+        $bar = User1::create([
             'name'  => 'Bar Foo',
             'email' => 'bar@foo.baz',
             'admin' => false,
@@ -36,13 +36,13 @@ class ImpersonateAuthorizationTest extends TestCase
      */
     public function testAdminCannotImpersonateSelf() : void
     {
-        $foo = User::create([
+        $foo = User1::create([
             'name'  => 'Foo Bar',
             'email' => 'foo@bar.baz',
             'admin' => true,
         ]);
 
-        $bar = User::create([
+        $bar = User1::create([
             'name'  => 'Bar Foo',
             'email' => 'bar@foo.baz',
             'admin' => true,

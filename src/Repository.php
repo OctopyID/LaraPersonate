@@ -37,6 +37,7 @@ class Repository
      * @param  string|null $search
      * @return Paginator
      * @noinspection PhpUndefinedMethodInspection
+     * @noinspection PhpPossiblePolymorphicInvocationInspection
      */
     public function get(string|null $search = null) : Paginator
     {

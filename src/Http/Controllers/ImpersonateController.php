@@ -3,7 +3,6 @@
 namespace Octopy\Impersonate\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Octopy\Impersonate\Exceptions\ImpersonateException;
 use Octopy\Impersonate\Http\Resources\ImpersonateCollection;
 use Octopy\Impersonate\Impersonate;
@@ -24,7 +23,7 @@ class ImpersonateController
      * @param  Request $request
      * @return ImpersonateCollection
      */
-    public function index(Request $request)
+    public function index(Request $request) : ImpersonateCollection
     {
         return new ImpersonateCollection($this->repository->get($request->get(
             'query'
@@ -35,7 +34,7 @@ class ImpersonateController
      * @param  Request $request
      * @throws ImpersonateException
      */
-    public function login(Request $request)
+    public function login(Request $request) : void
     {
         $this->impersonate->begin($this->impersonate->impersonator(), $request->get('user'));
     }
@@ -43,7 +42,7 @@ class ImpersonateController
     /**
      * @return void
      */
-    public function leave()
+    public function leave() : void
     {
         $this->impersonate->leave();
     }

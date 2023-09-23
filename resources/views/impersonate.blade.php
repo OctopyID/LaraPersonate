@@ -2,7 +2,6 @@
 
 <div class="oim-root {{ $impersonate->check() ? 'oim-impersonated' : '' }}">
     <div class="oim-container">
-
         <label for="oim-select"></label>
         <select id="oim-select" class="oim-select" style="width: 100% !important;">
             <option>{{ $impersonate->impersonator()->getImpersonateDisplayText() }}</option>

@@ -4,11 +4,14 @@ namespace Octopy\Impersonate\Tests\Unit;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
+use Octopy\Impersonate\Concerns\HasImpersonation;
 use Octopy\Impersonate\Events\BeginImpersonation;
 use Octopy\Impersonate\Events\LeaveImpersonation;
 use Octopy\Impersonate\Exceptions\ImpersonateException;
-use Octopy\Impersonate\Tests\Models\User;
+use Octopy\Impersonate\Tests\Models\User1;
+use Octopy\Impersonate\Tests\Models\User2;
 use Octopy\Impersonate\Tests\TestCase;
+use function Octopy\Impersonate\impersonate;
 
 class ImpersonateTest extends TestCase
 {
@@ -17,13 +20,13 @@ class ImpersonateTest extends TestCase
      */
     public function testUserImpersonation() : void
     {
-        $foo = User::create([
+        $foo = User1::create([
             'name'  => 'Foo Bar',
             'email' => 'foo@bar.baz',
             'admin' => true,
         ]);
 
-        $bar = User::create([
+        $bar = User1::create([
             'name'  => 'Bar Foo',
             'email' => 'bar@foo.baz',
             'admin' => false,
@@ -65,13 +68,13 @@ class ImpersonateTest extends TestCase
      */
     public function testUserImpersonationEvents() : void
     {
-        $foo = User::create([
+        $foo = User1::create([
             'name'  => 'Foo Bar',
             'email' => 'foo@bar.baz',
             'admin' => true,
         ]);
 
-        $bar = User::create([
+        $bar = User1::create([
             'name'  => 'Bar Foo',
             'email' => 'bar@foo.baz',
             'admin' => false,
@@ -96,11 +99,31 @@ class ImpersonateTest extends TestCase
         $this->expectException(ImpersonateException::class);
         $this->expectExceptionMessage('You cannot impersonate yourself.');
 
-        $foo = User::create([
+        $foo = User1::create([
             'name'  => 'Foo Bar',
             'email' => 'foo@bar.baz',
         ]);
 
         $foo->impersonate($foo);
+    }
+
+    /**
+     * @return void
+     */
+    public function testModelShouldUsesHasImpersonation() : void
+    {
+        config([
+            'impersonate.model' => User2::class,
+        ]);
+
+        $this->expectException(ImpersonateException::class);
+        $this->expectExceptionMessage(config('impersonate.model') . ' does not uses ' . HasImpersonation::class);
+
+        $foo = User2::create([
+            'name'  => 'Foo Bar',
+            'email' => 'foo@bar.baz',
+        ]);
+
+        impersonate()->begin($foo, $foo);
     }
 }

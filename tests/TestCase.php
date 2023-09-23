@@ -3,11 +3,10 @@
 namespace Octopy\Impersonate\Tests;
 
 use Illuminate\Foundation\Application;
-use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Octopy\Impersonate\Impersonate;
 use Octopy\Impersonate\Providers\ImpersonateServiceProvider;
-use Octopy\Impersonate\Tests\Models\User;
+use Octopy\Impersonate\Tests\Models\User1;
 
 class TestCase extends \Orchestra\Testbench\TestCase
 {
@@ -26,7 +25,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         parent::setUp();
 
         config([
-            'impersonate.model' => User::class,
+            'impersonate.model' => User1::class,
         ]);
 
         $this->impersonate = $this->app->make('impersonate');

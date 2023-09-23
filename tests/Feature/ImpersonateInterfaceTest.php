@@ -2,11 +2,11 @@
 
 namespace Octopy\Impersonate\Tests\Feature;
 
-use Octopy\Impersonate\Tests\TestCase;
 use Exception;
 use Illuminate\Support\Facades\Route;
 use Octopy\Impersonate\Http\Middleware\ImpersonateMiddleware;
-use Octopy\Impersonate\Tests\Models\User;
+use Octopy\Impersonate\Tests\Models\User1;
+use Octopy\Impersonate\Tests\TestCase;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ImpersonateInterfaceTest extends TestCase
@@ -26,7 +26,7 @@ class ImpersonateInterfaceTest extends TestCase
      */
     public function testInterfaceAppearsOnUsersAllowedToImpersonate() : void
     {
-        $foo = User::create([
+        $foo = User1::create([
             'name'  => 'Foo Bar',
             'email' => 'foo@bar.baz',
             'admin' => true,
@@ -40,7 +40,7 @@ class ImpersonateInterfaceTest extends TestCase
      */
     public function testInterfaceDoesNotAppearOnUsersNotAllowedToImpersonate() : void
     {
-        $foo = User::create([
+        $foo = User1::create([
             'name'  => 'Foo Bar',
             'email' => 'foo@bar.baz',
             'admin' => false,
@@ -58,7 +58,7 @@ class ImpersonateInterfaceTest extends TestCase
             'impersonate.enabled' => false,
         ]);
 
-        $foo = User::create([
+        $foo = User1::create([
             'name'  => 'Foo Bar',
             'email' => 'foo@bar.baz',
             'admin' => true,
@@ -78,7 +78,7 @@ class ImpersonateInterfaceTest extends TestCase
             ],
         ]);
 
-        $foo = User::create([
+        $foo = User1::create([
             'name'  => 'Foo Bar',
             'email' => 'foo@bar.baz',
             'admin' => true,
@@ -92,7 +92,7 @@ class ImpersonateInterfaceTest extends TestCase
      */
     public function testImpersonateDoesNotAppearWhenRequestIsAjaxOrWantJson() : void
     {
-        $foo = User::create([
+        $foo = User1::create([
             'name'  => 'Foo Bar',
             'email' => 'foo@bar.baz',
             'admin' => true,
@@ -111,7 +111,7 @@ class ImpersonateInterfaceTest extends TestCase
      */
     public function testImpersonateDoesNotAppearOnJsonResponse() : void
     {
-        $foo = User::create([
+        $foo = User1::create([
             'name'  => 'Foo Bar',
             'email' => 'foo@bar.baz',
             'admin' => true,
@@ -130,7 +130,7 @@ class ImpersonateInterfaceTest extends TestCase
      */
     public function testImpersonateDoesNotAppearOnBinaryFileResponse() : void
     {
-        $foo = User::create([
+        $foo = User1::create([
             'name'  => 'Foo Bar',
             'email' => 'foo@bar.baz',
             'admin' => true,
@@ -149,7 +149,7 @@ class ImpersonateInterfaceTest extends TestCase
      */
     public function testImpersonateDoesNotAppearOnRedirectResponse() : void
     {
-        $foo = User::create([
+        $foo = User1::create([
             'name'  => 'Foo Bar',
             'email' => 'foo@bar.baz',
             'admin' => true,
@@ -168,7 +168,7 @@ class ImpersonateInterfaceTest extends TestCase
      */
     public function testImpersonateDoesNotAppearOnStreamResponse() : void
     {
-        $foo = User::create([
+        $foo = User1::create([
             'name'  => 'Foo Bar',
             'email' => 'foo@bar.baz',
             'admin' => true,
@@ -187,7 +187,7 @@ class ImpersonateInterfaceTest extends TestCase
      */
     public function testImpersonateDoesNotAppearOnExceptionResponse() : void
     {
-        $foo = User::create([
+        $foo = User1::create([
             'name'  => 'Foo Bar',
             'email' => 'foo@bar.baz',
             'admin' => true,

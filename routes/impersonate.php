@@ -3,25 +3,25 @@
 use Illuminate\Support\Facades\Route;
 use Octopy\Impersonate\Http\Controllers\ImpersonateController;
 
-Route::group(['prefix' => '_impersonate', 'middleware' => 'web', 'as' => 'impersonate.'], function () {
+Route::middleware(['web', 'auth'])->prefix('_impersonate')->as('impersonate.')->group(function ($route) {
     /**
      * query:GET {
      *     search: string
      * }
      */
-    Route::get('users', [ImpersonateController::class, 'index'])->name('index');
+    $route->get('users', [ImpersonateController::class, 'index'])->name('index');
 
     /**
      * body:POST {
      *     user: int|string
      * }
      */
-    Route::post('login', [ImpersonateController::class, 'login'])->name('login');
+    $route->post('login', [ImpersonateController::class, 'login'])->name('login');
 
     /**
      * body:POST {
      *
      * }
      */
-    Route::post('leave', [ImpersonateController::class, 'leave'])->name('leave');
+    $route->post('leave', [ImpersonateController::class, 'leave'])->name('leave');
 });

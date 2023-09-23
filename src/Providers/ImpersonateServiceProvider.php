@@ -2,7 +2,6 @@
 
 namespace Octopy\Impersonate\Providers;
 
-use Illuminate\Routing\Route;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use Octopy\Impersonate\Authorization;
@@ -20,12 +19,12 @@ class ImpersonateServiceProvider extends ServiceProvider
         if (config('impersonate.enabled')) {
             $router->pushMiddlewareToGroup('web', ImpersonateMiddleware::class);
 
-            $this->loadViewsFrom(
-                __DIR__ . '/../../resources/views', 'impersonate'
-            );
-
             $this->loadRoutesFrom(
                 __DIR__ . '/../../routes/impersonate.php'
+            );
+
+            $this->loadViewsFrom(
+                __DIR__ . '/../../resources/views', 'impersonate'
             );
         }
     }

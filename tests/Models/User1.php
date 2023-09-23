@@ -2,18 +2,24 @@
 
 namespace Octopy\Impersonate\Tests\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User;
 use Octopy\Impersonate\Authorization;
 use Octopy\Impersonate\Concerns\HasImpersonation;
-use Octopy\Impersonate\Contracts\Impersonation;
 
 /**
  * @method   static create(string[] $array)
  * @property string $name
  */
-class User extends \Illuminate\Foundation\Auth\User
+class User1 extends User
 {
-    use HasImpersonation;
+    use HasImpersonation, SoftDeletes;
+
+    /**
+     * @var string
+     */
+    protected $table = 'users';
 
     /**
      * @var string[]
@@ -28,7 +34,7 @@ class User extends \Illuminate\Foundation\Auth\User
     public function getImpersonateSearchField() : array
     {
         return [
-            'name',
+            'name', 'posts.title',
         ];
     }
 
@@ -53,5 +59,13 @@ class User extends \Illuminate\Foundation\Auth\User
             ->impersonated(function ($user) {
                 return ! $user->admin;
             });
+    }
+
+    /**
+     * @return HasMany
+     */
+    public function posts() : HasMany
+    {
+        return $this->hasMany(Post1::class, 'user_id');
     }
 }

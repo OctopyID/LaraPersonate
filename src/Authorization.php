@@ -21,13 +21,13 @@ final class Authorization
      */
     public function __construct()
     {
-        $this->impersonator = function () {
+        $this->impersonator(function () {
             return true;
-        };
+        });
 
-        $this->impersonated = function () {
+        $this->impersonated(function () {
             return true;
-        };
+        });
     }
 
     /**
