@@ -44,5 +44,18 @@ class ImpersonateServiceProvider extends ServiceProvider
         $this->app->singleton(Authorization::class, function () {
             return new Authorization;
         });
+
+        if ($this->app->runningInConsole()) {
+            $this->registerPublishing();
+        }
+    }
+
+    /**
+     * @return void
+     */
+    protected function registerPublishing() : void
+    {
+        $this->publishes([__DIR__ . '/../../public' => public_path('vendor/octopyid/impersonate/')], 'impersonate');
+        $this->publishes([__DIR__ . '/../../config/impersonate.php' => config_path('impersonate.php')], 'impersonate');
     }
 }
