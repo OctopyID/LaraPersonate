@@ -2,7 +2,6 @@
 
 namespace Octopy\Impersonate\Storage;
 
-use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 
 class SessionStorage
@@ -69,5 +68,16 @@ class SessionStorage
         ]);
 
         return true;
+    }
+
+    /**
+     * @param  string $password
+     * @return void
+     */
+    public function setPasswordHash(string $password) : void
+    {
+        session()->put([
+            'password_hash_sanctum' => $password,
+        ]);
     }
 }
