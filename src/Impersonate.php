@@ -3,10 +3,10 @@
 namespace Octopy\Impersonate;
 
 use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Contracts\Auth\StatefulGuard;
+use Illuminate\Contracts\Auth\Factory as Auth;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Auth;
+use Laravel\Jetstream\Jetstream;
 use Octopy\Impersonate\Concerns\HasImpersonation;
 use Octopy\Impersonate\Events\BeginImpersonation;
 use Octopy\Impersonate\Events\LeaveImpersonation;
@@ -16,11 +16,6 @@ use Octopy\Impersonate\Storage\SessionStorage;
 class Impersonate
 {
     /**
-     * @var StatefulGuard
-     */
-    protected StatefulGuard $guard;
-
-    /**
      * @var Repository
      */
     protected Repository $repository;
@@ -28,15 +23,15 @@ class Impersonate
     /**
      * @var SessionStorage
      */
-    protected SessionStorage $storage;
+    protected SessionStorage $session;
 
     /**
      * Impersonate constructor.
      */
-    public function __construct()
+    public function __construct(protected Auth $auth)
     {
         $this->repository = new Repository;
-        $this->storage = new SessionStorage;
+        $this->session = new SessionStorage;
 
         $this->guard(config(
             'impersonate.guard'
@@ -51,7 +46,7 @@ class Impersonate
      */
     public function guard(string $guard) : self
     {
-        $this->guard = Auth::guard($guard);
+        $this->auth->guard($guard);
 
         return $this;
     }
@@ -61,7 +56,7 @@ class Impersonate
      */
     public function check() : bool
     {
-        return $this->storage->isInImpersonatingMode();
+        return $this->session->isInImpersonatingMode();
     }
 
     /**
@@ -73,7 +68,7 @@ class Impersonate
             return false;
         }
 
-        return $this->guard->check() && app('impersonate.authorization')->isImpersonator($this->impersonator());
+        return $this->auth->check() && app('impersonate.authorization')->isImpersonator($this->impersonator());
     }
 
     /**
@@ -82,10 +77,10 @@ class Impersonate
     public function impersonator() : Model|Authenticatable
     {
         if ($this->check()) {
-            return $this->repository->find($this->storage->getImpersonator());
+            return $this->repository->find($this->session->getImpersonator());
         }
 
-        return $this->guard->user();
+        return $this->auth->user();
     }
 
     /**
@@ -93,7 +88,7 @@ class Impersonate
      */
     public function impersonated() : Model|Authenticatable
     {
-        return $this->repository->find($this->storage->getImpersonated());
+        return $this->repository->find($this->session->getImpersonated());
     }
 
     /**
@@ -108,11 +103,17 @@ class Impersonate
         $impersonated = $this->fetchModel($impersonated);
 
         if ($this->validate($impersonator, $impersonated)) {
-            $this->storage
+            $this->session
                 ->setImpersonator($impersonator)
                 ->setImpersonated($impersonated);
 
-            $this->guard->login($impersonated);
+            $this->auth->login($impersonated);
+
+            if (class_exists(Jetstream::class)) {
+                $this->session->setPasswordHash(
+                    $this->auth->user()->getAuthPassword()
+                );
+            }
 
             event(new BeginImpersonation(
                 $impersonator, $impersonated
@@ -131,8 +132,14 @@ class Impersonate
             $impersonator = $this->impersonator();
             $impersonated = $this->impersonated();
 
-            if ($this->storage->flush()) {
-                $this->guard->login($impersonator);
+            if ($this->session->flush()) {
+                $this->auth->login($impersonator);
+
+                if (class_exists(Jetstream::class)) {
+                    $this->session->setPasswordHash(
+                        $this->auth->user()->getAuthPassword()
+                    );
+                }
 
                 event(new LeaveImpersonation(
                     $impersonator, $impersonated
