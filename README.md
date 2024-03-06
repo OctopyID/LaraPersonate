@@ -196,7 +196,7 @@ By using this package, you agree that Octopy ID and the contributors of this pac
 
 ## Security
 
-If you discover any security related issues, please email [supianidz@gmail.com](mailto:supianidz@gmail.com) instead of using the issue
+If you discover any security related issues, please email [bug@octopy.dev](mailto:bug@octopy.dev) instead of using the issue
 tracker.
 
 ## Credits
