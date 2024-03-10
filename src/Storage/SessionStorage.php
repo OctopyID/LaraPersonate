@@ -74,7 +74,7 @@ class SessionStorage
      * @param  string $password
      * @return void
      */
-    public function setPasswordHash(string $password) : void
+    public function setPasswordHash(?string $password) : void
     {
         session()->put([
             'password_hash_sanctum' => $password,
