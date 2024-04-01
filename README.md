@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-    <img src="https://img.shields.io/github/actions/workflow/status/OctopyID/LaraPersonate/tests.yml?branch=main&style=for-the-badge" alt="Tests">
+    <img src="https://img.shields.io/github/actions/workflow/status/OctopyID/LaraPersonate/tests.yml?branch=v3.x&style=for-the-badge" alt="Tests">
     <img src="https://img.shields.io/packagist/v/octopyid/laravel-impersonate.svg?style=for-the-badge" alt="Version">
     <img src="https://img.shields.io/packagist/dt/octopyid/laravel-impersonate.svg?style=for-the-badge&color=F28D1A" alt="Downloads">
     <img src="https://img.shields.io/packagist/l/octopyid/laravel-impersonate.svg?style=for-the-badge" alt="License">
