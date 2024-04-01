@@ -16,10 +16,10 @@ Is an Impersonation package for the Laravel Framework. With this package you can
 You don't have to worry about authorizing who can impersonate or who can be impersonated, coz we provided it by default, just need to adjust it a little according to your
 rules.
 
-| Impersonate                                                 | Laravel    | Impersonate                                                 | Laravel   |
-|-------------------------------------------------------------|------------|-------------------------------------------------------------|-----------|
-| [v4.x](https://github.com/OctopyID/LaraPersonate/tree/main) | 10.x       | [v2.x](https://github.com/OctopyID/LaraPersonate/tree/v2.x) | 7.x - 8.x |
-| [v3.x](https://github.com/OctopyID/LaraPersonate/tree/v3.x) | 9.x - 10.x | [v1.x](https://github.com/OctopyID/LaraPersonate/tree/v1.x) | 7.x - 8.x |
+| Impersonate                                                 | Laravel     | Impersonate                                                 | Laravel   |
+|-------------------------------------------------------------|-------------|-------------------------------------------------------------|-----------|
+| [v4.x](https://github.com/OctopyID/LaraPersonate/tree/main) | 10.x - 11.x | [v2.x](https://github.com/OctopyID/LaraPersonate/tree/v2.x) | 7.x - 8.x |
+| [v3.x](https://github.com/OctopyID/LaraPersonate/tree/v3.x) | 9.x - 10.x  | [v1.x](https://github.com/OctopyID/LaraPersonate/tree/v1.x) | 7.x - 8.x |
 
 ## Installation
 
