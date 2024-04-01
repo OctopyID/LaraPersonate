@@ -13,34 +13,30 @@ jobs:
 
     strategy:
       matrix:
-        php: [ 8.1, 8.2 ]
-        laravel: [ '^10.0' ]
+        php: [ 8.1, 8.2, 8.3 ]
+        laravel: [ '10.*', '11.*' ]
+        exclude:
+          - php: 8.1
+            laravel: '11.*'
 
     name: PHP ${{ matrix.php }} - LARAVEL ${{ matrix.laravel }}
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Cache Dependencies
-        uses: actions/cache@v1
-        with:
-          path: ~/.composer/cache/files
-          key: dependencies-php-${{ matrix.php }}-composer-${{ hashFiles('composer.json') }}
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: dom, libxml, mbstring, zip, pdo, sqlite, pdo_sqlite
-          tools: composer:v2
+          extensions: dom, curl, mbstring, zip, pdo, sqlite, pdo_sqlite, iconv
           coverage: none
 
       - name: Install Dependencies
 
         run: |
           composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
-          composer update --prefer-dist
+          composer update --prefer-dist --no-interaction
 
       - name: Execute Tests
         run: vendor/bin/phpunit --colors=always

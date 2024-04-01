@@ -13,9 +13,24 @@ class TestCase extends \Orchestra\Testbench\TestCase
     use RefreshDatabase;
 
     /**
+     * @var string
+     */
+    protected string $database;
+
+    /**
      * @var Impersonate
      */
     protected Impersonate $impersonate;
+
+    /**
+     * @param  string $name
+     */
+    public function __construct(string $name)
+    {
+        parent::__construct($name);
+
+        $this->database = __DIR__ . '/../database/database.sqlite';
+    }
 
     /**
      * @return void
@@ -36,11 +51,18 @@ class TestCase extends \Orchestra\Testbench\TestCase
      */
     protected function defineDatabaseMigrations() : void
     {
+        if (! file_exists($this->database)) {
+            touch($this->database);
+        }
+
         $this->artisan('migrate', ['--database' => 'testbench'])->run();
 
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->beforeApplicationDestroyed(function () {
             $this->artisan('migrate:rollback', ['--database' => 'testbench'])->run();
+            if (file_exists($this->database)) {
+                unlink($this->database);
+            }
         });
     }
 
@@ -53,8 +75,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
         $app['config']->set('database.default', 'testbench');
         $app['config']->set('database.connections.testbench', [
             'driver'   => 'sqlite',
-            'database' => ':memory:',
-            'prefix'   => '',
+            'database' => __DIR__ . '/../database/database.sqlite',
         ]);
     }
 
