@@ -14,10 +14,10 @@ use Octopy\Impersonate\Concerns\HasImpersonation;
 class ImpersonateResource extends JsonResource
 {
     /**
-     * @param  Request $request
+     * @param  Request|null $request
      * @return array
      */
-    public function toArray( $request) : array
+    public function toArray($request) : array
     {
         return [
             'key' => $this->getKey(),
