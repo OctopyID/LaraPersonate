@@ -1,3 +1,4 @@
+
 <p align="center">
     <img src="demo.gif" alt="Demo">
 </p>
@@ -7,6 +8,12 @@
     <img src="https://img.shields.io/packagist/v/octopyid/laravel-impersonate.svg?style=for-the-badge" alt="Version">
     <img src="https://img.shields.io/packagist/dt/octopyid/laravel-impersonate.svg?style=for-the-badge&color=F28D1A" alt="Downloads">
     <img src="https://img.shields.io/packagist/l/octopyid/laravel-impersonate.svg?style=for-the-badge" alt="License">
+</p>
+
+<p align="center">
+    <a href="https://github.com/Safouene1/support-palestine-banner/Markdown-pages/Support.md"> 
+        <img src="https://raw.githubusercontent.com/Safouene1/support-palestine-banner/master/banner-support.svg">
+    </a>
 </p>
 
 # Laravel Impersonate
