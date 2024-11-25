@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User;
 use Octopy\Impersonate\Authorization;
 use Octopy\Impersonate\Concerns\HasImpersonation;
+use Octopy\Impersonate\Contracts\HasImpersonationUI;
 
 /**
  * @method   static create(string[] $array)
  * @property string $name
  */
-class User1 extends User
+class User1 extends User implements HasImpersonationUI
 {
     use HasImpersonation, SoftDeletes;
 

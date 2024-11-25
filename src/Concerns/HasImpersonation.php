@@ -36,16 +36,6 @@ trait HasImpersonation
     }
 
     /**
-     * @return string[]
-     */
-    abstract public function getImpersonateSearchField() : array;
-
-    /**
-     * @return string
-     */
-    abstract public function getImpersonateDisplayText() : string;
-
-    /**
      * @param  Authorization $authorization
      * @return void
      * @codeCoverageIgnore

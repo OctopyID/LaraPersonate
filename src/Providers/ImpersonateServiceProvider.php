@@ -5,6 +5,7 @@ namespace Octopy\Impersonate\Providers;
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use Octopy\Impersonate\Authorization;
+use Octopy\Impersonate\Contracts\HasImpersonationUI;
 use Octopy\Impersonate\Http\Middleware\ImpersonateMiddleware;
 use Octopy\Impersonate\Impersonate;
 
@@ -16,7 +17,7 @@ class ImpersonateServiceProvider extends ServiceProvider
      */
     public function boot(Router $router) : void
     {
-        if (config('impersonate.enabled')) {
+        if (config('impersonate.enabled') && class_implements(config('impersonate.model'), HasImpersonationUI::class)) {
             $router->pushMiddlewareToGroup('web', ImpersonateMiddleware::class);
 
             $this->loadRoutesFrom(

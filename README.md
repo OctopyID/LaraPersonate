@@ -1,4 +1,3 @@
-
 <p align="center">
     <img src="demo.gif" alt="Demo">
 </p>
@@ -64,9 +63,25 @@ Add the trait `Octopy\Impersonate\Concerns\HasImpersonation` to your **User** mo
 namespace App\Models;
 
 use Octopy\Impersonate\Concerns\HasImpersonation;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Foundation\Auth\User as Authenticatable;     
 
 class User extends Authenticatable
+{
+    use HasImpersonation;
+}
+
+```
+
+If you plan to use the provided UI, add `Octopy\Impersonate\Contracts\HasImpersonationUI` interface to add mandatory configuration for the UI.
+
+```php
+namespace App\Models;
+
+use Octopy\Impersonate\Concerns\HasImpersonation;
+use Octopy\Impersonate\Contracts\HasImpersonationUI;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
+class User extends Authenticatable implements HasImpersonationUI
 {
     use HasImpersonation;
     
