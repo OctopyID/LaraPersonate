@@ -97,7 +97,7 @@ class Impersonate
      * @return $this
      * @throws ImpersonateException
      */
-    public function begin(mixed $impersonator, mixed $impersonated) : Impersonate
+    public function begin(mixed $impersonator, mixed $impersonated): Impersonate
     {
         $impersonator = $this->fetchModel($impersonator);
         $impersonated = $this->fetchModel($impersonated);
@@ -107,7 +107,37 @@ class Impersonate
                 ->setImpersonator($impersonator)
                 ->setImpersonated($impersonated);
 
-            $this->auth->login($impersonated);
+
+            if ($this->auth instanceof \Illuminate\Auth\SessionGuard) {
+                $this->auth->login($impersonated);
+            } else {
+                //Fallback to Laravel's Auth facade
+                $found_session_guard = false;
+
+                //Use server's default guard
+                $guard = \Illuminate\Support\Facades\Auth::guard(config('auth.defaults.guard'));
+
+                if ($guard instanceof \Illuminate\Auth\SessionGuard) {
+                    $found_session_guard = true;
+                    $guard->login($impersonated);
+                }
+
+                if (!$found_session_guard) {
+                    //Fallback to the first SessionGuard
+                    $guard_names = array_keys(config('auth.guards'));
+                    foreach ($guard_names as $guard_name) {
+                        if ($found_session_guard) {
+                            continue;
+                        }
+                        $guard = \Illuminate\Support\Facades\Auth::guard($guard_name);
+
+                        if ($guard instanceof \Illuminate\Auth\SessionGuard) {
+                            $guard->login($impersonated);
+                            $found_session_guard = true;
+                        }
+                    }
+                }
+            }
 
             if (class_exists(Jetstream::class)) {
                 $this->session->setPasswordHash(
@@ -116,7 +146,8 @@ class Impersonate
             }
 
             event(new BeginImpersonation(
-                $impersonator, $impersonated
+                $impersonator,
+                $impersonated
             ));
         }
 
