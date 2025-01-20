@@ -120,6 +120,7 @@ class Impersonate
                 if ($guard instanceof \Illuminate\Auth\SessionGuard) {
                     $found_session_guard = true;
                     $guard->login($impersonated);
+                    \Illuminate\Support\Facades\Auth::guard(config('auth.defaults.guard'))->login($impersonated);
                 }
 
                 if (!$found_session_guard) {
@@ -132,7 +133,7 @@ class Impersonate
                         $guard = \Illuminate\Support\Facades\Auth::guard($guard_name);
 
                         if ($guard instanceof \Illuminate\Auth\SessionGuard) {
-                            $guard->login($impersonated);
+                            \Illuminate\Support\Facades\Auth::guard($guard_name)->login($impersonated);
                             $found_session_guard = true;
                         }
                     }
