@@ -30,8 +30,8 @@ class Impersonate
      */
     public function __construct(protected Auth $auth)
     {
-        $this->repository = new Repository;
-        $this->session = new SessionStorage;
+        $this->repository = new Repository();
+        $this->session = new SessionStorage();
 
         $this->guard(config(
             'impersonate.guard'
@@ -44,7 +44,7 @@ class Impersonate
      * @param  string $guard
      * @return $this
      */
-    public function guard(string $guard) : self
+    public function guard(string $guard): self
     {
         $this->auth->guard($guard);
 
@@ -54,7 +54,7 @@ class Impersonate
     /**
      * @return bool
      */
-    public function check() : bool
+    public function check(): bool
     {
         return $this->session->isInImpersonatingMode();
     }
@@ -62,7 +62,7 @@ class Impersonate
     /**
      * @return bool
      */
-    public function authorized() : bool
+    public function authorized(): bool
     {
         if (! in_array(HasImpersonation::class, class_uses(config('impersonate.model')))) {
             return false;
@@ -74,7 +74,7 @@ class Impersonate
     /**
      * @return Model|Authenticatable
      */
-    public function impersonator() : Model|Authenticatable
+    public function impersonator(): Model|Authenticatable
     {
         if ($this->check()) {
             return $this->repository->find($this->session->getImpersonator());
@@ -86,7 +86,7 @@ class Impersonate
     /**
      * @return Model|Authenticatable
      */
-    public function impersonated() : Model|Authenticatable
+    public function impersonated(): Model|Authenticatable
     {
         return $this->repository->find($this->session->getImpersonated());
     }
@@ -110,6 +110,12 @@ class Impersonate
 
             if ($this->auth instanceof \Illuminate\Auth\SessionGuard) {
                 $this->auth->login($impersonated);
+
+                if (class_exists(Jetstream::class)) {
+                    $this->session->setPasswordHash(
+                        $this->auth->user()->getAuthPassword()
+                    );
+                }
             } else {
                 //Fallback to Laravel's Auth facade
                 $found_session_guard = false;
@@ -137,12 +143,12 @@ class Impersonate
                         }
                     }
                 }
-            }
 
-            if (class_exists(Jetstream::class)) {
-                $this->session->setPasswordHash(
-                    $this->auth->user()->getAuthPassword()
-                );
+                if (class_exists(Jetstream::class)) {
+                    $this->session->setPasswordHash(
+                        \Illuminate\Support\Facades\Auth::user()->getAuthPassword()
+                    );
+                }
             }
 
             event(new BeginImpersonation(
@@ -157,7 +163,7 @@ class Impersonate
     /**
      * @return Impersonate
      */
-    public function leave() : Impersonate
+    public function leave(): Impersonate
     {
         if ($this->check()) {
             $impersonator = $this->impersonator();
@@ -167,6 +173,12 @@ class Impersonate
 
                 if ($this->auth instanceof \Illuminate\Auth\SessionGuard) {
                     $this->auth->login($impersonator);
+
+                    if (class_exists(Jetstream::class)) {
+                        $this->session->setPasswordHash(
+                            $this->auth->user()->getAuthPassword()
+                        );
+                    }
                 } else {
                     //Fallback to Laravel's Auth facade
                     $found_session_guard = false;
@@ -194,16 +206,18 @@ class Impersonate
                             }
                         }
                     }
+
+                    if (class_exists(Jetstream::class)) {
+                        $this->session->setPasswordHash(
+                            \Illuminate\Support\Facades\Auth::user()->getAuthPassword()
+                        );
+                    }
                 }
 
-                if (class_exists(Jetstream::class)) {
-                    $this->session->setPasswordHash(
-                        $this->auth->user()->getAuthPassword()
-                    );
-                }
 
                 event(new LeaveImpersonation(
-                    $impersonator, $impersonated
+                    $impersonator,
+                    $impersonated
                 ));
             }
         }
@@ -217,7 +231,7 @@ class Impersonate
      * @return bool
      * @throws ImpersonateException
      */
-    private function validate(Model $impersonator, Model $impersonated) : bool
+    private function validate(Model $impersonator, Model $impersonated): bool
     {
         if (! in_array(HasImpersonation::class, class_uses($impersonator))) {
             throw new ImpersonateException(get_class($impersonator) . ' does not uses ' . HasImpersonation::class);
@@ -246,7 +260,7 @@ class Impersonate
      * @param  mixed $modelOrId
      * @return Model|Authenticatable
      */
-    private function fetchModel(mixed $modelOrId) : Model|Authenticatable
+    private function fetchModel(mixed $modelOrId): Model|Authenticatable
     {
         if (! $modelOrId instanceof Model) {
             return $this->repository->find($modelOrId);
