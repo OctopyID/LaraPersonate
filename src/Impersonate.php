@@ -119,7 +119,6 @@ class Impersonate
 
                 if ($guard instanceof \Illuminate\Auth\SessionGuard) {
                     $found_session_guard = true;
-                    $guard->login($impersonated);
                     \Illuminate\Support\Facades\Auth::guard(config('auth.defaults.guard'))->login($impersonated);
                 }
 
@@ -165,7 +164,37 @@ class Impersonate
             $impersonated = $this->impersonated();
 
             if ($this->session->flush()) {
-                $this->auth->login($impersonator);
+
+                if ($this->auth instanceof \Illuminate\Auth\SessionGuard) {
+                    $this->auth->login($impersonator);
+                } else {
+                    //Fallback to Laravel's Auth facade
+                    $found_session_guard = false;
+
+                    //Use server's default guard
+                    $guard = \Illuminate\Support\Facades\Auth::guard(config('auth.defaults.guard'));
+
+                    if ($guard instanceof \Illuminate\Auth\SessionGuard) {
+                        $found_session_guard = true;
+                        \Illuminate\Support\Facades\Auth::guard(config('auth.defaults.guard'))->login($impersonator);
+                    }
+
+                    if (!$found_session_guard) {
+                        //Fallback to the first SessionGuard
+                        $guard_names = array_keys(config('auth.guards'));
+                        foreach ($guard_names as $guard_name) {
+                            if ($found_session_guard) {
+                                continue;
+                            }
+                            $guard = \Illuminate\Support\Facades\Auth::guard($guard_name);
+
+                            if ($guard instanceof \Illuminate\Auth\SessionGuard) {
+                                \Illuminate\Support\Facades\Auth::guard($guard_name)->login($impersonator);
+                                $found_session_guard = true;
+                            }
+                        }
+                    }
+                }
 
                 if (class_exists(Jetstream::class)) {
                     $this->session->setPasswordHash(
