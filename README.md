@@ -47,7 +47,7 @@ composer require octopyid/laravel-impersonate:^4
 ### Publish The Package
 
 ```bash
-artisan vendor:publish --tag="impersonate"
+php artisan vendor:publish --tag="impersonate"
 ```
 
 > **Note**
