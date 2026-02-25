@@ -17,6 +17,28 @@
 
 # Laravel Impersonate
 
+## ⚠️ Project Status: Limited Maintenance
+
+Hello everyone 👋
+
+Thank you for using and supporting **LaraPersonate**.
+
+Due to my current real-life commitments and workload, this project is now under **limited maintenance**. While the project is still active, development will move at a slower pace for the time being.
+
+### What to expect
+
+* 🚀 New features will likely be postponed.
+* 🐛 Bug fixes may still be addressed, but response times may be slower.
+* 📦 Pull requests and issues are still welcome and will be reviewed when possible.
+
+Please rest assured that the project is **not abandoned** — it is simply progressing more slowly than before.
+
+Community contributions are greatly appreciated, and thank you for your continued support and understanding 🙏
+
+— Supian M
+
+---
+
 Is an Impersonation package for the Laravel Framework. With this package you can easily impersonate other users either manually or using the interface we provide.
 
 You don't have to worry about authorizing who can impersonate or who can be impersonated, coz we provided it by default, just need to adjust it a little according to your
