@@ -15,22 +15,14 @@ class TestCase extends \Orchestra\Testbench\TestCase
     /**
      * @var string
      */
-    protected string $database;
+    protected string $database = __DIR__ . '/../database/database.sqlite';
 
     /**
      * @var Impersonate
      */
     protected Impersonate $impersonate;
 
-    /**
-     * @param  string $name
-     */
-    public function __construct(string $name)
-    {
-        parent::__construct($name);
 
-        $this->database = __DIR__ . '/../database/database.sqlite';
-    }
 
     /**
      * @return void
