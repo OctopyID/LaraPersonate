@@ -14,9 +14,11 @@ trait HasImpersonation
      */
     public static function bootHasImpersonation() : void
     {
-        (new static)->setImpersonateAuthorization(App::make(
-            'impersonate.authorization'
-        ));
+        App::booted(function () {
+            (new static)->setImpersonateAuthorization(App::make(
+                'impersonate.authorization'
+            ));
+        });
     }
 
     /**
