@@ -14,7 +14,12 @@ trait HasImpersonation
      */
     public static function bootHasImpersonation() : void
     {
-        (new static)->setImpersonateAuthorization(App::make(
+        // Use reflection to avoid invoking the model constructor, which would
+        // recursively trigger bootIfNotBooted() while this very boot is running
+        // (Laravel 13 throws a LogicException on that).
+        $instance = (new \ReflectionClass(static::class))->newInstanceWithoutConstructor();
+
+        $instance->setImpersonateAuthorization(App::make(
             'impersonate.authorization'
         ));
     }
