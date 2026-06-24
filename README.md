@@ -9,12 +9,6 @@
     <img src="https://img.shields.io/packagist/l/octopyid/laravel-impersonate.svg?style=for-the-badge" alt="License">
 </p>
 
-<p align="center">
-    <a href="https://github.com/Safouene1/support-palestine-banner/Markdown-pages/Support.md"> 
-        <img src="https://raw.githubusercontent.com/Safouene1/support-palestine-banner/master/banner-support.svg">
-    </a>
-</p>
-
 # Laravel Impersonate
 
 ## ⚠️ Project Status: Limited Maintenance
@@ -46,7 +40,7 @@ rules.
 
 | Impersonate                                                 | Laravel     | Impersonate                                                 | Laravel   |
 |-------------------------------------------------------------|-------------|-------------------------------------------------------------|-----------|
-| [v4.x](https://github.com/OctopyID/LaraPersonate/tree/main) | 10.x - 12.x | [v2.x](https://github.com/OctopyID/LaraPersonate/tree/v2.x) | 7.x - 8.x |
+| [v4.x](https://github.com/OctopyID/LaraPersonate/tree/main) | 10.x - 13.x | [v2.x](https://github.com/OctopyID/LaraPersonate/tree/v2.x) | 7.x - 8.x |
 | [v3.x](https://github.com/OctopyID/LaraPersonate/tree/v3.x) | 9.x - 10.x  | [v1.x](https://github.com/OctopyID/LaraPersonate/tree/v1.x) | 7.x - 8.x |
 
 ## Installation
