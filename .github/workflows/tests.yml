@@ -13,23 +13,8 @@ jobs:
 
     strategy:
       matrix:
-        php: [ 8.1, 8.2, 8.3, 8.4, 8.5 ]
-        laravel: [ '10.*', '11.*', '12.*', '13.*' ]
-        exclude:
-          - php: 8.1
-            laravel: '11.*'
-          - php: 8.1
-            laravel: '12.*'
-          - php: 8.1
-            laravel: '13.*'
-          - php: 8.2
-            laravel: '13.*'
-          - php: 8.4
-            laravel: '10.*'
-          - php: 8.5
-            laravel: '10.*'
-          - php: 8.5
-            laravel: '11.*'
+        php: [ 8.2, 8.3, 8.4 ]
+        laravel: [ '12.*', '13.*' ]
 
     name: PHP ${{ matrix.php }} - LARAVEL ${{ matrix.laravel }}
 
@@ -45,10 +30,12 @@ jobs:
           coverage: none
 
       - name: Install Dependencies
-
         run: |
           composer require "laravel/framework:${{ matrix.laravel }}" --no-interaction --no-update
           composer update --prefer-dist --no-interaction
 
       - name: Execute Tests
-        run: vendor/bin/phpunit --colors=always
+        run: vendor/bin/pest --colors=always
+
+      - name: Execute Static Analysis
+        run: vendor/bin/phpstan analyse --memory-limit=2G
