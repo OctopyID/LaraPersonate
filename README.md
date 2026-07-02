@@ -16,10 +16,11 @@ Is an Impersonation package for the Laravel Framework. With this package you can
 You don't have to worry about authorizing who can impersonate or who can be impersonated, coz we provided it by default, just need to adjust it a little according to your
 rules.
 
-| Impersonate                                                 | Laravel     | Impersonate                                                 | Laravel   |
-|-------------------------------------------------------------|-------------|-------------------------------------------------------------|-----------|
-| [v4.x](https://github.com/OctopyID/LaraPersonate/tree/main) | 10.x - 13.x | [v2.x](https://github.com/OctopyID/LaraPersonate/tree/v2.x) | 7.x - 8.x |
-| [v3.x](https://github.com/OctopyID/LaraPersonate/tree/v3.x) | 9.x - 10.x  | [v1.x](https://github.com/OctopyID/LaraPersonate/tree/v1.x) | 7.x - 8.x |
+| Impersonate                                                 | Laravel     | Impersonate                                                 | Laravel    |
+|-------------------------------------------------------------|-------------|-------------------------------------------------------------|------------|
+| [v5.x](https://github.com/OctopyID/LaraPersonate/tree/main) | 11.x        | [v2.x](https://github.com/OctopyID/LaraPersonate/tree/v2.x) | 7.x - 8.x  |
+| [v4.x](https://github.com/OctopyID/LaraPersonate/tree/v4.x) | 10.x - 13.x | [v1.x](https://github.com/OctopyID/LaraPersonate/tree/v1.x) | 7.x - 8.x  |
+| [v3.x](https://github.com/OctopyID/LaraPersonate/tree/v3.x) | 9.x - 10.x  |                                                             |            |
 
 ## Installation
 
@@ -35,7 +36,7 @@ To install the package, simply follow the steps below.
 ### Install The Package
 
 ```bash
-composer require octopyid/laravel-impersonate:^4
+composer require octopyid/laravel-impersonate:^5
 ```
 
 ### Publish The Package
@@ -126,21 +127,18 @@ impersonated.
 
 #### Defining Limitation
 
-To limit who can do **impersonation** or who is can be **impersonated**, add
-`setImpersonateAuthorization(Authorization $authorization)` on the Model to enforce the limitation.
+To limit who can do **impersonation** or who is can be **impersonated**, implement the `canImpersonate()` and `canBeImpersonated()` methods on your User Model to enforce the limitation.
 
-The **impersonator** method is intended for who can perform the impersonation and the **impersonated** method is intended for anyone who is allowed to be imitated.
+The **canImpersonate** method is intended for who can perform the impersonation and the **canBeImpersonated** method is intended for anyone who is allowed to be imitated.
 
 > **Warning**
 >
-> Not defining the Authorization rules in the Model or misdefining them can lead to serious security issues.
+> Not defining the limitations in the Model or misdefining them can lead to serious security issues.
 
-The example below uses [Laratrust](https://github.com/santigarcor/laratrust/) for role management where **SUPER_ADMIN** can perform impersonation against **CUSTOMER**. Feel
-free to use any other Role Management you like.
+The example below uses [Laratrust](https://github.com/santigarcor/laratrust/) for role management where **SUPER_ADMIN** can perform impersonation against **CUSTOMER**. Feel free to use any other Role Management you like.
 
 ```php
 use Octopy\Impersonate\Concerns\HasImpersonation;
-use Octopy\Impersonate\Authorization;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -148,18 +146,19 @@ class User extends Authenticatable
     use HasImpersonation;
     
     /**
-     * @param  Authorization $authorization
-     * @return void
+     * @return bool
      */
-    public function setImpersonateAuthorization(Authorization $authorization) : void
+    public function canImpersonate() : bool
     {
-        $authorization->impersonator(function (User $user) {
-            return $user->hasRole('SUPER_ADMIN');
-        });
+        return $this->hasRole('SUPER_ADMIN');
+    }
 
-        $authorization->impersonated(function (User $user) {
-            return $user->hasRole('CUSTOMER');
-        });
+    /**
+     * @return bool
+     */
+    public function canBeImpersonated() : bool
+    {
+        return $this->hasRole('CUSTOMER');
     }
 }
 ```
