@@ -63,6 +63,15 @@ class User1 extends User implements HasImpersonationUI
     }
 
     /**
+     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @return void
+     */
+    public function scopeImpersonatable($query) : void
+    {
+        $query->where('admin', false);
+    }
+
+    /**
      * @return HasMany
      */
     public function posts() : HasMany

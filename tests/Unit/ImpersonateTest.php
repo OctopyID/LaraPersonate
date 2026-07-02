@@ -87,3 +87,37 @@ it('throws exception if model does not use HasImpersonation trait', function () 
     expect(fn () => impersonate()->begin($foo, $foo))
         ->toThrow(ImpersonateException::class, config('impersonate.model') . ' does not use ' . HasImpersonation::class);
 });
+
+it('can impersonate using fluent loginAs method', function () {
+    $foo = User1::create([
+        'name'  => 'Foo Bar',
+        'email' => 'foo@bar.baz',
+        'admin' => true,
+    ]);
+
+    $bar = User1::create([
+        'name'  => 'Bar Foo',
+        'email' => 'bar@foo.baz',
+        'admin' => false,
+    ]);
+
+    Auth::login($foo);
+
+    expect(Auth::user()->is($foo))->toBeTrue();
+
+    impersonate()->loginAs($bar);
+
+    expect(Auth::user()->is($bar))->toBeTrue();
+    expect(impersonate()->check())->toBeTrue();
+});
+
+it('throws exception if unauthenticated user calls loginAs', function () {
+    $bar = User1::create([
+        'name'  => 'Bar Foo',
+        'email' => 'bar@foo.baz',
+        'admin' => false,
+    ]);
+
+    expect(fn () => impersonate()->loginAs($bar))
+        ->toThrow(ImpersonateException::class, 'Authenticated user is not a Model.');
+});

@@ -31,7 +31,7 @@ it('does not appear on users not allowed to impersonate', function () {
 
 it('does not appear when disabled', function () {
     config([
-        'impersonate.enabled' => false,
+        'impersonate.interface.enabled' => false,
     ]);
 
     $foo = User1::create([

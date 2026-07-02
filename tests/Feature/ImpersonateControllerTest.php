@@ -156,7 +156,7 @@ it('prevents impersonator without permission from taking over', function () {
         'user' => $bar->id,
     ]);
 
-    $response->assertStatus(500);
+    $response->assertStatus(403); // Unauthorized impersonator
 });
 
 it('prevents taking over user who cannot be impersonated', function () {
@@ -177,4 +177,24 @@ it('prevents taking over user who cannot be impersonated', function () {
     ]);
 
     $response->assertStatus(500);
+});
+
+it('prevents user without permission from searching other users', function () {
+    $foo = User1::create([
+        'name'  => 'Foo Bar',
+        'email' => 'foo@bar.baz',
+        'admin' => false, // cannot impersonate
+    ]);
+
+    $bar = User1::create([
+        'name'  => 'Bar Baz',
+        'email' => 'bar@baz.qux',
+        'admin' => false,
+    ]);
+
+    $response = $this->actingAs($foo)->json('GET', route('impersonate.index'), [
+        'query' => 'bar',
+    ]);
+
+    $response->assertStatus(403);
 });
