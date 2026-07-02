@@ -47,7 +47,7 @@ class ImpersonateMiddleware
     {
         $response = $next($request);
 
-        if (! config('impersonate.enabled') || $this->excepted($request) || $this->excluded($response)) {
+        if (! config('impersonate.interface.enabled') || $this->excepted($request) || $this->excluded($response)) {
             return $response;
         }
 

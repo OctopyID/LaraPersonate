@@ -30,15 +30,11 @@
 
         @if($impersonate->check())
             <div class="lp-content">
-                <table>
-                    <tbody>
-                        <tr>
-                            <td>IMPERSONATOR</td>
-                            <td>:</td>
-                            <td>{{ $impersonate->impersonator()->getImpersonateDisplayText() }}</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div class="lp-info-row">
+                    <span class="lp-info-label">IMPERSONATOR</span>
+                    <span class="lp-info-separator">:</span>
+                    <span class="lp-info-value">{{ $impersonate->impersonator()->getImpersonateDisplayText() }}</span>
+                </div>
             </div>
 
             <div class="lp-footer">

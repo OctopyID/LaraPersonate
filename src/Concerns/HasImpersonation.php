@@ -29,6 +29,22 @@ trait HasImpersonation
     }
 
     /**
+     * @return string
+     */
+    public function getImpersonateDisplayText() : string
+    {
+        return $this->name ?? $this->email ?? $this->getKey();
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getImpersonateSearchField() : array
+    {
+        return ['name', 'email'];
+    }
+
+    /**
      * @param  mixed $impersonated
      * @return Impersonate
      * @throws ImpersonateException

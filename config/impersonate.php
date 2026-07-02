@@ -3,15 +3,6 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | Impersonation Interface
-    |--------------------------------------------------------------------------
-    | You can override the value by setting enable to true or false instead of null.
-    |
-    */
-    'enabled' => env('IMPERSONATE_ENABLED', true),
-
-    /*
-    |--------------------------------------------------------------------------
     | Exclude Impersonate
     |--------------------------------------------------------------------------
     | You can provide an array of URI's that must be ignored (eg. 'api/*')
@@ -62,6 +53,17 @@ return [
     'guard'   => config('auth.defaults.guard'),
 
     'interface' => [
+        /*
+        |--------------------------------------------------------------------------
+        | Enable Interface
+        |--------------------------------------------------------------------------
+        |
+        | You can easily disable the impersonation UI if you only want to use
+        | the backend impersonation logic without exposing the interface.
+        |
+        */
+        'enabled' => env('IMPERSONATE_UI_ENABLED', true),
+
         /*
         |--------------------------------------------------------------------------
         | Interface Width

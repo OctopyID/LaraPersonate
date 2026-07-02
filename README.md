@@ -67,7 +67,11 @@ class User extends Authenticatable
 
 ```
 
-If you plan to use the provided UI, add `Octopy\Impersonate\Contracts\HasImpersonationUI` interface to add mandatory configuration for the UI.
+If you plan to use the provided UI, you can implement the `Octopy\Impersonate\Contracts\HasImpersonationUI` interface.
+
+By default, the `HasImpersonation` trait already provides a sensible default for the UI configuration. It uses your `name` or `email` as the display text and allows searching via `name` or `email`. 
+
+However, you can easily override these defaults to fit your application by adding the methods to your User model:
 
 ```php
 namespace App\Models;
@@ -85,7 +89,8 @@ class User extends Authenticatable implements HasImpersonationUI
      */
     public function getImpersonateDisplayText() : string
     {
-        return $this->name;
+        // Override the default display text
+        return $this->first_name . ' ' . $this->last_name;
     }
     
     /**
@@ -96,12 +101,12 @@ class User extends Authenticatable implements HasImpersonationUI
      */
     public function getImpersonateSearchField() : array
     {
+        // Override the default search fields
         return [
-            'name', 'posts.title',
+            'first_name', 'last_name', 'posts.title',
         ];
     }
 }
-
 ```
 
 ## Events
@@ -113,8 +118,7 @@ There are two events available that can be used to improve your workflow:
 
 ## Configuration
 
-This configuration is intended to customize the appearance of Laravel Impersonate, if you don't need a UI, don't forget to set `IMPERSONATE_ENABLED` to `false` in your environment
-file because it is enabled by default.
+This configuration is intended to customize the appearance of Laravel Impersonate, if you don't need a UI and only want to use the backend logic, don't forget to set `IMPERSONATE_UI_ENABLED` to `false` in your environment file because it is enabled by default.
 
 Please refer to the [impersonate.php](config/impersonate.php) file to see the available configurations.
 

@@ -17,7 +17,7 @@ class ImpersonateServiceProvider extends ServiceProvider
     public function boot(Router $router) : void
     {
         $modelClass = config('impersonate.model');
-        if (config('impersonate.enabled') && is_string($modelClass)) {
+        if (config('impersonate.interface.enabled') && is_string($modelClass)) {
             $implements = class_implements($modelClass);
             if (is_array($implements) && in_array(HasImpersonationUI::class, $implements)) {
                 $router->pushMiddlewareToGroup('web', ImpersonateMiddleware::class);

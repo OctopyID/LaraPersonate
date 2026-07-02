@@ -210,35 +210,34 @@
     margin-bottom: 12px;
 }
 
-.lp-content table {
-    width: 100%;
-    border-collapse: collapse;
-}
-
-.lp-content td {
-    padding: 2px 0;
+.lp-info-row {
+    display: flex;
+    align-items: center;
     font-size: 13px;
-    vertical-align: middle;
+    padding: 2px 0;
 }
 
-.lp-content td:first-child {
+.lp-info-label {
     color: #64748b;
     font-weight: 600;
     font-size: 10px;
     letter-spacing: 0.05em;
     width: 95px;
+    flex-shrink: 0;
     text-transform: uppercase;
 }
 
-.lp-content td:nth-child(2) {
-    width: 12px;
-    color: #cbd5e1;
+.lp-info-separator {
+    margin-right: 8px;
+    color: #64748b;
 }
 
-.lp-content td:last-child {
+.lp-info-value {
     font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     color: var(--lp-text);
-    word-break: break-word;
 }
 
 .lp-footer {
