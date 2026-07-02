@@ -72,9 +72,13 @@ class Impersonate
             return false;
         }
 
+        if (! $this->auth->check()) {
+            return false;
+        }
+
         $impersonator = $this->impersonator();
 
-        return $this->auth->check() && method_exists($impersonator, 'canImpersonate') && $impersonator->canImpersonate();
+        return method_exists($impersonator, 'canImpersonate') && $impersonator->canImpersonate();
     }
 
     /**

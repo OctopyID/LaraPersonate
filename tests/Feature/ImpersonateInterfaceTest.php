@@ -154,3 +154,9 @@ it('appears on html without body tag', function () {
 
     $this->actingAs($foo)->get('no-body')->assertSee('impersonate');
 });
+
+it('does not throw exception for unauthenticated users', function () {
+    Route::get('guest', fn () => '<html><body>Hello World</body></html>')->middleware(ImpersonateMiddleware::class);
+
+    $this->get('guest')->assertDontSee('impersonate')->assertStatus(200);
+});
