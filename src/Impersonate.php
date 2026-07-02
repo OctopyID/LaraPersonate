@@ -147,6 +147,16 @@ class Impersonate
     }
 
     /**
+     * @param  mixed $impersonated
+     * @return $this
+     * @throws ImpersonateException
+     */
+    public function loginAs(mixed $impersonated) : Impersonate
+    {
+        return $this->begin($this->impersonator(), $impersonated);
+    }
+
+    /**
      * @return Impersonate
      */
     public function leave() : Impersonate

@@ -2,6 +2,7 @@
 
 namespace Octopy\Impersonate\Concerns;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\App;
 use Octopy\Impersonate\Exceptions\ImpersonateException;
 use Octopy\Impersonate\Impersonate;
@@ -26,6 +27,17 @@ trait HasImpersonation
     public function canBeImpersonated() : bool
     {
         return false;
+    }
+
+    /**
+     * Fallback scope to ensure query doesn't break if no scope is defined.
+     *
+     * @param  Builder $query
+     * @return void
+     */
+    public function scopeImpersonatable($query) : void
+    {
+        //
     }
 
     /**

@@ -20,11 +20,7 @@ class ImpersonateCollection extends ResourceCollection
         }
 
         return [
-            'data' => $collection->filter(function (ImpersonateResource $row) {
-                $resource = $row->resource;
-
-                return is_object($resource) && method_exists($resource, 'canBeImpersonated') && $resource->canBeImpersonated();
-            })->values(),
+            'data' => $collection,
         ];
     }
 }

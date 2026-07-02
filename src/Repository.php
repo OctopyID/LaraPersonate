@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\App;
+use Octopy\Impersonate\Exceptions\ImpersonateException;
 use RuntimeException;
 
 class Repository
@@ -32,16 +33,21 @@ class Repository
     /**
      * @param  mixed $id
      * @return Model
+     * @throws ImpersonateException
      */
     public function find(mixed $id) : Model
     {
-        $result = $this->model->newQuery()->findOrFail($id);
+        try {
+            $result = $this->model->newQuery()->findOrFail($id);
 
-        if (! $result instanceof Model) {
-            throw new RuntimeException('Model not found');
+            if (! $result instanceof Model) {
+                throw new \Exception('Result is not a Model');
+            }
+
+            return $result;
+        } catch (\Throwable $e) {
+            throw new ImpersonateException('Impersonate user not found.');
         }
-
-        return $result;
     }
 
     /**
@@ -58,6 +64,10 @@ class Repository
         if (config('impersonate.trashed', false) && is_array($uses) && in_array(SoftDeletes::class, $uses)) {
             /** @phpstan-ignore-next-line */
             $query = $query->withTrashed();
+        }
+
+        if (method_exists($this->model, 'scopeImpersonatable') || method_exists($this->model, 'impersonatable')) {
+            $query->impersonatable();
         }
 
         // if search is not null, we will add a where clause to the query

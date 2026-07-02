@@ -126,31 +126,41 @@ Please refer to the [impersonate.php](config/impersonate.php) file to see the av
 
 ### Basic Usage
 
-By default, you don't need to do anything, but keep in mind, Impersonation can be done by anyone if you don't define the rules of who can do impersonation or who can be
-impersonated.
+By default, you don't need to do anything, but keep in mind, Impersonation can be done by anyone if you don't define the rules of who can do impersonation or who can be impersonated.
 
-#### Defining Limitation
+#### Defining Limitation & Search Performance
 
-To limit who can do **impersonation** or who is can be **impersonated**, implement the `canImpersonate()` and `canBeImpersonated()` methods on your User Model to enforce the limitation.
+To limit who can do **impersonation** or who is can be **impersonated**, implement the `canImpersonate()` and `canBeImpersonated()` methods on your User Model to enforce the limitation. 
 
-The **canImpersonate** method is intended for who can perform the impersonation and the **canBeImpersonated** method is intended for anyone who is allowed to be imitated.
+To improve the UI search performance and fix pagination accuracy, you should also utilize the **Database Scope** via `scopeImpersonatable` (or the modern `#[Scope]` attribute in Laravel 11+). This ensures that the search query only loads valid users directly from the database!
 
-> **Warning**
->
-> Not defining the limitations in the Model or misdefining them can lead to serious security issues.
-
-The example below uses [Laratrust](https://github.com/santigarcor/laratrust/) for role management where **SUPER_ADMIN** can perform impersonation against **CUSTOMER**. Feel free to use any other Role Management you like.
+The example below uses [Laratrust](https://github.com/santigarcor/laratrust/) for role management where **SUPER_ADMIN** can perform impersonation against **CUSTOMER**.
 
 ```php
-use Octopy\Impersonate\Concerns\HasImpersonation;
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Attributes\Scope; // for Laravel 11+
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Octopy\Impersonate\Concerns\HasImpersonation;
 
 class User extends Authenticatable
 {
     use HasImpersonation;
     
     /**
-     * @return bool
+     * DATABASE FILTER (For UI & Search Performance)
+     * This limits the users retrieved for the UI dropdown.
+     */
+    #[Scope]
+    public function impersonatable(Builder $query) : void
+    {
+        $query->whereHasRole('CUSTOMER');
+    }
+
+    /**
+     * BACKEND AUTHORIZATION (For Core Security)
+     * Validates if the authenticated user can impersonate.
      */
     public function canImpersonate() : bool
     {
@@ -158,7 +168,8 @@ class User extends Authenticatable
     }
 
     /**
-     * @return bool
+     * BACKEND AUTHORIZATION (For Core Security)
+     * Validates if this user can be impersonated by others.
      */
     public function canBeImpersonated() : bool
     {
@@ -166,6 +177,9 @@ class User extends Authenticatable
     }
 }
 ```
+
+> **Warning**
+> Not defining the limitations in the Model or misdefining them can lead to serious security issues.
 
 ### Advanced Usage
 
@@ -175,6 +189,12 @@ Sometimes you need Impersonating manually, to perform it, you can use the impers
 
 ```php
 impersonate()->begin($admin, $customer);
+```
+
+Or you can use the fluent `loginAs()` method which automatically uses the currently authenticated user as the impersonator:
+
+```php
+impersonate()->loginAs($customer);
 ```
 
 Or just simply call the impersonation method directly through the User Model.
@@ -206,6 +226,19 @@ $admin->impersonate()->leave();
 ```
 
 Don't hesitate to use a guard if you need it.
+
+## Handling "Session Bleeding" (Security Warning)
+
+When leaving impersonation (`impersonate()->leave()`), Laravel will regenerate the session ID. However, the existing session data is **not** cleared by default. 
+If the impersonated user adds an item to a shopping cart (or triggers cached data) and the admin leaves the impersonation, the cart data will "bleed" back into the admin's session!
+
+To prevent this, you should listen to the `BeginImpersonation` and `LeaveImpersonation` events and manually clear your application's specific sensitive session keys (e.g., `cart_id`, `checkout_token`).
+
+```php
+Event::listen(function (LeaveImpersonation $event) {
+    session()->forget('cart_id');
+});
+```
 
 ## Disclaimer
 
