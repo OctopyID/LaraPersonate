@@ -1,14 +1,35 @@
 <link rel="stylesheet" href="{{ asset('vendor/octopyid/impersonate/octopy.css') }}">
 
-<div class="oim-root {{ $impersonate->check() ? 'oim-impersonated' : '' }}">
-    <div class="oim-container">
-        @if(!$impersonate->check())
-            <div class="oim-search-wrapper">
-                <input type="text" class="oim-search-input" placeholder="Search user to impersonate..." autocomplete="off">
-                <div class="oim-results"></div>
+@php
+    $width = config('impersonate.interface.width', 320);
+    $width = is_numeric($width) ? $width . 'px' : $width;
+@endphp
+
+<div class="lp-root {{ $impersonate->check() ? 'lp-impersonated' : '' }}">
+    <div class="lp-container" style="width: {{ $width }};">
+        
+        <div class="lp-select-container">
+            <button class="lp-select-trigger" aria-haspopup="listbox" aria-expanded="false">
+                <span class="lp-select-value">
+                    @if($impersonate->check())
+                        {{ $impersonate->impersonated()->getImpersonateDisplayText() }}
+                    @else
+                        Select user to impersonate...
+                    @endif
+                </span>
+                <span class="lp-select-arrow">▼</span>
+            </button>
+
+            <div class="lp-dropdown">
+                <div class="lp-search-wrapper">
+                    <input type="text" class="lp-search-input" placeholder="Search..." autocomplete="off">
+                </div>
+                <div class="lp-results" role="listbox"></div>
             </div>
-        @else
-            <div class="oim-content">
+        </div>
+
+        @if($impersonate->check())
+            <div class="lp-content">
                 <table>
                     <tbody>
                         <tr>
@@ -16,30 +37,19 @@
                             <td>:</td>
                             <td>{{ $impersonate->impersonator()->getImpersonateDisplayText() }}</td>
                         </tr>
-                        <tr>
-                            <td>IMPERSONATED</td>
-                            <td>:</td>
-                            <td>{{ $impersonate->impersonated()->getImpersonateDisplayText() }}</td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
 
-            <div class="oim-footer">
-                <div class="oim-logout">
+            <div class="lp-footer">
+                <div class="lp-logout">
                     <a href="#">✗ LEAVE</a>
-                </div>
-
-                <div class="oim-version">
-                    <a href="https://github.com/OctopyID/LaraPersonate" target="_blank">
-                        Octopy ID
-                    </a>
                 </div>
             </div>
         @endif
     </div>
 
-    <button class="oim-toggle" aria-label="Toggle Impersonation">
+    <button class="lp-toggle" aria-label="Toggle Impersonation">
         <img src="{{ asset('vendor/octopyid/impersonate/img/icon.svg') }}" alt="Impersonate">
     </button>
 </div>
@@ -50,7 +60,6 @@
             token: '{{ csrf_token() }}',
             route: '{{ rtrim(url('/'), '/') }}',
             delay: '{{ config('impersonate.interface.delay') }}',
-            width: '{{ config('impersonate.interface.width') }}',
         },
     }
 </script>

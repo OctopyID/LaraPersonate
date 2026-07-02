@@ -1,32 +1,84 @@
 document.addEventListener('DOMContentLoaded', () => {
     const config = window.impersonate.config;
-    const root = document.querySelector('.oim-root');
+    const root = document.querySelector('.lp-root');
     if (!root) return;
 
-    const toggle = root.querySelector('.oim-toggle');
-    const container = root.querySelector('.oim-container');
-    const searchInput = root.querySelector('.oim-search-input');
-    const resultsContainer = root.querySelector('.oim-results');
-    const leaveBtn = root.querySelector('.oim-logout a');
+    const toggle = root.querySelector('.lp-toggle');
+    const container = root.querySelector('.lp-container');
+    const selectTrigger = root.querySelector('.lp-select-trigger');
+    const dropdown = root.querySelector('.lp-dropdown');
+    const searchInput = root.querySelector('.lp-search-input');
+    const resultsContainer = root.querySelector('.lp-results');
+    const leaveBtn = root.querySelector('.lp-logout a');
     
     let debounceTimer;
 
-    // Toggle panel
+    // Toggle main panel
     if (toggle) {
         toggle.addEventListener('click', (e) => {
             e.preventDefault();
-            container.classList.toggle('oim-open');
-            if (container.classList.contains('oim-open') && searchInput) {
+            container.classList.toggle('lp-open');
+        });
+    }
+
+    // Toggle dropdown (select UI)
+    if (selectTrigger) {
+        selectTrigger.addEventListener('click', (e) => {
+            e.preventDefault();
+            const isOpen = dropdown.classList.contains('lp-show');
+            
+            if (isOpen) {
+                dropdown.classList.remove('lp-show');
+                selectTrigger.classList.remove('lp-active');
+            } else {
+                dropdown.classList.add('lp-show');
+                selectTrigger.classList.add('lp-active');
+                
+                adjustDropdownPosition();
+                
                 searchInput.focus();
+                
+                // Fetch default users if empty
+                if (resultsContainer.children.length === 0) {
+                    fetchUsers('');
+                }
             }
         });
     }
 
-    // Close when clicking outside
+    function adjustDropdownPosition() {
+        if (!dropdown || !dropdown.classList.contains('lp-show')) return;
+        
+        // Auto position: drop up if no space below
+        dropdown.style.top = 'calc(100% + 4px)';
+        dropdown.style.bottom = 'auto';
+        
+        const rect = dropdown.getBoundingClientRect();
+        if (rect.bottom > window.innerHeight) {
+            dropdown.style.top = 'auto';
+            dropdown.style.bottom = 'calc(100% + 4px)';
+        }
+    }
+
+    // Close things when clicking outside
     document.addEventListener('click', (e) => {
-        if (!root.contains(e.target) && container.classList.contains('oim-open')) {
-            container.classList.remove('oim-open');
-            if (resultsContainer) resultsContainer.classList.remove('oim-show');
+        // Close dropdown
+        if (dropdown && dropdown.classList.contains('lp-show')) {
+            if (!selectTrigger.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('lp-show');
+                selectTrigger.classList.remove('lp-active');
+            }
+        }
+        
+        // Close panel
+        if (container && container.classList.contains('lp-open')) {
+            if (!root.contains(e.target)) {
+                container.classList.remove('lp-open');
+                if (dropdown) {
+                    dropdown.classList.remove('lp-show');
+                    selectTrigger.classList.remove('lp-active');
+                }
+            }
         }
     });
 
@@ -57,26 +109,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 fetchUsers(query);
             }, config.delay || 250);
         });
-
-        // Hide results when clicking outside search area
-        document.addEventListener('click', (e) => {
-            if (!searchInput.contains(e.target) && !resultsContainer.contains(e.target)) {
-                resultsContainer.classList.remove('oim-show');
-            }
-        });
-        
-        searchInput.addEventListener('focus', () => {
-            if (searchInput.value.trim().length === 0 && resultsContainer.children.length === 0) {
-                fetchUsers('');
-            } else if (resultsContainer.children.length > 0) {
-                resultsContainer.classList.add('oim-show');
-            }
-        });
     }
 
     function fetchUsers(query) {
-        resultsContainer.innerHTML = '<div class="oim-loading">Searching...</div>';
-        resultsContainer.classList.add('oim-show');
+        resultsContainer.innerHTML = '<div class="lp-loading">Searching...</div>';
 
         fetch(`${config.route}/_impersonate/users?query=${encodeURIComponent(query)}`, {
             headers: {
@@ -89,28 +125,31 @@ document.addEventListener('DOMContentLoaded', () => {
             renderResults(data.data);
         })
         .catch(() => {
-            resultsContainer.innerHTML = '<div class="oim-empty">Error fetching users</div>';
+            resultsContainer.innerHTML = '<div class="lp-empty">Error fetching users</div>';
         });
     }
 
     function renderResults(users) {
         if (!users || users.length === 0) {
-            resultsContainer.innerHTML = '<div class="oim-empty">No users found</div>';
+            resultsContainer.innerHTML = '<div class="lp-empty">No users found</div>';
+            adjustDropdownPosition();
             return;
         }
 
         resultsContainer.innerHTML = '';
         users.forEach(user => {
             const item = document.createElement('div');
-            item.className = 'oim-result-item';
+            item.className = 'lp-result-item';
             
-            item.innerHTML = `<span class="oim-result-name">${user.val}</span>`;
+            item.innerHTML = `<span class="lp-result-name">${user.val}</span>`;
             
             item.addEventListener('click', () => {
                 impersonateUser(user.key);
             });
             resultsContainer.appendChild(item);
         });
+        
+        adjustDropdownPosition();
     }
 
     function impersonateUser(id) {
