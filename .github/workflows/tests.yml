@@ -42,3 +42,6 @@ jobs:
 
       - name: Execute Static Analysis
         run: vendor/bin/phpstan analyse --memory-limit=2G
+
+      - name: Execute Code Styling Analysis
+        run: vendor/bin/pint --test
