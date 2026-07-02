@@ -11,10 +11,13 @@
 
 # Laravel Impersonate
 
-Is an Impersonation package for the Laravel Framework. With this package you can easily impersonate other users either manually or using the interface we provide.
+**LaraPersonate** is a lightweight, zero-dependency impersonation package for Laravel. Easily login as other users to troubleshoot issues or test features, either programmatically or via a beautifully crafted, plug-and-play UI widget.
 
-You don't have to worry about authorizing who can impersonate or who can be impersonated, coz we provided it by default, just need to adjust it a little according to your
-rules.
+### ✨ Highlights
+- **Zero Dependencies:** No jQuery, Select2, or Webpack. Just 100% Vanilla JS & CSS.
+- **Plug & Play UI:** A beautiful, responsive floating widget injected automatically.
+- **Secure by Default:** Built-in authorization guards to prevent unauthorized impersonation.
+- **Performance Focused:** Database-level search scoping (`scopeImpersonatable`) out of the box.
 
 | Impersonate                                                 | Laravel     | Impersonate                                                 | Laravel   |
 |-------------------------------------------------------------|-------------|-------------------------------------------------------------|-----------|
