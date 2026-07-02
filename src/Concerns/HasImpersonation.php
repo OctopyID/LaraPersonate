@@ -3,25 +3,29 @@
 namespace Octopy\Impersonate\Concerns;
 
 use Illuminate\Support\Facades\App;
-use Octopy\Impersonate\Authorization;
 use Octopy\Impersonate\Exceptions\ImpersonateException;
 use Octopy\Impersonate\Impersonate;
 
 trait HasImpersonation
 {
     /**
-     * @return void
+     * Determine if the user can impersonate other users.
+     *
+     * @return bool
      */
-    public static function bootHasImpersonation() : void
+    public function canImpersonate() : bool
     {
-        // Use reflection to avoid invoking the model constructor, which would
-        // recursively trigger bootIfNotBooted() while this very boot is running
-        // (Laravel 13 throws a LogicException on that).
-        $instance = (new \ReflectionClass(static::class))->newInstanceWithoutConstructor();
+        return false;
+    }
 
-        $instance->setImpersonateAuthorization(App::make(
-            'impersonate.authorization'
-        ));
+    /**
+     * Determine if the user can be impersonated by other users.
+     *
+     * @return bool
+     */
+    public function canBeImpersonated() : bool
+    {
+        return false;
     }
 
     /**
@@ -38,21 +42,5 @@ trait HasImpersonation
         }
 
         return $manager;
-    }
-
-    /**
-     * @param  Authorization $authorization
-     * @return void
-     * @codeCoverageIgnore
-     */
-    public function setImpersonateAuthorization(Authorization $authorization) : void
-    {
-        $authorization->impersonator(function () {
-            return true;
-        });
-
-        $authorization->impersonated(function () {
-            return true;
-        });
     }
 }

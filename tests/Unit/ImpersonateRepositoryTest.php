@@ -1,110 +1,81 @@
 <?php
 
-namespace Octopy\Impersonate\Tests\Unit;
-
 use Octopy\Impersonate\Repository;
 use Octopy\Impersonate\Tests\Models\User1;
-use Octopy\Impersonate\Tests\TestCase;
 
-class ImpersonateRepositoryTest extends TestCase
-{
-    /**
-     * @var Repository
-     */
-    protected Repository $repository;
+beforeEach(function () {
+    config([
+        'impersonate.model' => User1::class,
+    ]);
 
-    /**
-     * @return void
-     */
-    protected function setUp() : void
-    {
-        parent::setUp();
+    $this->repository = new Repository;
+});
 
-        config([
-            'impersonate.model' => User1::class,
-        ]);
+it('can search for users basically', function () {
+    User1::create([
+        'name'  => 'Foo Bar',
+        'email' => 'foo@bar.baz',
+        'admin' => false,
+    ]);
 
-        $this->repository = new Repository;
-    }
+    User1::create([
+        'name'  => 'Bar Foo',
+        'email' => 'bar@foo.baz',
+        'admin' => false,
+    ]);
 
-    /**
-     * @return void
-     */
-    public function testBasicSearch() : void
-    {
-        User1::create([
-            'name'  => 'Foo Bar',
-            'email' => 'foo@bar.baz',
-            'admin' => false,
-        ]);
+    expect($this->repository->get('Qux')->items())->toHaveCount(0)
+        ->and($this->repository->get('Foo')->items())->toHaveCount(2)
+        ->and($this->repository->get('Bar')->items())->toHaveCount(2)
+        ->and($this->repository->get('Foo Bar')->items())->toHaveCount(1)
+        ->and($this->repository->get('Bar Foo')->items())->toHaveCount(1);
+});
 
-        User1::create([
-            'name'  => 'Bar Foo',
-            'email' => 'bar@foo.baz',
-            'admin' => false,
-        ]);
+it('can search by relations', function () {
+    $foo = User1::create([
+        'name'  => 'Foo Bar',
+        'email' => 'foo@bar.baz',
+        'admin' => false,
+    ]);
 
-        $this->assertCount(0, $this->repository->get('Qux')->items());
-        $this->assertCount(2, $this->repository->get('Foo')->items());
-        $this->assertCount(2, $this->repository->get('Bar')->items());
-        $this->assertCount(1, $this->repository->get('Foo Bar')->items());
-        $this->assertCount(1, $this->repository->get('Bar Foo')->items());
-    }
+    $foo->posts()->create([
+        'title' => 'ABC',
+    ]);
 
-    /**
-     * @return void
-     */
-    public function testSearchByRelations() : void
-    {
-        $foo = User1::create([
-            'name'  => 'Foo Bar',
-            'email' => 'foo@bar.baz',
-            'admin' => false,
-        ]);
+    $foo->posts()->create([
+        'title' => 'DEF',
+    ]);
 
-        $foo->posts()->create([
-            'title' => 'ABC',
-        ]);
+    expect($this->repository->get('LOL')->items())->toHaveCount(0)
+        ->and($this->repository->get('ABC')->items())->toHaveCount(1)
+        ->and($this->repository->get('DEF')->items())->toHaveCount(1);
+});
 
-        $foo->posts()->create([
-            'title' => 'DEF',
-        ]);
+it('handles trashed users based on config', function () {
+    $foo = User1::create([
+        'name'  => 'Foo Bar',
+        'email' => 'foo@bar.baz',
+        'admin' => false,
+    ]);
 
-        $this->assertCount(0, $this->repository->get('LOL')->items());
-        $this->assertCount(1, $this->repository->get('ABC')->items());
-        $this->assertCount(1, $this->repository->get('DEF')->items());
-    }
+    $bar = User1::create([
+        'name'  => 'Bar Foo',
+        'email' => 'bar@foo.baz',
+        'admin' => false,
+    ]);
 
-    /**
-     * @return void
-     */
-    public function testUserTrashedHandling() : void
-    {
-        $foo = User1::create([
-            'name'  => 'Foo Bar',
-            'email' => 'foo@bar.baz',
-            'admin' => false,
-        ]);
+    expect($this->repository->get('Foo')->items())->toHaveCount(2);
 
-        $bar = User1::create([
-            'name'  => 'Bar Foo',
-            'email' => 'bar@foo.baz',
-            'admin' => false,
-        ]);
+    config([
+        'impersonate.trashed' => 0,
+    ]);
+    $bar->delete();
 
-        $this->assertCount(2, $this->repository->get('Foo')->items());
+    expect($this->repository->get('Foo')->items())->toHaveCount(1);
 
-        config([
-            'impersonate.trashed' => 0,
-        ]);
-        $bar->delete();
+    config([
+        'impersonate.trashed' => 1,
+    ]);
 
-        $this->assertCount(1, $this->repository->get('Foo')->items());
-
-        config([
-            'impersonate.trashed' => 1,
-        ]);
-
-        $this->assertCount(2, $this->repository->get('Foo')->items());
-    }
-}
+    expect($this->repository->get('Foo')->items())->toHaveCount(2);
+});

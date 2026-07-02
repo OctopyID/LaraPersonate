@@ -1,203 +1,144 @@
 <?php
 
-namespace Octopy\Impersonate\Tests\Feature;
-
-use Exception;
 use Illuminate\Support\Facades\Route;
 use Octopy\Impersonate\Http\Middleware\ImpersonateMiddleware;
 use Octopy\Impersonate\Tests\Models\User1;
-use Octopy\Impersonate\Tests\TestCase;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
-class ImpersonateInterfaceTest extends TestCase
-{
-    /**
-     * @return void
-     */
-    protected function setUp() : void
-    {
-        parent::setUp();
+beforeEach(function () {
+    Route::get('foo', fn () => '<html lang="en"><body>Hello World</body></html>')->name('foo')->middleware(ImpersonateMiddleware::class);
+});
 
-        Route::get('foo', fn() => '<html lang="en"><body>Hello World</body></html>')->name('foo')->middleware(ImpersonateMiddleware::class);
-    }
+it('appears on users allowed to impersonate', function () {
+    $foo = User1::create([
+        'name'  => 'Foo Bar',
+        'email' => 'foo@bar.baz',
+        'admin' => true,
+    ]);
 
-    /**
-     * @return void
-     */
-    public function testInterfaceAppearsOnUsersAllowedToImpersonate() : void
-    {
-        $foo = User1::create([
-            'name'  => 'Foo Bar',
-            'email' => 'foo@bar.baz',
-            'admin' => true,
-        ]);
+    $this->actingAs($foo)->get('foo')->assertSee('impersonate');
+});
 
-        $this->actingAs($foo)->get('foo')->assertSee('impersonate');
-    }
+it('does not appear on users not allowed to impersonate', function () {
+    $foo = User1::create([
+        'name'  => 'Foo Bar',
+        'email' => 'foo@bar.baz',
+        'admin' => false,
+    ]);
 
-    /**
-     * @return void
-     */
-    public function testInterfaceDoesNotAppearOnUsersNotAllowedToImpersonate() : void
-    {
-        $foo = User1::create([
-            'name'  => 'Foo Bar',
-            'email' => 'foo@bar.baz',
-            'admin' => false,
-        ]);
+    $this->actingAs($foo)->get('foo')->assertDontSee('impersonate');
+});
 
-        $this->actingAs($foo)->get('foo')->assertDontSee('impersonate');
-    }
+it('does not appear when disabled', function () {
+    config([
+        'impersonate.enabled' => false,
+    ]);
 
-    /**
-     * @return void
-     */
-    public function testInterfaceDoesNotAppearWhenDisabled() : void
-    {
-        config([
-            'impersonate.enabled' => false,
-        ]);
+    $foo = User1::create([
+        'name'  => 'Foo Bar',
+        'email' => 'foo@bar.baz',
+        'admin' => true,
+    ]);
 
-        $foo = User1::create([
-            'name'  => 'Foo Bar',
-            'email' => 'foo@bar.baz',
-            'admin' => true,
-        ]);
+    $this->actingAs($foo)->get('foo')->assertDontSee('impersonate');
+});
 
-        $this->actingAs($foo)->get('foo')->assertDontSee('impersonate');
-    }
+it('does not appear on excluded urls', function () {
+    config([
+        'impersonate.except' => [
+            'foo',
+        ],
+    ]);
 
-    /**
-     * @return void
-     */
-    public function testImpersonateDoesNotAppearOnExcludedUrls() : void
-    {
-        config([
-            'impersonate.except' => [
-                'foo',
-            ],
-        ]);
+    $foo = User1::create([
+        'name'  => 'Foo Bar',
+        'email' => 'foo@bar.baz',
+        'admin' => true,
+    ]);
 
-        $foo = User1::create([
-            'name'  => 'Foo Bar',
-            'email' => 'foo@bar.baz',
-            'admin' => true,
-        ]);
+    $this->actingAs($foo)->get('foo')->assertDontSee('impersonate');
+});
 
-        $this->actingAs($foo)->get('foo')->assertDontSee('impersonate');
-    }
+it('does not appear when request is ajax or wants json', function () {
+    $foo = User1::create([
+        'name'  => 'Foo Bar',
+        'email' => 'foo@bar.baz',
+        'admin' => true,
+    ]);
 
-    /**
-     * @return void
-     */
-    public function testImpersonateDoesNotAppearWhenRequestIsAjaxOrWantJson() : void
-    {
-        $foo = User1::create([
-            'name'  => 'Foo Bar',
-            'email' => 'foo@bar.baz',
-            'admin' => true,
-        ]);
+    $this->actingAs($foo)
+        ->get('foo', [
+            'Accept' => 'application/json',
+        ])
+        ->assertDontSee('impersonate');
+});
 
-        $this
-            ->actingAs($foo)
-            ->get('foo', [
-                'Accept' => 'application/json',
-            ])
-            ->assertDontSee('impersonate');
-    }
+it('does not appear on json response', function () {
+    $foo = User1::create([
+        'name'  => 'Foo Bar',
+        'email' => 'foo@bar.baz',
+        'admin' => true,
+    ]);
 
-    /**
-     * @return void
-     */
-    public function testImpersonateDoesNotAppearOnJsonResponse() : void
-    {
-        $foo = User1::create([
-            'name'  => 'Foo Bar',
-            'email' => 'foo@bar.baz',
-            'admin' => true,
-        ]);
+    Route::get('bar', function () {
+        return ['foo' => 'bar'];
+    })->middleware(ImpersonateMiddleware::class);
 
-        Route::get('bar', function () {
-            return ['foo' => 'bar'];
-        })
-            ->middleware(ImpersonateMiddleware::class);
+    $this->actingAs($foo)->get('bar')->assertDontSee('impersonate');
+});
 
-        $this->actingAs($foo)->get('bar')->assertDontSee('impersonate');
-    }
+it('does not appear on binary file response', function () {
+    $foo = User1::create([
+        'name'  => 'Foo Bar',
+        'email' => 'foo@bar.baz',
+        'admin' => true,
+    ]);
 
-    /**
-     * @return void
-     */
-    public function testImpersonateDoesNotAppearOnBinaryFileResponse() : void
-    {
-        $foo = User1::create([
-            'name'  => 'Foo Bar',
-            'email' => 'foo@bar.baz',
-            'admin' => true,
-        ]);
+    Route::get('bar', function () {
+        return response()->download(__DIR__ . '/../../LICENSE');
+    })->middleware(ImpersonateMiddleware::class);
 
-        Route::get('bar', function () {
-            return response()->download(__DIR__ . '/../../LICENSE');
-        })
-            ->middleware(ImpersonateMiddleware::class);
+    $this->actingAs($foo)->get('bar')->assertDontSee('impersonate');
+});
 
-        $this->actingAs($foo)->get('bar')->assertDontSee('impersonate');
-    }
+it('does not appear on redirect response', function () {
+    $foo = User1::create([
+        'name'  => 'Foo Bar',
+        'email' => 'foo@bar.baz',
+        'admin' => true,
+    ]);
 
-    /**
-     * @return void
-     */
-    public function testImpersonateDoesNotAppearOnRedirectResponse() : void
-    {
-        $foo = User1::create([
-            'name'  => 'Foo Bar',
-            'email' => 'foo@bar.baz',
-            'admin' => true,
-        ]);
+    Route::get('bar', function () {
+        return response()->redirectToRoute('foo');
+    })->middleware(ImpersonateMiddleware::class);
 
-        Route::get('bar', function () {
-            return response()->redirectToRoute('foo');
-        })
-            ->middleware(ImpersonateMiddleware::class);
+    $this->actingAs($foo)->get('bar')->assertDontSee('impersonate');
+});
 
-        $this->actingAs($foo)->get('bar')->assertDontSee('impersonate');
-    }
+it('does not appear on stream response', function () {
+    $foo = User1::create([
+        'name'  => 'Foo Bar',
+        'email' => 'foo@bar.baz',
+        'admin' => true,
+    ]);
 
-    /**
-     * @return void
-     */
-    public function testImpersonateDoesNotAppearOnStreamResponse() : void
-    {
-        $foo = User1::create([
-            'name'  => 'Foo Bar',
-            'email' => 'foo@bar.baz',
-            'admin' => true,
-        ]);
+    Route::get('bar', function () {
+        return new StreamedResponse(fn () => 'Hello World');
+    })->middleware(ImpersonateMiddleware::class);
 
-        Route::get('bar', function () {
-            return new StreamedResponse(fn() => 'Hello World');
-        })
-            ->middleware(ImpersonateMiddleware::class);
+    $this->actingAs($foo)->get('bar')->assertDontSee('impersonate');
+});
 
-        $this->actingAs($foo)->get('bar')->assertDontSee('impersonate');
-    }
+it('does not appear on exception response', function () {
+    $foo = User1::create([
+        'name'  => 'Foo Bar',
+        'email' => 'foo@bar.baz',
+        'admin' => true,
+    ]);
 
-    /**
-     * @return void
-     */
-    public function testImpersonateDoesNotAppearOnExceptionResponse() : void
-    {
-        $foo = User1::create([
-            'name'  => 'Foo Bar',
-            'email' => 'foo@bar.baz',
-            'admin' => true,
-        ]);
+    Route::get('bar', function () {
+        throw new Exception('Hello World');
+    })->middleware(ImpersonateMiddleware::class);
 
-        Route::get('bar', function () {
-            throw new Exception('Hello World');
-        })
-            ->middleware(ImpersonateMiddleware::class);
-
-        $this->actingAs($foo)->get('bar')->assertDontSee('impersonate');
-    }
-}
+    $this->actingAs($foo)->get('bar')->assertDontSee('impersonate');
+});

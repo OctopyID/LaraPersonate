@@ -2,12 +2,9 @@
 
 namespace Octopy\Impersonate\Http;
 
-use Illuminate\Contracts\Foundation\Application;
-use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\Response;
 use Octopy\Impersonate\Impersonate;
-use function Octopy\Impersonate\impersonate;
 
 class ResponseModifier
 {
@@ -26,19 +23,25 @@ class ResponseModifier
     public function modify(Response $response) : Response
     {
         $content = $response->getContent();
+        if (! is_string($content)) {
+            return $response;
+        }
 
-        $impersonate = $this->minify(view('impersonate::impersonate', [
+        /** @var \Illuminate\View\View $view */
+        $view = view('impersonate::impersonate', [
             'impersonate' => $this->impersonate,
-        ]));
+        ]);
+
+        $impersonateHtml = $this->minify($view->render());
 
         // if the response contains html body, insert the impersonation view into the body.
         $position = strripos($content, '</body>');
 
         // @codeCoverageIgnoreStart
         if ($position !== false) {
-            $content = substr($content, 0, $position) . $impersonate . PHP_EOL . substr($content, $position);
+            $content = substr($content, 0, $position) . $impersonateHtml . PHP_EOL . substr($content, $position);
         } else {
-            $content .= $impersonate;
+            $content .= $impersonateHtml;
         }
 
         // @codeCoverageIgnoreEnd
@@ -60,6 +63,8 @@ class ResponseModifier
             '/> </'             => '><',    // remove whitespace between tags
         ];
 
-        return preg_replace(array_keys($pattern), array_values($pattern), $content);
+        $result = preg_replace(array_keys($pattern), array_values($pattern), $content);
+
+        return is_string($result) ? $result : $content;
     }
 }

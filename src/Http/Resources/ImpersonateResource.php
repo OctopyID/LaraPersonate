@@ -5,23 +5,26 @@ namespace Octopy\Impersonate\Http\Resources;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Octopy\Impersonate\Concerns\HasImpersonation;
 
 /**
- * @mixin Model
- * @mixin HasImpersonation
+ * @property Model $resource
  */
 class ImpersonateResource extends JsonResource
 {
     /**
      * @param  Request|null $request
-     * @return array
+     * @return array<string, mixed>
      */
     public function toArray($request) : array
     {
+        $model = $this->resource;
+
+        $key = method_exists($model, 'getKey') ? $model->getKey() : null;
+        $val = method_exists($model, 'getImpersonateDisplayText') ? $model->getImpersonateDisplayText() : null;
+
         return [
-            'key' => $this->getKey(),
-            'val' => $this->getImpersonateDisplayText(),
+            'key' => $key,
+            'val' => $val,
         ];
     }
 }

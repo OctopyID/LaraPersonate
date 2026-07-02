@@ -2,12 +2,12 @@
 
 <div class="oim-root {{ $impersonate->check() ? 'oim-impersonated' : '' }}">
     <div class="oim-container">
-        <label for="oim-select"></label>
-        <select id="oim-select" class="oim-select" style="width: 100% !important;">
-            <option>{{ $impersonate->impersonator()->getImpersonateDisplayText() }}</option>
-        </select>
-
-        @if($impersonate->check())
+        @if(!$impersonate->check())
+            <div class="oim-search-wrapper">
+                <input type="text" class="oim-search-input" placeholder="Search user to impersonate..." autocomplete="off">
+                <div class="oim-results"></div>
+            </div>
+        @else
             <div class="oim-content">
                 <table>
                     <tbody>
@@ -39,7 +39,7 @@
         @endif
     </div>
 
-    <button class="oim-toggle">
+    <button class="oim-toggle" aria-label="Toggle Impersonation">
         <img src="{{ asset('vendor/octopyid/impersonate/img/icon.svg') }}" alt="Impersonate">
     </button>
 </div>

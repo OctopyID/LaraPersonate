@@ -32,9 +32,10 @@ class ImpersonateMiddleware
     public function __construct(protected Impersonate $impersonate)
     {
         $this->response = new ResponseModifier($this->impersonate);
-        $this->excepted = array_merge($this->excepted, config('impersonate.except', [
-
-        ]));
+        $except = config('impersonate.except', []);
+        if (is_array($except)) {
+            $this->excepted = array_merge($this->excepted, $except);
+        }
     }
 
     /**
@@ -91,9 +92,11 @@ class ImpersonateMiddleware
 
         // also, we don't want to modify the response if it's a json, binary or streamed response.
         // we just want to modify the response if it's a view contains html tags.
+        $content = $response->getContent();
+
         return
             $response instanceof JsonResponse || $response instanceof BinaryFileResponse ||
             $response instanceof RedirectResponse || $response instanceof StreamedResponse ||
-            ! preg_match('/<[^<]+>/', $response->getContent());
+            ! is_string($content) || ! preg_match('/<[^<]+>/', $content);
     }
 }

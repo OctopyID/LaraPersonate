@@ -4,7 +4,6 @@ namespace Octopy\Impersonate\Providers;
 
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
-use Octopy\Impersonate\Authorization;
 use Octopy\Impersonate\Contracts\HasImpersonationUI;
 use Octopy\Impersonate\Http\Middleware\ImpersonateMiddleware;
 use Octopy\Impersonate\Impersonate;
@@ -17,16 +16,20 @@ class ImpersonateServiceProvider extends ServiceProvider
      */
     public function boot(Router $router) : void
     {
-        if (config('impersonate.enabled') && class_implements(config('impersonate.model'), HasImpersonationUI::class)) {
-            $router->pushMiddlewareToGroup('web', ImpersonateMiddleware::class);
+        $modelClass = config('impersonate.model');
+        if (config('impersonate.enabled') && is_string($modelClass)) {
+            $implements = class_implements($modelClass);
+            if (is_array($implements) && in_array(HasImpersonationUI::class, $implements)) {
+                $router->pushMiddlewareToGroup('web', ImpersonateMiddleware::class);
 
-            $this->loadRoutesFrom(
-                __DIR__ . '/../../routes/impersonate.php'
-            );
+                $this->loadRoutesFrom(
+                    __DIR__ . '/../../routes/impersonate.php',
+                );
 
-            $this->loadViewsFrom(
-                __DIR__ . '/../../resources/views', 'impersonate'
-            );
+                $this->loadViewsFrom(
+                    __DIR__ . '/../../resources/views', 'impersonate',
+                );
+            }
         }
     }
 
@@ -36,15 +39,10 @@ class ImpersonateServiceProvider extends ServiceProvider
     public function register() : void
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../../config/impersonate.php', 'impersonate'
+            __DIR__ . '/../../config/impersonate.php', 'impersonate',
         );
 
         $this->app->alias(Impersonate::class, 'impersonate');
-
-        $this->app->alias(Authorization::class, 'impersonate.authorization');
-        $this->app->singleton(Authorization::class, function () {
-            return new Authorization;
-        });
 
         if ($this->app->runningInConsole()) {
             $this->registerPublishing();

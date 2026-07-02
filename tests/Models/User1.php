@@ -5,7 +5,6 @@ namespace Octopy\Impersonate\Tests\Models;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User;
-use Octopy\Impersonate\Authorization;
 use Octopy\Impersonate\Concerns\HasImpersonation;
 use Octopy\Impersonate\Contracts\HasImpersonationUI;
 
@@ -48,18 +47,19 @@ class User1 extends User implements HasImpersonationUI
     }
 
     /**
-     * @param  Authorization $authorization
-     * @return void
+     * @return bool
      */
-    public function setImpersonateAuthorization(Authorization $authorization) : void
+    public function canImpersonate() : bool
     {
-        $authorization
-            ->impersonator(function ($user) {
-                return $user->admin;
-            })
-            ->impersonated(function ($user) {
-                return ! $user->admin;
-            });
+        return (bool) $this->admin;
+    }
+
+    /**
+     * @return bool
+     */
+    public function canBeImpersonated() : bool
+    {
+        return ! $this->admin;
     }
 
     /**

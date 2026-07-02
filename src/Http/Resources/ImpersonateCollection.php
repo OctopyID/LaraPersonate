@@ -4,18 +4,26 @@ namespace Octopy\Impersonate\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
+use Illuminate\Support\Collection;
 
 class ImpersonateCollection extends ResourceCollection
 {
     /**
      * @param  Request $request
-     * @return array
+     * @return array<string, mixed>
      */
     public function toArray(Request $request) : array
     {
+        $collection = $this->collection;
+        if (! $collection instanceof Collection) {
+            $collection = collect($collection);
+        }
+
         return [
-            'data' => $this->collection->filter(function (ImpersonateResource $row) {
-                return app('impersonate.authorization')->isImpersonated($row->resource);
+            'data' => $collection->filter(function (ImpersonateResource $row) {
+                $resource = $row->resource;
+
+                return is_object($resource) && method_exists($resource, 'canBeImpersonated') && $resource->canBeImpersonated();
             })->values(),
         ];
     }

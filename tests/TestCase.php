@@ -22,19 +22,12 @@ class TestCase extends \Orchestra\Testbench\TestCase
      */
     protected Impersonate $impersonate;
 
-
-
     /**
      * @return void
      */
     protected function setUp() : void
     {
         parent::setUp();
-
-        config([
-            'impersonate.model' => User1::class,
-        ]);
-
         $this->impersonate = $this->app->make('impersonate');
     }
 
@@ -69,6 +62,8 @@ class TestCase extends \Orchestra\Testbench\TestCase
             'driver'   => 'sqlite',
             'database' => __DIR__ . '/../database/database.sqlite',
         ]);
+        
+        $app['config']->set('impersonate.model', User1::class);
     }
 
     /**

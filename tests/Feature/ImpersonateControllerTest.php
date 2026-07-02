@@ -1,162 +1,140 @@
 <?php
 
-namespace Octopy\Impersonate\Tests\Feature;
-
 use Octopy\Impersonate\Tests\Models\User1;
-use Octopy\Impersonate\Tests\TestCase;
 
-class ImpersonateControllerTest extends TestCase
-{
-    /**
-     * @return void
-     */
-    public function testGetUsers() : void
-    {
-        $foo = User1::create([
-            'name'  => 'Foo Bar',
-            'email' => 'foo@bar.baz',
-            'admin' => true,
+it('gets list of users to impersonate', function () {
+    $foo = User1::create([
+        'name'  => 'Foo Bar',
+        'email' => 'foo@bar.baz',
+        'admin' => true,
+    ]);
+
+    $bar = User1::create([
+        'name'  => 'Bar Baz',
+        'email' => 'bar@baz.qux',
+        'admin' => false,
+    ]);
+
+    $baz = User1::create([
+        'name'  => 'Baz Qux',
+        'email' => 'baz@qux.foo',
+        'admin' => true,
+    ]);
+
+    $qux = User1::create([
+        'name'  => 'Qux Foo',
+        'email' => 'qux@foo.bar',
+        'admin' => false,
+    ]);
+
+    $response = $this->actingAs($foo)->json('GET', route('impersonate.index'));
+
+    $response
+        ->assertStatus(200)
+        ->assertJsonStructure([
+            'data' => [
+                '*' => ['key', 'val'],
+            ],
         ]);
 
-        $bar = User1::create([
-            'name'  => 'Bar Baz',
-            'email' => 'bar@baz.qux',
-            'admin' => false,
+    $response->assertSee($bar->name);
+    $response->assertSee($qux->name);
+
+    // non impersonated users should not be shown
+    $response->assertDontSee($foo->name);
+    $response->assertDontSee($baz->name);
+
+    expect($response->json('data'))->toHaveCount(2);
+});
+
+it('gets users with query', function () {
+    User1::create([
+        'name'  => 'Supian M',
+        'email' => 'supianidz@github.com',
+        'admin' => false,
+    ]);
+
+    $foo = User1::create([
+        'name'  => 'Foo Bar',
+        'email' => 'foo@bar.baz',
+        'admin' => true,
+    ]);
+
+    $bar = User1::create([
+        'name'  => 'Bar Baz',
+        'email' => 'bar@baz.qux',
+        'admin' => false,
+    ]);
+
+    $baz = User1::create([
+        'name'  => 'Baz Qux',
+        'email' => 'baz@qux.foo',
+        'admin' => true,
+    ]);
+
+    $qux = User1::create([
+        'name'  => 'Qux Foo',
+        'email' => 'qux@foo.bar',
+        'admin' => false,
+    ]);
+
+    $response = $this->actingAs($foo)->json('GET', route('impersonate.index'), [
+        'query' => 'supian',
+    ]);
+
+    $response
+        ->assertStatus(200)
+        ->assertJsonStructure([
+            'data' => [
+                '*' => ['key', 'val'],
+            ],
         ]);
 
-        $baz = User1::create([
-            'name'  => 'Baz Qux',
-            'email' => 'baz@qux.foo',
-            'admin' => true,
-        ]);
+    expect($response->json('data'))->toHaveCount(1);
+});
 
-        $qux = User1::create([
-            'name'  => 'Qux Foo',
-            'email' => 'qux@foo.bar',
-            'admin' => false,
-        ]);
+it('allows impersonator to take over impersonated user', function () {
+    $foo = User1::create([
+        'name'  => 'Foo Bar',
+        'email' => 'foo@bar.baz',
+        'admin' => true,
+    ]);
 
-        $response = $this->actingAs($foo)->json('GET', route('impersonate.index'));
+    $bar = User1::create([
+        'name'  => 'Bar Baz',
+        'email' => 'bar@baz.com',
+        'admin' => false,
+    ]);
 
-        $response
-            ->assertStatus(200)
-            ->assertJsonStructure([
-                'data' => [
-                    '*' => ['key', 'val'],
-                ],
-            ]);
+    $response = $this->actingAs($foo)->json('POST', route('impersonate.login'), [
+        'user' => $bar->id,
+    ]);
 
-        $response->assertSee($bar->name);
-        $response->assertSee($qux->name);
+    $response->assertStatus(200);
 
-        // non impersonated users should not be shown
-        $response->assertDontSee($foo->name);
-        $response->assertDontSee($baz->name);
+    expect($this->impersonate->check())->toBeTrue();
+});
 
-        $this->assertCount(2, $response->json('data'));
-    }
+it('allows impersonator to leave impersonation', function () {
+    $foo = User1::create([
+        'name'  => 'Foo Bar',
+        'email' => 'foo@bar.baz',
+        'admin' => true,
+    ]);
 
-    /**
-     * @return void
-     */
-    public function testGetUsersWithQuery() : void
-    {
-        User1::create([
-            'name'  => 'Supian M',
-            'email' => 'supianidz@github.com',
-            'admin' => false,
-        ]);
+    $bar = User1::create([
+        'name'  => 'Bar Baz',
+        'email' => 'bar@baz.com',
+        'admin' => false,
+    ]);
 
-        $foo = User1::create([
-            'name'  => 'Foo Bar',
-            'email' => 'foo@bar.baz',
-            'admin' => true,
-        ]);
+    $response = $this->actingAs($foo)->json('POST', route('impersonate.login'), [
+        'user' => $bar->id,
+    ]);
 
-        $bar = User1::create([
-            'name'  => 'Bar Baz',
-            'email' => 'bar@baz.qux',
-            'admin' => false,
-        ]);
+    $response->assertStatus(200);
 
-        $baz = User1::create([
-            'name'  => 'Baz Qux',
-            'email' => 'baz@qux.foo',
-            'admin' => true,
-        ]);
+    $this->actingAs($bar)->json('POST', route('impersonate.leave'));
 
-        $qux = User1::create([
-            'name'  => 'Qux Foo',
-            'email' => 'qux@foo.bar',
-            'admin' => false,
-        ]);
-
-        $response = $this->actingAs($foo)->json('GET', route('impersonate.index'), [
-            'query' => 'supian',
-        ]);
-
-        $response
-            ->assertStatus(200)
-            ->assertJsonStructure([
-                'data' => [
-                    '*' => ['key', 'val'],
-                ],
-            ]);
-
-        $this->assertCount(1, $response->json('data'));
-    }
-
-    /**
-     * @return void
-     */
-    public function testImpersonatorCanTakeOverImpersonatedUser() : void
-    {
-        $foo = User1::create([
-            'name'  => 'Foo Bar',
-            'email' => 'foo@bar.baz',
-            'admin' => true,
-        ]);
-
-        $bar = User1::create([
-            'name'  => 'Bar Baz',
-            'email' => 'bar@baz.com',
-            'admin' => false,
-        ]);
-
-        $response = $this->actingAs($foo)->json('POST', route('impersonate.login'), [
-            'user' => $bar->id,
-        ]);
-
-        $response->assertStatus(200);
-
-        $this->assertTrue($this->impersonate->check());
-    }
-
-    /**
-     * @return void
-     */
-    public function testImpersonatorCanLeaveImpersonation() : void
-    {
-        $foo = User1::create([
-            'name'  => 'Foo Bar',
-            'email' => 'foo@bar.baz',
-            'admin' => true,
-        ]);
-
-        $bar = User1::create([
-            'name'  => 'Bar Baz',
-            'email' => 'bar@baz.com',
-            'admin' => false,
-        ]);
-
-        $response = $this->actingAs($foo)->json('POST', route('impersonate.login'), [
-            'user' => $bar->id,
-        ]);
-
-        $response->assertStatus(200);
-
-        $this->actingAs($bar)->json('POST', route('impersonate.leave'));
-
-        $this->assertFalse($this->impersonate->check());
-    }
-}
+    expect($this->impersonate->check())->toBeFalse();
+});

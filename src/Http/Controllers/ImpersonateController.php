@@ -25,9 +25,9 @@ class ImpersonateController
      */
     public function index(Request $request) : ImpersonateCollection
     {
-        return new ImpersonateCollection($this->repository->get($request->get(
-            'query'
-        )));
+        $query = $request->get('query');
+
+        return new ImpersonateCollection($this->repository->get(is_string($query) ? $query : null));
     }
 
     /**

@@ -3,9 +3,11 @@
 namespace Octopy\Impersonate;
 
 use Illuminate\Contracts\Pagination\Paginator;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\App;
+use RuntimeException;
 
 class Repository
 {
@@ -19,9 +21,12 @@ class Repository
      */
     public function __construct()
     {
-        $this->model = App::make(config(
-            'impersonate.model'
-        ));
+        $modelClass = config('impersonate.model');
+        if (! is_string($modelClass)) {
+            throw new RuntimeException('impersonate.model configuration must be a string.');
+        }
+
+        $this->model = App::make($modelClass);
     }
 
     /**
@@ -30,40 +35,56 @@ class Repository
      */
     public function find(mixed $id) : Model
     {
-        return $this->model->find($id);
+        $result = $this->model->newQuery()->findOrFail($id);
+
+        if (! $result instanceof Model) {
+            throw new RuntimeException('Model not found');
+        }
+
+        return $result;
     }
 
     /**
      * @param  string|null $search
-     * @return Paginator
-     * @noinspection PhpUndefinedMethodInspection
-     * @noinspection PhpPossiblePolymorphicInvocationInspection
+     * @return Paginator<Model>
      */
-    public function get(string|null $search = null) : Paginator
+    public function get(?string $search = null) : Paginator
     {
+        /** @var Builder<Model> $query */
         $query = $this->model->newQuery();
 
         // if trashed is true, we will add a withTrashed clause to the query
-        if (config('impersonate.trashed', false) && in_array(SoftDeletes::class, class_uses_recursive($this->model))) {
+        $uses = class_uses_recursive($this->model);
+        if (config('impersonate.trashed', false) && is_array($uses) && in_array(SoftDeletes::class, $uses)) {
+            /** @phpstan-ignore-next-line */
             $query = $query->withTrashed();
         }
 
         // if search is not null, we will add a where clause to the query
-        $query->when($search, function ($query) use ($search) {
-            foreach ($this->model->getImpersonateSearchField() as $column) {
-                if (! str_contains($column, '.')) {
-                    $query->orWhere($column, 'LIKE', "%{$search}%");
-                } else {
-                    // when the field is a relation, try to search the related model
-                    $fields = explode('.', $column);
-                    $column = array_pop($fields);
+        if ($search) {
+            $query->where(function (Builder $query) use ($search) {
+                if (method_exists($this->model, 'getImpersonateSearchField')) {
+                    $fields = $this->model->getImpersonateSearchField();
+                    if (is_array($fields)) {
+                        foreach ($fields as $column) {
+                            if (is_string($column)) {
+                                if (! str_contains($column, '.')) {
+                                    $query->orWhere($column, 'LIKE', "%{$search}%");
+                                } else {
+                                    // when the field is a relation, try to search the related model
+                                    $relationFields = explode('.', $column);
+                                    $relatedColumn = array_pop($relationFields);
 
-                    $query->orWhereHas(implode('.', $fields), function ($query) use ($column, $search) {
-                        $query->where($column, 'LIKE', "%{$search}%");
-                    });
+                                    $query->orWhereHas(implode('.', $relationFields), function (Builder $query) use ($relatedColumn, $search) {
+                                        $query->where($relatedColumn, 'LIKE', "%{$search}%");
+                                    });
+                                }
+                            }
+                        }
+                    }
                 }
-            }
-        });
+            });
+        }
 
         return $query->simplePaginate(perPage: 20);
     }
