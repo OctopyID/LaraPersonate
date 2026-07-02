@@ -32,6 +32,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **Zero Dependencies (Vanilla JS & CSS)** — completely dropped heavy frontend dependencies (`jQuery`, `Select2`) and the entire Node.js build ecosystem (Webpack, `package.json`, `.nvmrc`). The frontend is now 100% Vanilla JS and Vanilla CSS!
+
 - **UI layout refactored** — impersonation widget `<table>` replaced with Flexbox layout for cleaner, more maintainable HTML
 - **`Repository::find()`** now wraps the query in a `try/catch` block, returning an `ImpersonateException` instead of leaking internal system exceptions to API consumers
 - **`Repository::get()`** applies `scopeImpersonatable` at the database query level (before pagination), fixing pagination count accuracy when filtering impersonatable users
