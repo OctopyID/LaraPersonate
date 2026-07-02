@@ -73,7 +73,7 @@ return [
         | This is very useful for avoiding hard wraps on the interface.
         |
         */
-        'width' => env('IMPERSONATE_WIDTH', '21rem'),
+        'width' => env('IMPERSONATE_UI_WIDTH', '21rem'),
 
         /*
         |--------------------------------------------------------------------------
@@ -87,6 +87,6 @@ return [
         | to wait after a user has stopped typing before sending the request
         |
         */
-        'delay' => env('IMPERSONATE_DELAY', 300),
+        'delay' => env('IMPERSONATE_UI_DELAY', 300),
     ],
 ];

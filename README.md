@@ -122,6 +122,12 @@ This configuration is intended to customize the appearance of Laravel Impersonat
 
 Please refer to the [impersonate.php](config/impersonate.php) file to see the available configurations.
 
+| ENV Key | Default | Description |
+|---|---|---|
+| `IMPERSONATE_UI_ENABLED` | `true` | Enable or disable the impersonation UI widget |
+| `IMPERSONATE_UI_WIDTH` | `21rem` | Width of the UI widget panel |
+| `IMPERSONATE_UI_DELAY` | `300` | Debounce delay (ms) before triggering the search request |
+
 ## Usage
 
 ### Basic Usage

@@ -10,7 +10,7 @@ class ImpersonateCollection extends ResourceCollection
 {
     /**
      * @param  Request $request
-     * @return array<string, \Illuminate\Support\Collection<int, mixed>>
+     * @return array<string, Collection<int, mixed>>
      */
     public function toArray(Request $request) : array
     {
@@ -18,7 +18,7 @@ class ImpersonateCollection extends ResourceCollection
         if (! $collection instanceof Collection) {
             /** @var iterable<int, mixed> $items */
             $items = $collection;
-            /** @var \Illuminate\Support\Collection<int, mixed> $collection */
+            /** @var Collection<int, mixed> $collection */
             $collection = collect($items);
         }
 

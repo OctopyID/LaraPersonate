@@ -2,6 +2,7 @@
 
 namespace Octopy\Impersonate\Tests\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User;
@@ -63,7 +64,7 @@ class User1 extends User implements HasImpersonationUI
     }
 
     /**
-     * @param  \Illuminate\Database\Eloquent\Builder $query
+     * @param  Builder $query
      * @return void
      */
     public function scopeImpersonatable($query) : void

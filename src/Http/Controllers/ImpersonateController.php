@@ -39,7 +39,7 @@ class ImpersonateController
     public function login(Request $request) : void
     {
         abort_unless($this->impersonate->authorized(), 403, 'Unauthorized');
-        
+
         $this->impersonate->begin($this->impersonate->impersonator(), $request->get('user'));
     }
 
