@@ -10,13 +10,16 @@ class ImpersonateCollection extends ResourceCollection
 {
     /**
      * @param  Request $request
-     * @return array<string, mixed>
+     * @return array<string, \Illuminate\Support\Collection<int, mixed>>
      */
     public function toArray(Request $request) : array
     {
         $collection = $this->collection;
         if (! $collection instanceof Collection) {
-            $collection = collect($collection);
+            /** @var iterable<int, mixed> $items */
+            $items = $collection;
+            /** @var \Illuminate\Support\Collection<int, mixed> $collection */
+            $collection = collect($items);
         }
 
         return [

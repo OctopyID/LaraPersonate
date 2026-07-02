@@ -34,6 +34,7 @@ class ImpersonateMiddleware
         $this->response = new ResponseModifier($this->impersonate);
         $except = config('impersonate.except', []);
         if (is_array($except)) {
+            /** @var array<string> $except */
             $this->excepted = array_merge($this->excepted, $except);
         }
     }

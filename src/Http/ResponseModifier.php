@@ -27,8 +27,11 @@ class ResponseModifier
             return $response;
         }
 
+        /** @var view-string $viewName */
+        $viewName = 'impersonate::impersonate';
+
         /** @var \Illuminate\View\View $view */
-        $view = view('impersonate::impersonate', [
+        $view = view($viewName, [
             'impersonate' => $this->impersonate,
         ]);
 

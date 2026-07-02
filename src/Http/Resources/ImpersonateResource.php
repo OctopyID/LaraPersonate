@@ -19,7 +19,7 @@ class ImpersonateResource extends JsonResource
     {
         $model = $this->resource;
 
-        $key = method_exists($model, 'getKey') ? $model->getKey() : null;
+        $key = $model->getKey();
         $val = method_exists($model, 'getImpersonateDisplayText') ? $model->getImpersonateDisplayText() : null;
 
         return [

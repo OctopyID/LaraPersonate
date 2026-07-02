@@ -52,7 +52,7 @@ class Repository
 
     /**
      * @param  string|null $search
-     * @return Paginator<Model>
+     * @return Paginator<int|string, Model>
      */
     public function get(?string $search = null) : Paginator
     {
@@ -61,7 +61,7 @@ class Repository
 
         // if trashed is true, we will add a withTrashed clause to the query
         $uses = class_uses_recursive($this->model);
-        if (config('impersonate.trashed', false) && is_array($uses) && in_array(SoftDeletes::class, $uses)) {
+        if (config('impersonate.trashed', false) && in_array(SoftDeletes::class, $uses)) {
             /** @phpstan-ignore-next-line */
             $query = $query->withTrashed();
         }

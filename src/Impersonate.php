@@ -68,7 +68,12 @@ class Impersonate
     public function authorized() : bool
     {
         $modelClass = config('impersonate.model');
-        if (! is_string($modelClass) || ! in_array(HasImpersonation::class, class_uses($modelClass))) {
+        if (! is_string($modelClass)) {
+            return false;
+        }
+
+        $uses = class_uses($modelClass);
+        if (! is_array($uses) || ! in_array(HasImpersonation::class, $uses)) {
             return false;
         }
 
@@ -242,7 +247,7 @@ class Impersonate
     private function validate(Model $impersonator, Model $impersonated) : bool
     {
         $uses = class_uses($impersonator);
-        if (! is_array($uses) || ! in_array(HasImpersonation::class, $uses)) {
+        if (! in_array(HasImpersonation::class, $uses)) {
             throw new ImpersonateException(get_class($impersonator) . ' does not use ' . HasImpersonation::class);
         }
 
