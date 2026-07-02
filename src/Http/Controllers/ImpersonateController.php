@@ -25,6 +25,8 @@ class ImpersonateController
      */
     public function index(Request $request) : ImpersonateCollection
     {
+        abort_unless($this->impersonate->authorized(), 403, 'Unauthorized');
+
         $query = $request->get('query');
 
         return new ImpersonateCollection($this->repository->get(is_string($query) ? $query : null));
@@ -36,6 +38,8 @@ class ImpersonateController
      */
     public function login(Request $request) : void
     {
+        abort_unless($this->impersonate->authorized(), 403, 'Unauthorized');
+        
         $this->impersonate->begin($this->impersonate->impersonator(), $request->get('user'));
     }
 
