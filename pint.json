@@ -1,0 +1,39 @@
+{
+    "preset": "laravel",
+    "rules": {
+        "binary_operator_spaces": {
+            "default": "single_space",
+            "operators": {
+                "=>": "align"
+            }
+        },
+        "concat_space": {
+            "spacing": "one"
+        },
+        "declare_equal_normalize": {
+            "space": "single"
+        },
+        "no_superfluous_phpdoc_tags": false,
+        "phpdoc_align": false,
+        "phpdoc_no_empty_return": false,
+        "phpdoc_order": {
+            "order": ["param", "return", "throws"]
+        },
+        "phpdoc_separation": false,
+        "return_type_declaration": {
+            "space_before": "one"
+        },
+        "unary_operator_spaces": true,
+        "array_indentation": true,
+        "blank_line_after_namespace": true,
+        "blank_line_after_opening_tag": true,
+        "blank_line_before_statement": {
+            "statements": ["return"]
+        },
+        "single_line_throw": false,
+        "method_argument_space": false,
+        "trailing_comma_in_multiline": {
+            "elements": ["arrays", "arguments", "parameters", "match"]
+        }
+    }
+}
