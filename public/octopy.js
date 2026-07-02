@@ -53,11 +53,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             clearTimeout(debounceTimer);
             
-            if (query.length === 0) {
-                resultsContainer.classList.remove('oim-show');
-                return;
-            }
-
             debounceTimer = setTimeout(() => {
                 fetchUsers(query);
             }, config.delay || 250);
@@ -71,7 +66,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         searchInput.addEventListener('focus', () => {
-            if (searchInput.value.trim().length > 0 && resultsContainer.children.length > 0) {
+            if (searchInput.value.trim().length === 0 && resultsContainer.children.length === 0) {
+                fetchUsers('');
+            } else if (resultsContainer.children.length > 0) {
                 resultsContainer.classList.add('oim-show');
             }
         });

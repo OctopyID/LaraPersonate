@@ -62,7 +62,7 @@ class TestCase extends \Orchestra\Testbench\TestCase
             'driver'   => 'sqlite',
             'database' => __DIR__ . '/../database/database.sqlite',
         ]);
-        
+
         $app['config']->set('impersonate.model', User1::class);
     }
 

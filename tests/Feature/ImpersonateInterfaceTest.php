@@ -142,3 +142,15 @@ it('does not appear on exception response', function () {
 
     $this->actingAs($foo)->get('bar')->assertDontSee('impersonate');
 });
+
+it('appears on html without body tag', function () {
+    $foo = User1::create([
+        'name'  => 'Foo Bar',
+        'email' => 'foo@bar.baz',
+        'admin' => true,
+    ]);
+
+    Route::get('no-body', fn () => '<html><h1>Hello World</h1></html>')->middleware(ImpersonateMiddleware::class);
+
+    $this->actingAs($foo)->get('no-body')->assertSee('impersonate');
+});

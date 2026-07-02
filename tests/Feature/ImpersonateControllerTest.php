@@ -138,3 +138,43 @@ it('allows impersonator to leave impersonation', function () {
 
     expect($this->impersonate->check())->toBeFalse();
 });
+
+it('prevents impersonator without permission from taking over', function () {
+    $foo = User1::create([
+        'name'  => 'Foo Bar',
+        'email' => 'foo@bar.baz',
+        'admin' => false, // cannot impersonate
+    ]);
+
+    $bar = User1::create([
+        'name'  => 'Bar Baz',
+        'email' => 'bar@baz.com',
+        'admin' => false,
+    ]);
+
+    $response = $this->actingAs($foo)->json('POST', route('impersonate.login'), [
+        'user' => $bar->id,
+    ]);
+
+    $response->assertStatus(500);
+});
+
+it('prevents taking over user who cannot be impersonated', function () {
+    $foo = User1::create([
+        'name'  => 'Foo Bar',
+        'email' => 'foo@bar.baz',
+        'admin' => true,
+    ]);
+
+    $bar = User1::create([
+        'name'  => 'Bar Baz',
+        'email' => 'bar@baz.com',
+        'admin' => true, // cannot be impersonated
+    ]);
+
+    $response = $this->actingAs($foo)->json('POST', route('impersonate.login'), [
+        'user' => $bar->id,
+    ]);
+
+    $response->assertStatus(500);
+});
