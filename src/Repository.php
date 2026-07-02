@@ -86,6 +86,6 @@ class Repository
             });
         }
 
-        return $query->simplePaginate(perPage: 20);
+        return $query->simplePaginate(perPage: 10);
     }
 }
