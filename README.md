@@ -18,8 +18,8 @@ rules.
 
 | Impersonate                                                 | Laravel     | Impersonate                                                 | Laravel   |
 |-------------------------------------------------------------|-------------|-------------------------------------------------------------|-----------|
-| [v5.x](https://github.com/OctopyID/LaraPersonate/tree/main) | 11.x        | [v2.x](https://github.com/OctopyID/LaraPersonate/tree/v2.x) | 7.x - 8.x |
-| [v4.x](https://github.com/OctopyID/LaraPersonate/tree/v4.x) | 10.x - 13.x | [v1.x](https://github.com/OctopyID/LaraPersonate/tree/v1.x) | 7.x - 8.x |
+| [v5.x](https://github.com/OctopyID/LaraPersonate/tree/main) | 12.x - 13.x | [v2.x](https://github.com/OctopyID/LaraPersonate/tree/v2.x) | 7.x - 8.x |
+| [v4.x](https://github.com/OctopyID/LaraPersonate/tree/v4.x) | 10.x - 11.x | [v1.x](https://github.com/OctopyID/LaraPersonate/tree/v1.x) | 7.x - 8.x |
 | [v3.x](https://github.com/OctopyID/LaraPersonate/tree/v3.x) | 9.x - 10.x  |                                                             |           |
 
 ## Installation
@@ -28,7 +28,7 @@ rules.
 >
 > This version is a breaking change, many changes were made to the addition of new features, new UI design, and code structure.
 >
-> If you are upgrade from an old version, please delete the old assets and republish the assets, configure and reset the [limitations](#311-defining-limitation) on the User Model
+> If you are upgrading from an old version, please republish the assets using the `--force` flag, configure and reset the [limitations](#311-defining-limitation) on the User Model
 > according to this version.
 
 To install the package, simply follow the steps below.
@@ -42,13 +42,8 @@ composer require octopyid/laravel-impersonate:^5
 ### Publish The Package
 
 ```bash
-php artisan vendor:publish --tag="impersonate"
+php artisan vendor:publish --tag="impersonate" --force
 ```
-
-> **Note**
->
-> Sometimes some users experience the problem of layout after upgrading the package, this can be solved by deleting the `public/vendor/octopyid/impersonate` folder then republish
-> the assets.
 
 ### Add `HasImpersonation` Trait to  User Model
 
