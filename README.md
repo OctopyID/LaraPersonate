@@ -16,11 +16,11 @@ Is an Impersonation package for the Laravel Framework. With this package you can
 You don't have to worry about authorizing who can impersonate or who can be impersonated, coz we provided it by default, just need to adjust it a little according to your
 rules.
 
-| Impersonate                                                 | Laravel     | Impersonate                                                 | Laravel    |
-|-------------------------------------------------------------|-------------|-------------------------------------------------------------|------------|
-| [v5.x](https://github.com/OctopyID/LaraPersonate/tree/main) | 11.x        | [v2.x](https://github.com/OctopyID/LaraPersonate/tree/v2.x) | 7.x - 8.x  |
-| [v4.x](https://github.com/OctopyID/LaraPersonate/tree/v4.x) | 10.x - 13.x | [v1.x](https://github.com/OctopyID/LaraPersonate/tree/v1.x) | 7.x - 8.x  |
-| [v3.x](https://github.com/OctopyID/LaraPersonate/tree/v3.x) | 9.x - 10.x  |                                                             |            |
+| Impersonate                                                 | Laravel     | Impersonate                                                 | Laravel   |
+|-------------------------------------------------------------|-------------|-------------------------------------------------------------|-----------|
+| [v5.x](https://github.com/OctopyID/LaraPersonate/tree/main) | 11.x        | [v2.x](https://github.com/OctopyID/LaraPersonate/tree/v2.x) | 7.x - 8.x |
+| [v4.x](https://github.com/OctopyID/LaraPersonate/tree/v4.x) | 10.x - 13.x | [v1.x](https://github.com/OctopyID/LaraPersonate/tree/v1.x) | 7.x - 8.x |
+| [v3.x](https://github.com/OctopyID/LaraPersonate/tree/v3.x) | 9.x - 10.x  |                                                             |           |
 
 ## Installation
 
@@ -69,7 +69,8 @@ class User extends Authenticatable
 
 If you plan to use the provided UI, you can implement the `Octopy\Impersonate\Contracts\HasImpersonationUI` interface.
 
-By default, the `HasImpersonation` trait already provides a sensible default for the UI configuration. It uses your `name` or `email` as the display text and allows searching via `name` or `email`. 
+By default, the `HasImpersonation` trait already provides a sensible default for the UI configuration. It uses your `name` or `email` as the display text and allows searching via
+`name` or `email`.
 
 However, you can easily override these defaults to fit your application by adding the methods to your User model:
 
@@ -118,27 +119,31 @@ There are two events available that can be used to improve your workflow:
 
 ## Configuration
 
-This configuration is intended to customize the appearance of Laravel Impersonate, if you don't need a UI and only want to use the backend logic, don't forget to set `IMPERSONATE_UI_ENABLED` to `false` in your environment file because it is enabled by default.
+This configuration is intended to customize the appearance of Laravel Impersonate, if you don't need a UI and only want to use the backend logic, don't forget to set
+`IMPERSONATE_UI_ENABLED` to `false` in your environment file because it is enabled by default.
 
 Please refer to the [impersonate.php](config/impersonate.php) file to see the available configurations.
 
-| ENV Key | Default | Description |
-|---|---|---|
-| `IMPERSONATE_UI_ENABLED` | `true` | Enable or disable the impersonation UI widget |
-| `IMPERSONATE_UI_WIDTH` | `21rem` | Width of the UI widget panel |
-| `IMPERSONATE_UI_DELAY` | `300` | Debounce delay (ms) before triggering the search request |
+| ENV Key                   | Default | Description                                              |
+|---------------------------|---------|----------------------------------------------------------|
+| `IMPERSONATE_UI_ENABLED`  | `true`  | Enable or disable the impersonation UI widget            |
+| `IMPERSONATE_UI_WIDTH`    | `21rem` | Width of the UI widget panel                             |
+| `IMPERSONATE_UI_DEBOUNCE` | `300`   | Debounce delay (ms) before triggering the search request |
 
 ## Usage
 
 ### Basic Usage
 
-By default, you don't need to do anything, but keep in mind, Impersonation can be done by anyone if you don't define the rules of who can do impersonation or who can be impersonated.
+By default, you don't need to do anything, but keep in mind, Impersonation can be done by anyone if you don't define the rules of who can do impersonation or who can be
+impersonated.
 
 #### Defining Limitation & Search Performance
 
-To limit who can do **impersonation** or who is can be **impersonated**, implement the `canImpersonate()` and `canBeImpersonated()` methods on your User Model to enforce the limitation. 
+To limit who can do **impersonation** or who is can be **impersonated**, implement the `canImpersonate()` and `canBeImpersonated()` methods on your User Model to enforce the
+limitation.
 
-To improve the UI search performance and fix pagination accuracy, you should also utilize the **Database Scope** via `scopeImpersonatable` (or the modern `#[Scope]` attribute in Laravel 11+). This ensures that the search query only loads valid users directly from the database!
+To improve the UI search performance and fix pagination accuracy, you should also utilize the **Database Scope** via `scopeImpersonatable` (or the modern `#[Scope]` attribute in
+Laravel 11+). This ensures that the search query only loads valid users directly from the database!
 
 The example below uses [Laratrust](https://github.com/santigarcor/laratrust/) for role management where **SUPER_ADMIN** can perform impersonation against **CUSTOMER**.
 
@@ -235,10 +240,11 @@ Don't hesitate to use a guard if you need it.
 
 ## Handling "Session Bleeding" (Security Warning)
 
-When leaving impersonation (`impersonate()->leave()`), Laravel will regenerate the session ID. However, the existing session data is **not** cleared by default. 
+When leaving impersonation (`impersonate()->leave()`), Laravel will regenerate the session ID. However, the existing session data is **not** cleared by default.
 If the impersonated user adds an item to a shopping cart (or triggers cached data) and the admin leaves the impersonation, the cart data will "bleed" back into the admin's session!
 
-To prevent this, you should listen to the `BeginImpersonation` and `LeaveImpersonation` events and manually clear your application's specific sensitive session keys (e.g., `cart_id`, `checkout_token`).
+To prevent this, you should listen to the `BeginImpersonation` and `LeaveImpersonation` events and manually clear your application's specific sensitive session keys (e.g.,
+`cart_id`, `checkout_token`).
 
 ```php
 Event::listen(function (LeaveImpersonation $event) {
@@ -254,7 +260,7 @@ By using this package, you agree that Octopy ID and the contributors of this pac
 
 ## Security
 
-If you discover any security related issues, please email [bug@octopy.dev](mailto:bug@octopy.dev) instead of using the issue
+If you discover any security-related issues, please email [bug@octopy.dev](mailto:bug@octopy.dev) instead of using the issue
 tracker.
 
 ## Credits
